@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 1060" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="luz-tono-pipeline-title luz-tono-pipeline-desc">
+  <title id="luz-tono-pipeline-title">Pipeline del Agente 4 — luz y tono</title>
+  <desc id="luz-tono-pipeline-desc">Diagrama de flujo que muestra cómo el especialista de luz y tono recibe solo la ruta de la imagen, la reescala a un espacio de trabajo común, y calcula en dos ramas independientes la exposición sobre CIELAB —que se publica siempre con confianza 1— y la armonía cromática sobre HSV mediante k-means y fusión de matices, protegida por un único gate que exige una fracción mínima de píxeles cromáticos, antes de fusionar el resultado en un informe auditable que un LLM cita para redactar el diagnóstico final.</desc>
+
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap');</style>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+  <!-- ============================================================
+       ARROWS (drawn before nodes — z-order rule)
+       ============================================================ -->
+
+  <!-- N1 ruta_imagen -> N2 Cargar y reescalar -->
+  <line x1="640" y1="80" x2="640" y2="116" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N2 -> N4 Matices dominantes (left attach 588, elbow down-left-down) -->
+  <path d="M 588,196 V 212 Q 588,220 580,220 H 232 Q 224,220 224,228 V 244"
+        fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N2 -> N3 Medir exposición (right attach 692, elbow down-right-down) -->
+  <path d="M 692,196 V 212 Q 692,220 700,220 H 1048 Q 1056,220 1056,228 V 244"
+        fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- Branch labels -->
+  <rect x="370" y="200" width="72" height="12" rx="2" fill="#f5f5f5"/>
+  <text x="406" y="209" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">CROMÁTICA</text>
+
+  <rect x="836" y="200" width="76" height="12" rx="2" fill="#f5f5f5"/>
+  <text x="874" y="209" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">EXPOSICIÓN</text>
+
+  <!-- N4 -> N5 (straight, same x) -->
+  <line x1="224" y1="340" x2="224" y2="376" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N5 -> N6 (straight, same x) -->
+  <line x1="224" y1="472" x2="224" y2="508" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N6 Gate cromático -> N7 Informe (attach 568, elbow down-right-down) -->
+  <path d="M 224,604 V 612 Q 224,620 232,620 H 560 Q 568,620 568,628 V 640"
+        fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N3 Medir exposición -> N7 Informe (attach 712, long pass-through, elbow down-left-down) -->
+  <path d="M 1056,340 V 480 Q 1056,488 1048,488 H 720 Q 712,488 712,496 V 640"
+        fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N7 Informe -> N8 Diagnóstico -->
+  <line x1="640" y1="752" x2="640" y2="788" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================================
+       NODES
+       ============================================================ -->
+
+  <!-- N1 · ruta_imagen (input, oval) -->
+  <rect x="560" y="40" width="160" height="40" rx="20" fill="#f5f5f5"/>
+  <rect x="560" y="40" width="160" height="40" rx="20" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+  <text x="640" y="64" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">ruta_imagen</text>
+
+  <!-- N2 · Cargar y reescalar -->
+  <rect x="480" y="116" width="320" height="80" rx="6" fill="#f5f5f5"/>
+  <rect x="480" y="116" width="320" height="80" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="488" y="124" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="502" y="133" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="640" y="150" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Cargar y reescalar</text>
+  <text x="640" y="166" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">tools/imagen.py: cargar_imagen()</text>
+  <text x="640" y="180" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">reescalar a 1024px · INTER_AREA</text>
+
+  <!-- N4 · Matices dominantes -->
+  <rect x="84" y="244" width="280" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="84" y="244" width="280" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="92" y="252" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="106" y="261" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="224" y="284" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Matices dominantes</text>
+  <text x="224" y="300" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">HSV: S≥0.15 ∧ V≥0.15 · k-means(5)</text>
+  <text x="224" y="314" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">círculo unidad · fusiona matices ≤ 15°</text>
+  <text x="224" y="328" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">filtra por masa ≥ 0.15</text>
+
+  <!-- N3 · Medir exposición -->
+  <rect x="916" y="244" width="280" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="916" y="244" width="280" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="924" y="252" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="938" y="261" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="1056" y="284" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Medir exposición</text>
+  <text x="1056" y="300" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">CIELAB → canal L (media, std)</text>
+  <text x="1056" y="314" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">clipping: L&lt;5 sombras · L&gt;95 luces</text>
+  <text x="1056" y="328" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">confianza 1.0 siempre — sin gate</text>
+
+  <!-- N5 · Clasificar esquema -->
+  <rect x="84" y="376" width="280" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="84" y="376" width="280" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="92" y="384" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="106" y="393" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="224" y="416" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Clasificar esquema</text>
+  <text x="224" y="432" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">spread &lt; 30° → monocromático</text>
+  <text x="224" y="446" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">&lt; 60° análogo · par a 180°±30 complement.</text>
+  <text x="224" y="460" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">si no: otro</text>
+
+  <!-- N6 · Gate cromático -->
+  <rect x="84" y="508" width="280" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="84" y="508" width="280" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="92" y="516" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="106" y="525" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="224" y="548" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Gate cromático</text>
+  <text x="224" y="564" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">ratio_cromatico ≥ 0.10</text>
+  <text x="224" y="578" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">si no: esquema = 'sin_color'</text>
+  <text x="224" y="592" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">confianza → 1.0 / 0.0</text>
+
+  <!-- N7 · InformeLuzTono (focal) -->
+  <rect x="420" y="640" width="440" height="112" rx="6" fill="#f5f5f5"/>
+  <rect x="420" y="640" width="440" height="112" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+  <rect x="428" y="648" width="28" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+  <text x="442" y="657" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="640" y="680" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">InformeLuzTono</text>
+  <text x="640" y="696" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">media_L · std_L · pct_clipping_sombras/luces</text>
+  <text x="640" y="710" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">esquema_cromatico · spread_cromatico · matices_dominantes</text>
+  <text x="640" y="724" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">n_matices_dominantes · ratio_pixeles_cromaticos · verificacion_path</text>
+
+  <!-- N8 · DiagnosticoLuzTono (LLM) -->
+  <rect x="480" y="788" width="320" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="480" y="788" width="320" height="96" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+  <rect x="488" y="796" width="28" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+  <text x="502" y="805" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LLM</text>
+  <text x="640" y="822" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">DiagnosticoLuzTono</text>
+  <text x="640" y="838" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Gemini 2.5 Flash · cita el informe</text>
+  <text x="640" y="854" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">→ salida_luz_tono.json</text>
+
+  <!-- ============================================================
+       EDITORIAL CALLOUT (1, margin only)
+       ============================================================ -->
+
+  <path d="M 1160,52 Q 950,56 728,60" fill="none" stroke="rgba(45,49,66,0.40)" stroke-width="1" stroke-dasharray="4,3"/>
+  <circle cx="720" cy="60" r="2" fill="#2d3142"/>
+  <text x="1240" y="44" fill="#2d3142" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">puramente global:</text>
+  <text x="1240" y="60" fill="#2d3142" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">ni bbox ni saliencia</text>
+
+  <!-- ============================================================
+       LEGEND
+       ============================================================ -->
+  <line x1="40" y1="924" x2="1240" y2="924" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+  <text x="40" y="944" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.12em">LEYENDA</text>
+
+  <rect x="132" y="957" width="14" height="10" rx="2" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+  <text x="152" y="966" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Entrada — único campo que recibe el agente (puramente global)</text>
+
+  <rect x="132" y="975" width="14" height="10" rx="2" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <text x="152" y="984" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Motor determinista (NumPy / OpenCV / scikit-learn) — auditable, recomputable</text>
+
+  <rect x="132" y="993" width="14" height="10" rx="2" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+  <text x="152" y="1002" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">InformeLuzTono — el contrato que el crítico puede citar</text>
+
+  <rect x="132" y="1011" width="14" height="10" rx="2" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+  <text x="152" y="1020" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Diagnóstico — LLM (Gemini), redacta citando el informe</text>
+
+</svg>

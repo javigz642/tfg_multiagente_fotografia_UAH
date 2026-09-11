@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 1060" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="lineas-direccion-pipeline-title lineas-direccion-pipeline-desc">
+  <title id="lineas-direccion-pipeline-title">Pipeline del Agente 2 — líneas y dirección</title>
+  <desc id="lineas-direccion-pipeline-desc">Diagrama de flujo que muestra cómo el especialista de líneas y dirección recibe solo la ruta de la imagen, detecta segmentos con Canny y HoughLinesP, los reparte en tres franjas angulares, y calcula en dos ramas independientes la nivelación del horizonte y la convergencia perspectiva, cada una con su propio gate de tres condiciones, antes de fusionar el resultado en un informe auditable que un LLM cita para redactar el diagnóstico final.</desc>
+
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap');</style>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/>
+    </marker>
+    <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+  <!-- ============================================================
+       ARROWS (drawn before nodes — z-order rule)
+       ============================================================ -->
+
+  <!-- N1 ruta_imagen -> N2 Detección -->
+  <line x1="640" y1="80" x2="640" y2="116" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N2 Detección -> N3 Reparto -->
+  <line x1="640" y1="196" x2="640" y2="232" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N3 Reparto -> N4 Horizonte (left attach 588, elbow down-left-down) -->
+  <path d="M 588,312 V 328 Q 588,336 580,336 H 232 Q 224,336 224,344 V 360"
+        fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N3 Reparto -> N5 Convergencia (right attach 692, elbow down-right-down) -->
+  <path d="M 692,312 V 328 Q 692,336 700,336 H 1048 Q 1056,336 1056,344 V 360"
+        fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- Branch labels on the two horizontal runs -->
+  <rect x="370" y="316" width="72" height="12" rx="2" fill="#f5f5f5"/>
+  <text x="406" y="325" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HORIZONTE</text>
+
+  <rect x="842" y="316" width="64" height="12" rx="2" fill="#f5f5f5"/>
+  <text x="874" y="325" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">FUGA</text>
+
+  <!-- N4 -> N6 (straight, same x) -->
+  <line x1="224" y1="456" x2="224" y2="492" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N5 -> N7 (straight, same x) -->
+  <line x1="1056" y1="456" x2="1056" y2="492" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N6 Gate horizonte -> N8 Informe (attach 600, elbow down-right-down) -->
+  <path d="M 224,588 V 604 Q 224,612 232,612 H 592 Q 600,612 600,620 V 636"
+        fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N7 Gate convergencia -> N8 Informe (attach 680, elbow down-left-down) -->
+  <path d="M 1056,588 V 604 Q 1056,612 1048,612 H 688 Q 680,612 680,620 V 636"
+        fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N8 Informe -> N9 Diagnóstico -->
+  <line x1="640" y1="748" x2="640" y2="784" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================================
+       NODES
+       ============================================================ -->
+
+  <!-- N1 · ruta_imagen (input, oval) -->
+  <rect x="560" y="40" width="160" height="40" rx="20" fill="#f5f5f5"/>
+  <rect x="560" y="40" width="160" height="40" rx="20" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+  <text x="640" y="64" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">ruta_imagen</text>
+
+  <!-- N2 · Detección de segmentos -->
+  <rect x="480" y="116" width="320" height="80" rx="6" fill="#f5f5f5"/>
+  <rect x="480" y="116" width="320" height="80" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="488" y="124" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="502" y="133" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="640" y="150" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Detección de segmentos</text>
+  <text x="640" y="166" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">tools/lineas_direccion_tool.py</text>
+  <text x="640" y="180" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">1024px · Canny · HoughLinesP</text>
+
+  <!-- N3 · Reparto en 3 franjas angulares -->
+  <rect x="480" y="232" width="320" height="80" rx="6" fill="#f5f5f5"/>
+  <rect x="480" y="232" width="320" height="80" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="488" y="240" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="502" y="249" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="640" y="266" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Reparto en 3 franjas angulares</text>
+  <text x="640" y="282" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">clasificar(): horizonte / fuga / vertical</text>
+  <text x="640" y="296" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">cada línea alimenta una sola métrica</text>
+
+  <!-- N4 · Estimar horizonte -->
+  <rect x="84" y="360" width="280" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="84" y="360" width="280" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="92" y="368" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="106" y="377" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="224" y="394" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Estimar horizonte</text>
+  <text x="224" y="410" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">estimar_horizonte()</text>
+  <text x="224" y="424" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">candidato = segmento más largo</text>
+  <text x="224" y="438" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">ángulo con signo · long. / diagonal</text>
+
+  <!-- N5 · Punto de fuga -->
+  <rect x="916" y="360" width="280" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="916" y="360" width="280" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="924" y="368" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="938" y="377" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="1056" y="394" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Punto de fuga (evaluación exhaustiva)</text>
+  <text x="1056" y="410" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">estimar_punto_fuga()</text>
+  <text x="1056" y="424" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">enumera TODAS las parejas de líneas</text>
+  <text x="1056" y="438" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">score = inliers / candidatas</text>
+
+  <!-- N6 · Gate de horizonte -->
+  <rect x="84" y="492" width="280" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="84" y="492" width="280" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="92" y="500" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="106" y="509" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="224" y="526" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Gate de horizonte</text>
+  <text x="224" y="542" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">existe · long ≥ 0.13 · áng ≤ 10°</text>
+  <text x="224" y="556" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">3 condiciones independientes</text>
+  <text x="224" y="570" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">confianza → 1.0 / 0.0</text>
+
+  <!-- N7 · Gate de convergencia -->
+  <rect x="916" y="492" width="280" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="916" y="492" width="280" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="924" y="500" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="938" y="509" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="1056" y="526" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Gate de convergencia</text>
+  <text x="1056" y="542" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">n≥2 · score &gt; nulo · apertura ≥ 35°</text>
+  <text x="1056" y="556" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">vs. modelo_nulo_fuga.json</text>
+  <text x="1056" y="570" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">confianza → 1.0 / 0.0</text>
+
+  <!-- N8 · InformeLineasDireccion (focal) -->
+  <rect x="420" y="636" width="440" height="112" rx="6" fill="#f5f5f5"/>
+  <rect x="420" y="636" width="440" height="112" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+  <rect x="428" y="644" width="28" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+  <text x="442" y="653" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="640" y="676" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">InformeLineasDireccion</text>
+  <text x="640" y="692" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">angulo_horizonte · score_convergencia · coord_punto_fuga</text>
+  <text x="640" y="706" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">longitud_horizonte · apertura_haz · n_lineas_horizonte/fuga/inliers</text>
+  <text x="640" y="720" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">auditable · recomputable · verificacion_path</text>
+
+  <!-- N9 · DiagnosticoLineasDireccion (LLM) -->
+  <rect x="480" y="784" width="320" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="480" y="784" width="320" height="96" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+  <rect x="488" y="792" width="28" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+  <text x="502" y="801" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LLM</text>
+  <text x="640" y="818" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">DiagnosticoLineasDireccion</text>
+  <text x="640" y="834" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Gemini 2.5 Flash · cita el informe</text>
+  <text x="640" y="850" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">→ salida_lineas_direccion.json</text>
+
+  <!-- ============================================================
+       EDITORIAL CALLOUTS (max 2, margins only)
+       ============================================================ -->
+
+  <path d="M 1160,52 Q 950,56 728,60" fill="none" stroke="rgba(45,49,66,0.40)" stroke-width="1" stroke-dasharray="4,3"/>
+  <circle cx="720" cy="60" r="2" fill="#2d3142"/>
+  <text x="1240" y="44" fill="#2d3142" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">sin bbox, sin saliencia:</text>
+  <text x="1240" y="60" fill="#2d3142" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">ve solo la ruta de la imagen</text>
+
+  <path d="M 160,264 Q 320,268 472,272" fill="none" stroke="rgba(45,49,66,0.40)" stroke-width="1" stroke-dasharray="4,3"/>
+  <circle cx="480" cy="272" r="2" fill="#2d3142"/>
+  <text x="40" y="256" fill="#2d3142" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="start">las casi verticales</text>
+  <text x="40" y="272" fill="#2d3142" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="start">se descartan aquí</text>
+
+  <!-- ============================================================
+       LEGEND
+       ============================================================ -->
+  <line x1="40" y1="920" x2="1240" y2="920" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+  <text x="40" y="940" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.12em">LEYENDA</text>
+
+  <rect x="132" y="953" width="14" height="10" rx="2" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+  <text x="152" y="962" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Entrada — único campo que recibe el agente</text>
+
+  <rect x="132" y="971" width="14" height="10" rx="2" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <text x="152" y="980" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Motor determinista (NumPy / OpenCV / RANSAC) — auditable, recomputable</text>
+
+  <rect x="132" y="989" width="14" height="10" rx="2" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+  <text x="152" y="998" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">InformeLineasDireccion — el contrato que el crítico puede citar</text>
+
+  <rect x="132" y="1007" width="14" height="10" rx="2" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+  <text x="152" y="1016" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Diagnóstico — LLM (Gemini), redacta citando el informe</text>
+
+</svg>

@@ -1,0 +1,13 @@
+{
+    "umbral_otro": 0.85,
+    "justificacion": [
+        "0.85 no es el punto matemáticamente óptimo (eso sería 0.80), sino una elección informada",
+        "que ajusta ese óptimo hacia arriba usando una asimetría de coste específica de tu ",
+        "arquitectura (pesos uniformes  como red de seguridad), sin llegar a la zona donde ",
+        "el propio análisis cuantitativo dice que ya no compensa (0.90+)."
+    ],
+    "metricas_asociadas": {
+        "test_mal_rechazado_porcentaje": 27.4,
+        "otro_bien_detectado_porcentaje": 64.8
+    }
+}

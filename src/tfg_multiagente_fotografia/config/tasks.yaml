@@ -1,0 +1,537 @@
+
+compose_task:
+  description: >
+    1. Usa la herramienta "Clasificador de Contexto Fotografico" sobre {ruta_imagen}
+       para obtener la etiqueta de contexto.
+    2. Usa la herramienta "Percepción compartida" sobre {ruta_imagen} para obtener
+       el sujeto principal y el mapa de saliencia.
+  expected_output: >
+    Un objeto JSON con exactamente estos dos campos:
+    - "etiqueta_contexto": el "label" devuelto por el clasificador de contexto.
+    - "percepcion_compartida": el diccionario completo devuelto por la
+      herramienta de percepción compartida, sin modificar ninguno de sus campos
+      ("bbox", "clase", "confianza_yolo", "fuente", "sujeto_discreto", "blob_area_ratio",
+      "mapa_saliencia_path", "centroide_saliencia", "deteccion_yolo_path",
+      "percepcion_bbox_path").
+    No incluyas el vector de pesos W: no es responsabilidad de esta tarea.
+  agent: orchestrator_agent
+
+
+composicion_espacial_task:
+  description: >
+    Analiza la composición espacial de la imagen {ruta_imagen}.
+
+    Del contexto que recibes de la tarea anterior, toma del objeto
+    "percepcion_compartida" estos cinco campos: "bbox", "centroide_saliencia",
+    "sujeto_discreto", "fuente" y "mapa_saliencia_path".
+
+    Invoca la herramienta "Composición espacial" pasándole {ruta_imagen} junto con
+    esos cinco valores, tal cual, sin alterarlos.
+
+    Transcribe su resultado con exactitud: no recalcules, no redondees y no
+    reinterpretes ninguna cifra. En particular, no rehagas tú la decisión del gate:
+    la herramienta ya ha resuelto la "confianza" de cada métrica y el motivo viaja
+    en su "fuente_confianza". Si d_tercios, d_centro y patron_dominante llegan con
+    confianza 0, repórtalos igualmente con esa confianza, sin omitirlos y sin
+    presentarlos como fiables.
+
+    Después redacta un diagnóstico compositivo de esta dimensión para el agente
+    crítico del Nivel 3, basado ÚNICAMENTE en las cifras que te ha devuelto la
+    herramienta.
+  expected_output: >
+    Un objeto JSON con exactamente dos campos, "informe" y "diagnostico".
+
+    "informe": los campos que devuelve la herramienta, tal cual:
+    - "dimensiones_imagen": lista [ancho, alto] en píxeles.
+    - "d_tercios", "d_centro", "patron_dominante" y "d_equilibrio": cada uno un
+      objeto con "valor", "valor_norm", "confianza" y "fuente_confianza". El
+      "valor" de "patron_dominante" es el texto "tercios" o "centrada"; su
+      "valor_norm" y el de "d_equilibrio" son null (no los rellenes tú).
+    - "margen_patron": número.
+    - "coord_centroide", "coord_p_cercano" y "coord_centro_masa": listas [x, y]
+      normalizadas en [0,1].
+    - "verificacion_path": la ruta devuelta por la herramienta.
+
+    "diagnostico": un texto en español de 4 a 6 frases, sin listas ni encabezados.
+
+    ANTES DE ESCRIBIR, mira "d_tercios.confianza", porque decide QUÉ puntos cubres:
+    - Si vale 1, cubre los puntos 1 a 4.
+    - Si vale 0, los puntos 1 y 2 NO SE ESCRIBEN. Ni el patrón, ni el margen, ni las
+      distancias, ni el cuadrante del sujeto: sobre una región que no se ha podido
+      identificar como sujeto no hay nada que situar. Cubre solo los puntos 3 y 4,
+      que siguen siendo plenamente afirmables, y el diagnóstico sale más corto. Eso
+      es lo correcto, no una carencia que haya que compensar alargando.
+
+    1. A qué patrón se acoge la foto y con cuánta claridad, citando
+       "patron_dominante" y "margen_patron". Si el margen es estrecho, dilo: son
+       dos hipótesis casi empatadas, no una decisión compositiva nítida.
+    2. Dónde cae el sujeto en el fotograma en términos legibles (zona o cuadrante,
+       deducido de "coord_centroide") y cómo se sitúa respecto al punto de fuerza
+       más cercano ("coord_p_cercano"), citando "d_tercios" y "d_centro".
+    3. Cómo se reparte el peso visual global y hacia qué lado se desplaza el centro
+       de masa respecto al centro geométrico (compara "coord_centro_masa" con
+       (0.5, 0.5)), citando "d_equilibrio".
+    4. La relación entre las señales de las que dispongas: si el sujeto y el peso
+       visual global caen al mismo lado, la composición refuerza esa dirección; si
+       caen a lados opuestos, hay contrapeso. Sin sujeto, describe cómo se reparte
+       el interés visual por el fotograma.
+    5. UNA sola frase de salvedad, y solo si "d_tercios.confianza" vale 0: qué tiene
+       esta escena para que no haya un objeto focal único. Habla de la ESCENA, no
+       del análisis ni de cómo se obtuvo el anclaje: escribe "el interés visual está
+       repartido y ninguna región se impone como sujeto", nunca "no se pudo detectar
+       un sujeto" ni "el anclaje proviene del blob de saliencia y no de YOLO". Cita
+       la confianza y nada más.
+
+    Cada afirmación del diagnóstico va acompañada de su cita entre corchetes, con
+    un escalar dentro (nunca un diccionario) y notación de punto para las métricas
+    envueltas. Por ejemplo: "el sujeto se apoya en la rejilla y no en el centro
+    [patron_dominante.valor = tercios, margen_patron = 0.0409], a menos distancia
+    del punto de fuerza que del centro geométrico [d_tercios.valor = 0.0648,
+    d_centro.valor = 0.1056]". Puedes acortar a 4 decimales COMO MÁXIMO, siempre que
+    lo que escribas sea el redondeo correcto a esa precisión: redondear no es cortar
+    (0.5939780 se escribe 0.5940, no 0.5939). Si dudas, escribe menos decimales.
+  agent: composicion_espacial_agent
+
+
+lineas_direccion_task:
+  description: >
+    Analiza la geometría lineal global de la imagen {ruta_imagen}.
+
+    Invoca la herramienta "Líneas y dirección" pasándole ÚNICAMENTE {ruta_imagen}.
+    Esta dimensión no depende del sujeto: aunque en el contexto recibas la percepción
+    compartida de la tarea anterior, NO uses "bbox", "centroide_saliencia" ni
+    "sujeto_discreto", y no se los pases a la herramienta.
+
+    Transcribe su resultado con exactitud: no recalcules, no redondees y no
+    reinterpretes ninguna cifra. En particular, no rehagas tú la decisión de ninguno
+    de los dos gates: la herramienta ya ha resuelto la "confianza" de cada métrica y
+    el motivo viaja en su "fuente_confianza". Si una métrica llega con confianza 0,
+    repórtala igualmente con esa confianza, sin omitirla y sin presentarla como
+    fiable. Si "coord_punto_fuga" llega como null, déjalo en null: no lo rellenes.
+
+    Después redacta un diagnóstico compositivo de esta dimensión para el agente
+    crítico del Nivel 3, basado ÚNICAMENTE en las cifras que te ha devuelto la
+    herramienta.
+  expected_output: >
+    Un objeto JSON con exactamente dos campos, "informe" y "diagnostico".
+
+    "informe": los campos que devuelve la herramienta, tal cual:
+    - "dimensiones_imagen": lista [ancho, alto] en píxeles.
+    - "angulo_horizonte" y "score_convergencia": cada uno un objeto con "valor",
+      "valor_norm", "confianza" y "fuente_confianza". El "valor_norm" de
+      "angulo_horizonte" puede venir como null cuando no hubo ningún candidato; en
+      ese caso déjalo en null, no lo rellenes.
+    - "longitud_horizonte", "apertura_haz", "score_convergencia_nulo": números.
+    - "n_lineas_horizonte", "n_lineas_total", "n_lineas_fuga", "n_lineas_inliers":
+      enteros.
+    - "coord_punto_fuga": lista [x, y] normalizada, o null si el gate de
+      convergencia está cerrado.
+    - "verificacion_path": la ruta devuelta por la herramienta, copiada carácter a
+      carácter, sin duplicar las barras invertidas ni añadir escapes.
+
+    "diagnostico": un texto en español de 2 a 6 frases, sin listas ni encabezados.
+    La extensión es una CONSECUENCIA de cuántas métricas sean afirmables, no un
+    objetivo: no escribas de más para llegar a un número de frases.
+
+    ANTES DE ESCRIBIR, mira las DOS confianzas POR SEPARADO, porque sus gates son
+    independientes y cada una decide QUÉ puntos existen:
+    - "angulo_horizonte.confianza" = 1 -> escribes el punto 1. Si vale 0, el punto 1
+      NO SE ESCRIBE: ni el ángulo, ni el lado hacia el que se inclina, ni la
+      longitud del segmento. Sobre una línea que no se ha podido aceptar como
+      horizonte no hay ninguna nivelación que describir.
+    - "score_convergencia.confianza" = 1 -> escribes los puntos 2 y 3. Si vale 0,
+      los puntos 2 y 3 NO SE ESCRIBEN: ni el score, ni los recuentos de líneas, ni
+      la apertura del haz, ni la posición del punto de fuga.
+    - El punto 4 relaciona las dos señales, así que solo se escribe si has podido
+      afirmar las dos.
+    - El punto 5 se escribe solo si alguna de las dos confianzas vale 0.
+    Con un gate cerrado el diagnóstico sale MÁS CORTO, y con los dos cerrados se
+    queda en el punto 5 y nada más. Eso es lo correcto, no una carencia que haya que
+    compensar alargando.
+
+    1. La nivelación: cuánto se desvía el horizonte y HACIA QUÉ LADO
+       según el SIGNO de "angulo_horizonte" (positivo = la escena se inclina hacia
+       la derecha), y sobre qué evidencia se sostiene esa lectura citando
+       "longitud_horizonte" —que es la que mide la solidez, y no
+       "n_lineas_horizonte", porque el ángulo lo fija un solo segmento y no un
+       promedio—. Con una longitud próxima a 0.14 la lectura debe ser prudente
+       aunque la confianza sea 1.
+    2. La estructura de perspectiva: qué
+       proporción de las líneas concurre citando "score_convergencia" junto a
+       "n_lineas_inliers" y "n_lineas_fuga", y cómo de pronunciada es según
+       "apertura_haz".
+    3. Dónde cae el punto de fuga en términos espaciales legibles a partir de
+       "coord_punto_fuga" (zona o cuadrante). Si alguna coordenada sale de [0,1],
+       significa que las líneas fugan hacia fuera del fotograma por ese lado, lo
+       cual es un hecho descriptivo y no un defecto.
+    4. La relación entre esas dos señales, que es la lectura que ninguna métrica
+       aislada da: una perspectiva marcada con el horizonte nivelado da una
+       estructura estable que conduce la mirada en profundidad, mientras que una
+       perspectiva marcada con el horizonte desviado añade tensión direccional.
+    5. UNA sola frase de salvedad por cada confianza que valga 0, y ninguna más.
+       Describe QUÉ TIENE ESTA ESCENA, no qué no pudo hacer el análisis, y cita
+       únicamente la confianza.
+       - Con "angulo_horizonte.confianza" = 0, mira su "fuente_confianza" para saber
+         cuál de los tres motivos es, porque describen escenas distintas y no se
+         redactan igual: no hay ninguna línea casi horizontal; la hay pero es un
+         fragmento demasiado corto; o es larga pero tan inclinada que es estructura
+         de la escena —una ladera, un patrón— y no un horizonte. Ese motivo lo
+         explicas CON TUS PALABRAS y en términos de la escena: escribe "la escena no
+         ofrece ninguna línea que funcione como horizonte", nunca "no se pudo medir
+         el ángulo" ni "el segmento no supera la longitud mínima". No copies el texto
+         de "fuente_confianza" dentro de una cita.
+       - Con "score_convergencia.confianza" = 0: escribe "las líneas de la escena no
+         concurren en ningún punto común" o "la lectura es frontal, sin profundidad
+         construida por las líneas". Nunca "el score no supera el modelo nulo".
+
+    Cada afirmación del diagnóstico va acompañada de su cita entre corchetes, con
+    un escalar dentro (nunca un diccionario) y notación de punto para las métricas
+    envueltas. Por ejemplo: "las líneas de la escena concurren en un punto común
+    [score_convergencia.valor = 0.9583, n_lineas_inliers = 23, n_lineas_fuga = 24]
+    con un haz muy abierto [apertura_haz = 71.4]". Puedes acortar a 4 decimales COMO
+    MÁXIMO, siempre que lo que escribas sea el redondeo correcto a esa precisión:
+    redondear no es cortar (0.13896 se escribe 0.1390, no 0.1389). Si dudas, escribe
+    menos decimales.
+  agent: lineas_direccion_agent
+
+luz_tono_task:
+  description: >
+    Analiza la luz y el color globales de la imagen {ruta_imagen}.
+
+    Invoca la herramienta "Luz y tono" pasándole ÚNICAMENTE {ruta_imagen}.
+    Esta dimensión no depende del sujeto: aunque en el contexto recibas la percepción
+    compartida de la tarea anterior, NO uses "bbox", "centroide_saliencia" ni
+    "sujeto_discreto", y no se los pases a la herramienta.
+
+    Transcribe su resultado con exactitud: no recalcules, no redondees y no
+    reinterpretes ninguna cifra. En particular, no rehagas tú la decisión del gate
+    cromático: la herramienta ya ha resuelto la "confianza" de cada métrica y el
+    motivo viaja en su "fuente_confianza". Si "esquema_cromatico" llega con confianza
+    0, repórtalo igualmente con esa confianza, sin omitirlo y sin presentarlo como
+    fiable. Si "matices_dominantes" llega como lista vacía, déjala vacía: no la
+    rellenes. Y no toques la confianza de "media_L", que es 1.0 siempre porque esa
+    métrica no tiene gate.
+
+    Después redacta un diagnóstico compositivo de esta dimensión para el agente
+    crítico del Nivel 3, basado ÚNICAMENTE en las cifras que te ha devuelto la
+    herramienta.
+  expected_output: >
+    Un objeto JSON con exactamente dos campos, "informe" y "diagnostico".
+
+    "informe": los 11 campos que devuelve la herramienta, tal cual:
+    - "dimensiones_imagen": lista [ancho, alto] en píxeles.
+    - "media_L" y "esquema_cromatico": cada uno un objeto con "valor", "valor_norm",
+      "confianza" y "fuente_confianza". El "valor" de "media_L" es un número y el de
+      "esquema_cromatico" una cadena. El "valor_norm" de "esquema_cromatico" es
+      SIEMPRE null: déjalo en null, no lo rellenes.
+    - "std_L", "pct_clipping_sombras", "pct_clipping_luces", "spread_cromatico",
+      "ratio_pixeles_cromaticos": números.
+    - "n_matices_dominantes": entero.
+    - "matices_dominantes": lista de números en grados, o lista vacía si el gate
+      cromático está cerrado.
+    - "verificacion_path": la ruta devuelta por la herramienta, copiada carácter a
+      carácter, sin duplicar las barras invertidas ni añadir escapes.
+
+    "diagnostico": un texto en español de 4 a 6 frases, sin listas ni encabezados.
+    La extensión es una CONSECUENCIA de cuántas métricas sean afirmables, no un
+    objetivo: no escribas de más para llegar a un número de frases.
+
+    ANTES DE ESCRIBIR, mira "esquema_cromatico.confianza", porque decide QUÉ puntos
+    existen:
+    - Si vale 1, cubres los puntos 1 a 4.
+    - Si vale 0, el punto 3 NO SE ESCRIBE. Ni el esquema, ni el spread, ni los
+      matices, ni cuántos son: sobre unos píxeles cromáticos que no llegan a formar
+      una paleta no hay nada que clasificar. Cubres los puntos 1, 2 y 4, y el
+      diagnóstico sale más corto. Eso es lo correcto, no una carencia que haya que
+      compensar alargando.
+    Esta dimensión es ASIMÉTRICA y por eso los puntos 1, 2 y 4 se escriben SIEMPRE:
+    "media_L" no tiene gate y su confianza es 1.0 en todos los casos, y el punto 4
+    descansa en "ratio_pixeles_cromaticos", que es un campo plano y tampoco tiene
+    gate. Que el color no sea analizable no te deja sin nada que decir.
+
+    1. La exposición: dónde se sitúa la imagen en la escala de clave (baja, media o
+       alta) citando "media_L", y qué contraste global la acompaña citando "std_L",
+       recordando que su techo alcanzable es 50 y no 100. Las dos se leen juntas: la
+       media sola no distingue una escena plana de un contraluz.
+    2. El reparto entre sombras y luces citando "pct_clipping_sombras" y
+       "pct_clipping_luces", y qué matiza eso de la lectura anterior: una clave baja
+       con clipping próximo a 0 está controlada, mientras que la misma media con
+       clipping alto significa que parte del encuadre se ha perdido. Un negro pleno o
+       un fondo blanco pueden ser decisiones deliberadas, así que se describe el
+       hecho y no se dictamina.
+    3. La paleta: qué esquema es y sobre qué
+       evidencia se sostiene, citando "spread_cromatico" y "n_matices_dominantes", y
+       traduciendo a nombres de color los grados de "matices_dominantes" —el primero
+       es el matiz principal porque la lista va ordenada por masa—. NO afirmes que la
+       imagen tiene un solo color cuando la etiqueta sea "monocromático": significa
+       un solo matiz dominante entre los píxeles cromáticos.
+    4. La lectura acromática, SIEMPRE, esté el gate abierto o cerrado: qué fracción
+       del encuadre ocupan blancos, grises y negros, deducida de
+       "ratio_pixeles_cromaticos" y citada sobre ese campo. Es un hecho compositivo
+       de pleno derecho y la única compensación que tiene la ceguera de esta métrica
+       al material sin color, así que cuando esa fracción sea alta hay que decirlo:
+       puede ser justamente donde está el sujeto.
+       ENÚNCIALO EN POSITIVO, por lo que la escena TIENE: "el encuadre está
+       construido en blancos, grises y negros", nunca "el encuadre carece de color"
+       ni "no tiene color analizable". La escena no carece de nada: es como es, y una
+       imagen acromática es una decisión compositiva, no una ausencia. Y si en el
+       punto 5 vas a decir lo mismo con otras palabras, aquí basta con la fracción:
+       no lo digas dos veces.
+    5. UNA sola frase de salvedad, y solo si "esquema_cromatico.confianza" vale 0.
+       Descríbela EN POSITIVO y en términos de la escena, citando únicamente la
+       confianza: escribe "la imagen está construida en blancos, grises y negros" o
+       "el color no interviene en esta escena", nunca "la escena carece de color
+       analizable" ni "no se pudo determinar el esquema cromático". La escena no
+       carece de nada: es como es, y una imagen acromática es una decisión
+       compositiva de pleno derecho. No copies el texto de "fuente_confianza" dentro
+       de la cita.
+       Ten en cuenta al redactar, aunque NO lo expliques, que en ese caso
+       "esquema_cromatico.valor" llega como "sin_color", que no es un esquema
+       cromático sino la marca de que no había nada que clasificar, y que
+       "spread_cromatico" llega como 0.0, que ahí NO significa "un único matiz": la
+       consecuencia es que no los afirmes, no que los comentes. Y si la confianza es
+       1, aquí no hay nada que advertir: no dediques una frase a decir que la
+       exposición siempre es fiable, ni a explicar cómo funcionan los gates, ni a
+       imaginar qué habrías escrito en el caso contrario. Esa frase se omite y el
+       diagnóstico se queda en cuatro.
+
+    Cada afirmación del diagnóstico va acompañada de su cita entre corchetes, con
+    un escalar dentro (nunca un diccionario) y notación de punto para las métricas
+    envueltas. Por ejemplo: "la imagen se sitúa en clave media con un contraste
+    moderado [media_L.valor = 40.6512, std_L = 26.1039]" o "la paleta se sostiene
+    sobre un único matiz naranja [esquema_cromatico.valor = 'monocromático',
+    n_matices_dominantes = 1, matices_dominantes[0] = 30.2]". Puedes acortar a 4
+    decimales COMO MÁXIMO, siempre que lo que escribas sea el redondeo correcto a esa
+    precisión: redondear no es cortar (0.4198525 se escribe 0.4199, no 0.4198;
+    23.599999 se escribe 23.6, no 23.5999). Si dudas, escribe menos decimales.
+  agent: luz_tono_agent
+
+espacio_aislamiento_task:
+  description: >
+    Analiza el espacio negativo y el aislamiento del sujeto en la imagen {ruta_imagen}.
+
+    Invoca la herramienta "Espacio y aislamiento del sujeto" pasándole CINCO
+    argumentos. El primero es {ruta_imagen}; los otros cuatro los tomas de la
+    percepción compartida que te llega en el contexto de la tarea del orquestador, y
+    los pasas TAL CUAL, sin modificarlos, redondearlos ni reinterpretarlos:
+      - bbox: la lista [cx, cy, w, h] de la percepción compartida.
+      - sujeto_discreto: su booleano.
+      - fuente: su cadena ("yolo", "saliencia" o "sin_sujeto_claro").
+      - mapa_saliencia_path: su ruta al PNG del mapa de saliencia.
+    Es la ÚNICA dimensión que necesita esos datos, así que no los descartes: sin ellos
+    la herramienta no puede construir la máscara del sujeto.
+
+    Transcribe su resultado con exactitud: no recalcules, no redondees y no
+    reinterpretes ninguna cifra. En particular, no rehagas tú la decisión de ningún
+    gate: la herramienta ya ha resuelto la "confianza" de cada métrica y el motivo
+    viaja en su "fuente_confianza". Si una métrica llega con confianza 0, repórtala
+    igualmente con esa confianza, sin omitirla y sin presentarla como fiable. Y no
+    rellenes el "valor_norm" de "ratio_espacio_negativo", que es null siempre.
+
+    Después redacta un diagnóstico compositivo de esta dimensión para el agente
+    crítico del Nivel 3, basado ÚNICAMENTE en las cifras que te ha devuelto la
+    herramienta.
+  expected_output: >
+    Un objeto JSON con exactamente dos campos, "informe" y "diagnostico".
+
+    "informe": los 7 campos que devuelve la herramienta, tal cual:
+    - "dimensiones_imagen": lista [ancho, alto] en píxeles.
+    - "ratio_espacio_negativo" y "ratio_nitidez": cada uno un objeto con "valor",
+      "valor_norm", "confianza" y "fuente_confianza". Los dos "valor" son números. El
+      "valor_norm" de "ratio_espacio_negativo" es SIEMPRE null: déjalo en null, no lo
+      rellenes. El de "ratio_nitidez" es un número, salvo en el caso excepcional de
+      que llegue como null, en cuyo caso también se deja tal cual.
+    - "var_laplaciano_figura" y "var_laplaciano_fondo": números.
+    - "fuente_mascara": la cadena devuelta, copiada tal cual.
+    - "verificacion_path": la ruta devuelta por la herramienta, copiada carácter a
+      carácter, sin duplicar las barras invertidas ni añadir escapes.
+
+    "diagnostico": un texto en español de 2 a 6 frases, sin listas ni encabezados.
+    La extensión es una CONSECUENCIA de cuántas métricas sean afirmables, no un
+    objetivo: no escribas de más para llegar a un número de frases.
+
+    ANTES DE ESCRIBIR, mira las DOS confianzas, porque deciden QUÉ puntos existen:
+    - "ratio_espacio_negativo.confianza" = 1 -> escribes el punto 1. Si vale 0, el
+      punto 1 NO SE ESCRIBE: no hay una figura acotada sobre la que medir cuánto aire
+      la rodea, así que ese aire no se describe ni con cifra ni con palabras.
+    - "ratio_nitidez.confianza" = 1 -> escribes los puntos 2 y 3. Si vale 0, los
+      puntos 2 y 3 NO SE ESCRIBEN: ni el índice, ni el factor multiplicativo, ni las
+      dos varianzas, ni el signo de la separación.
+    - El punto 4 relaciona las dos señales, así que solo se escribe si has podido
+      afirmar las dos.
+    - El punto 5 se escribe solo si alguna de las dos confianzas vale 0.
+    Puede darse que la primera valga 1 y la segunda 0 (hay una figura acotada, pero
+    la escena no tiene detalle suficiente para comparar unas zonas con otras): en ese
+    caso escribes los puntos 1 y 5, y nada más. Con los dos gates cerrados el
+    diagnóstico se queda en el punto 5 y nada más. Eso es lo correcto, no una
+    carencia que haya que compensar alargando.
+
+    1. Cuánto AIRE rodea al sujeto, citando "ratio_espacio_negativo". Descríbelo con
+       palabras ("el sujeto deja libre la mayor parte del encuadre", "la figura llena
+       casi todo el cuadro") y NO repitiendo el número en porcentaje, que ya está en
+       la cita. Tampoco dediques una frase al complementario: es el mismo dato al
+       revés. Un encuadre apretado y uno holgado son dos decisiones distintas: se
+       describe el hecho y no se dictamina cuál conviene.
+    2. Cómo se separa la figura del fondo por DENSIDAD DE DETALLE, citando
+       "ratio_nitidez" y apoyándolo en "var_laplaciano_figura" y
+       "var_laplaciano_fondo", que son la evidencia de la que sale ese índice.
+       Gradúalo con el FACTOR MULTIPLICATIVO, que es lo que hace concreta esta frase:
+       el índice equivale a (1 + valor) / (1 - valor) veces más detalle en la figura,
+       así que 0.33 es el doble, 0.50 el triple, 0.80 nueve veces. Escribe ese factor
+       redondeado a algo legible en lugar de un adjetivo vago: "concentra unas diez
+       veces más detalle que el fondo" dice algo auditable, "concentra
+       extraordinariamente más detalle" no.
+    3. El SIGNO de esa separación cuando sea negativo: significa que el fondo
+       concentra más detalle que la figura, y es un hecho descriptivo, no un fallo ni
+       una foto mal hecha. PROHIBIDO en todo el diagnóstico hablar de enfoque,
+       desenfoque o profundidad de campo: esta métrica mide densidad de detalle, y un
+       sujeto perfectamente enfocado pero de superficie lisa da índice negativo.
+    4. La relación entre ambas señales, que es la lectura que ninguna métrica aislada
+       da: mucho aire con una separación marcada describe un sujeto aislado y
+       destacado; mucho aire con separación próxima a cero describe un sujeto que se
+       funde con su entorno pese a estar rodeado de espacio; poco aire con separación
+       marcada describe un encuadre apretado que aun así recorta la figura.
+    5. UNA sola frase de salvedad, y solo por la confianza que valga 0. Enuncia el
+       HALLAZGO POSITIVO en términos de la escena, citando únicamente la confianza y
+       sin copiar el texto de "fuente_confianza" dentro de la cita:
+       - Con "ratio_espacio_negativo.confianza" = 0: que la escena no ofrece un
+         objeto único y acotado que aislar, porque el interés visual está distribuido
+         —como en un paisaje, una fachada o una textura—. Nunca "no se pudo detectar
+         el sujeto" ni "el bbox procede de la saliencia".
+       - Con "ratio_nitidez.confianza" = 0: que la escena no tiene detalle suficiente
+         en ninguna zona para comparar unas con otras. Nunca "la varianza no supera
+         el umbral".
+       Si las dos valen 0, una sola frase puede cubrir ambas: no las repitas.
+       Enúncialo UNA vez y PARA AHÍ: no añadas después una frase que califique tu
+       propio análisis ("esto es un hallazgo legítimo", "no se trata de un fallo",
+       "esta ausencia es informativa"). Esa coletilla habla del análisis y no de la
+       fotografía, repite lo que la frase anterior ya ha dicho, y el crítico no la
+       necesita porque ya sabe leer una confianza 0.
+
+    Cada afirmación del diagnóstico va acompañada de su cita entre corchetes, con
+    un escalar dentro (nunca un diccionario) y notación de punto para las métricas
+    envueltas. Por ejemplo: "la figura ocupa una porción reducida del encuadre
+    [ratio_espacio_negativo.valor = 0.9390]" o "concentra en torno al triple de
+    detalle que el fondo [ratio_nitidez.valor = 0.5530,
+    var_laplaciano_figura = 2002.3, var_laplaciano_fondo = 575.8]". Puedes acortar a 4
+    decimales COMO MÁXIMO, siempre que lo que escribas sea el redondeo correcto a esa
+    precisión: redondear no es cortar (0.5530782 se escribe 0.5531, no 0.5530). Si
+    dudas, escribe menos decimales.
+  agent: espacio_aislamiento_agent
+
+critica_task:
+  description: >
+    Escribe la crítica compositiva de la imagen {ruta_imagen} arbitrando los cuatro
+    informes especializados que te llegan en el contexto.
+
+    1. Invoca PRIMERO la herramienta "Arbitraje de prioridades", pasándole
+       {ruta_imagen} y la "etiqueta_contexto" que viene en el contexto de la tarea del
+       orquestador. Lo que devuelve NO es una sugerencia: es la estructura de tu
+       crítica. El orden de "orden_dimensiones" se respeta tal cual, y ninguna métrica
+       de "metricas_cerradas" se cita con ningún valor.
+
+    2. Si —y solo si— dispones de la herramienta "Lectura visual", invócala con
+       {ruta_imagen}. Quédate solo con las observaciones que NO hablen de encuadre,
+       líneas, espacio, nitidez, luz ni color: esas cuatro dimensiones ya están
+       medidas y una observación sobre ellas se descarta, aunque venga de la
+       herramienta. Las que sobrevivan van al bloque "observaciones_visuales" Y ADEMÁS
+       las usas al redactar: son lo único que te dice QUÉ hay en la fotografía, y sin
+       ellas escribirías toda la crítica sobre "el sujeto" y "la escena" en abstracto.
+       Si no tienes esa herramienta, no la busques ni la eches en falta: deja
+       "observaciones_visuales" vacío y "vio_imagen" en false.
+
+    3. Redacta la crítica recorriendo las cuatro dimensiones en el orden del arbitraje.
+       De cada una toma su "diagnostico" ya redactado por el especialista y las cifras
+       de su "informe": no vuelvas a interpretar las métricas desde cero, y no
+       transcribas el informe entero.
+       EL REPARTO DENTRO DE UNA MISMA FRASE: el SUSTANTIVO lo pone la lectura visual y
+       el NÚMERO lo pone la métrica. Los informes saben dónde cae "el sujeto" y cuánto
+       ocupa, pero no saben qué es; la lectura visual sí. Así que cuando vayas a
+       escribir "el sujeto", "la figura" o "la escena" y la lectura visual ya te haya
+       dicho de qué se trata, escribe eso en su lugar: "el hombre de espaldas frente al
+       mar se sitúa en el tercio inferior izquierdo [d_tercios.valor = 0.0682]" en vez
+       de "el sujeto se sitúa en el tercio inferior izquierdo". NOMBRAR NO ES MEDIR: el
+       número lo sigue poniendo el especialista, y nada de lo que veas puede graduarlo,
+       rebajarlo ni contradecirlo.
+
+    Cuatro cosas que decidirán si esta crítica vale o no:
+      - Una dimensión con cobertura 0.0 NO se salta. Se dice qué no se ha podido medir
+        y qué tipo de escena describe eso. Si además es la de mayor peso, esa
+        coincidencia es lo primero que hay que contar.
+      - Busca las TENSIONES entre dimensiones: dos hallazgos que tiran en sentidos
+        distintos y que ninguna métrica aislada produce. Si la fotografía no presenta
+        ninguna, deja el bloque vacío; inventar una para rellenar es peor que omitirla.
+      - LA CRÍTICA HABLA DE UNA FOTOGRAFÍA CONCRETA, no de un objeto genérico. Si
+        dispusiste de la lectura visual, quien lea la síntesis tiene que saber QUÉ está
+        viendo: de qué es la escena, quién o qué la protagoniza y qué la acompaña. Una
+        crítica en la que se pudiera sustituir la fotografía por otra cualquiera sin
+        cambiar una sola palabra no sirve, por muy bien citada que esté.
+      - Tu conclusión sobre si la fotografía se acoge a las convenciones que más pesan
+        en su contexto va en "sintesis", apoyada en algo que ya hayas citado.
+  expected_output: >
+    Un objeto JSON con exactamente estos siete campos.
+
+    "arbitraje": el diccionario COMPLETO que devolvió la herramienta "Arbitraje de
+    prioridades", transcrito sin alterar: sin reordenar "orden_dimensiones", sin
+    recalcular la cobertura, sin mover una métrica de una lista a la otra y sin añadir
+    ni omitir campos. Son "etiqueta_contexto", "vector_pesos", "orden_dimensiones",
+    "metricas_citables", "metricas_cerradas" y "cobertura_por_dimension".
+
+    "afirmaciones": lista de objetos con "texto", "dimension" y "campos_citados". Una o
+    dos por cada dimensión que tenga métricas citables, ORDENADAS siguiendo
+    "orden_dimensiones". "texto" lleva la cita inline entre corchetes; "dimension" usa
+    la misma clave que el arbitraje ("composicion_espacial", "lineas_direccion",
+    "espacio_aislamiento_sujeto", "luz_tono"); "campos_citados" son las rutas completas
+    "dimension.metrica.campo" de todo lo citado en ese texto, y no puede ir vacío.
+
+    "tensiones": lista de objetos con "texto", "dimensiones" (al menos dos),
+    "resolucion_por_w" y "campos_citados". "resolucion_por_w" dice cuál de las
+    dimensiones implicadas prevalece en la lectura final y por qué, citando su peso en
+    W y la etiqueta de contexto. Lista vacía si la fotografía no presenta ninguna.
+
+    "observaciones_visuales": lista de objetos con "texto" y "ambito". "texto" es una
+    frase SIN ninguna cifra sobre el contenido de la escena; "ambito" dice de qué habla
+    en pocas palabras ("sujeto y su orientación", "elementos que compiten", "contenido
+    del fondo") y tiene que caer FUERA de las cuatro dimensiones medidas. Lista vacía
+    si no dispusiste de la lectura visual.
+    Este bloque es la TRAZA de lo que viste, no un cajón donde encerrarlo: lo que aquí
+    apuntas es el material con el que la síntesis nombra la escena.
+
+    "salvedades": lista de textos, uno por cada métrica de "metricas_cerradas". Dice
+    qué NO se puede afirmar y qué le ocurre a esta escena para que sea así, leyendo la
+    "fuente_confianza" de esa métrica en el informe del especialista. Se redacta como
+    hallazgo y no como disculpa: "la escena no ofrece un objeto único y acotado que
+    aislar", no "no se pudo medir el aislamiento del sujeto".
+
+    "sintesis": la crítica que LEE EL FOTÓGRAFO, en español, alrededor de 10 frases, texto
+    seguido sin listas ni encabezados. Es el único campo que ve el usuario final. No
+    introduce evidencia nueva: reorganiza la de los bloques anteriores en el orden de
+    "orden_dimensiones" y la convierte en un texto legible. Y "los bloques anteriores"
+    incluye "observaciones_visuales": la síntesis las TEJE con las afirmaciones
+    métricas, no las deja fuera. En concreto, si dispusiste de la lectura visual: al
+    menos una frase dice qué es la escena y quién o qué la protagoniza, y las
+    afirmaciones que hablen del sujeto lo llaman por lo que es en vez de "el sujeto".
+    Se cierra con la conclusión
+    contextual: si la fotografía se acoge o no a las convenciones que más pesan en su
+    contexto, apoyada en una afirmación ya citada y nombrando el contexto.
+    Al resumir aquí una salvedad, mantén la misma redacción que le diste en su bloque:
+    lo que le pasa a la escena, nunca lo que no pudo hacer el sistema. Escribe "la
+    escena no ofrece una figura única y acotada", jamás "no se ha podido identificar un
+    sujeto" ni "esta dimensión no es medible", que hablan del análisis. Es el punto
+    donde más fácil es recaer, porque resumir invita a decir qué falta en vez de qué hay.
+    INVARIANTE: toda cifra que aparezca aquí está también en "afirmaciones" o en
+    "tensiones", y toda frase sin cifra corresponde a una observación visual o a una
+    salvedad.
+
+    "vio_imagen": true si usaste la herramienta "Lectura visual", false si no la tenías
+    disponible. No lo pongas a true sin haberla usado.
+
+    Ejemplo del estilo de una afirmación, con el sujeto ya nombrado a partir de la
+    lectura visual: "la ciclista que entra en cuadro se apoya en la rejilla de tercios
+    con holgura [composicion_espacial.d_tercios.valor = 0.0648] y el peso visual global
+    acompaña ese desplazamiento [composicion_espacial.d_equilibrio.valor = 0.0339]",
+    con "campos_citados" = ["composicion_espacial.d_tercios.valor",
+    "composicion_espacial.d_equilibrio.valor"]. Fíjate en el reparto: quién es lo pone
+    la lectura visual, dónde está y cuánto lo ponen las métricas, y las dos cosas caben
+    en la misma frase sin que ninguna invada a la otra.
+  agent: critico_agent

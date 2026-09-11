@@ -1,0 +1,49 @@
+# --- Seguridad ---
+.env
+
+# --- Entornos Virtuales ---
+.venv/
+env/
+venv/
+bin/
+lib/
+develop-eggs/
+dist/
+eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+
+# --- Modelos de IA (Pesos) ---
+*.pt
+*.pth
+*.weights
+*.bin
+
+# El clasificador de contexto necesita estos pesos propios: no se descargan
+# automáticamente como los de YOLO y deben distribuirse con el repositorio.
+!models/clasificador_contexto/pesos_fine_tuning_ligero.pt
+
+
+# --- Datos e Imágenes ---
+data/
+
+# Las salidas del sistema son regenerables y no se versionan.
+outputs/
+
+# --- Python y Herramientas ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ipynb_checkpoints/
+notebooks/
+
+# --- CrewAI y Logs ---
+logs.txt
+*.log
+.DS_Store
+
+

@@ -1,0 +1,25 @@
+# Configuración de la interfaz Streamlit.
+#
+# ESQUELETO — los valores están puestos con un criterio de partida razonable, pero cada
+# bloque lleva su TODO porque conviene confirmarlos al probar la app.
+
+[server]
+# TODO A — CONFIRMAR ESTE, ES EL QUE MÁS PROBABLEMENTE HAGA FALTA.
+# El watcher por defecto de Streamlit inspecciona los módulos importados para recargar
+# en caliente, y al toparse con `torch.classes` (que no es un módulo Python normal)
+# puede lanzar un `RuntimeError: Tried to instantiate class '__path__._path'` en cada
+# rerun. Es un choque conocido entre Streamlit y PyTorch, y este proyecto importa torch
+# a nivel de módulo en dos tools. Si aparece ese error, dejarlo en "poll" o "none".
+fileWatcherType = "poll"
+
+# TODO B — el límite por defecto son 200 MB, que sobra para el corpus actual (el máximo
+# son 26 MP). Subirlo solo si al probar con un fichero grande el uploader lo rechaza.
+# El clasificador ya tiene su propia política de resolución extrema (rechaza por encima
+# de 400 MP), así que este límite y aquella política son dos guardas distintas y
+# conviene que no se contradigan.
+maxUploadSize = 200
+
+[theme]
+# TODO C — puramente cosmético, para el día de la defensa. Se puede borrar el bloque
+# entero sin consecuencias.
+base = "light"

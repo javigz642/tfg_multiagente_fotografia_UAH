@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 496" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="contrato-informe-diagnostico-title contrato-informe-diagnostico-desc">
+        <title id="contrato-informe-diagnostico-title">El contrato de las dos autorías</title>
+        <desc id="contrato-informe-diagnostico-desc">Diagrama que muestra, para cada uno de los cuatro especialistas y para el crítico, dos cajas verticales unidas por una flecha: el informe o arbitraje, escrito por un motor determinista y auditable, y el diagnóstico o síntesis, redactado por un LLM que solo puede citar ese informe.</desc>
+
+        <defs>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap');</style>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/>
+          </marker>
+        </defs>
+
+        <!-- Background -->
+        <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+        <!-- ============================================================
+             ZONES (bg -> zones -> header labels -> arrows -> nodes -> legend)
+             ============================================================ -->
+
+        <!-- Nivel 2 · los cuatro especialistas -->
+        <rect x="24" y="40" width="952" height="312" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+        <rect x="34" y="44" width="180" height="12" fill="#f5f5f5"/>
+        <text x="40" y="53" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.14em">NIVEL 2 · CUATRO ESPECIALISTAS</text>
+
+        <!-- Nivel 3 · el crítico -->
+        <rect x="1024" y="40" width="232" height="312" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+        <rect x="1034" y="44" width="104" height="12" fill="#f5f5f5"/>
+        <text x="1040" y="53" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.14em">NIVEL 3 · CRÍTICO</text>
+
+        <!-- ============================================================
+             COLUMN HEADERS — two-line eyebrow above each pair
+             ============================================================ -->
+
+        <text x="140" y="76" fill="#4f5d75" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.10em">AGENTE 1</text>
+        <text x="140" y="88" fill="#4f5d75" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.10em">COMPOSICIÓN ESPACIAL</text>
+
+        <text x="380" y="76" fill="#4f5d75" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.10em">AGENTE 2</text>
+        <text x="380" y="88" fill="#4f5d75" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.10em">LÍNEAS Y DIRECCIÓN</text>
+
+        <text x="620" y="76" fill="#4f5d75" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.10em">AGENTE 3</text>
+        <text x="620" y="88" fill="#4f5d75" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.10em">ESPACIO Y AISLAMIENTO</text>
+
+        <text x="860" y="76" fill="#4f5d75" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.10em">AGENTE 4</text>
+        <text x="860" y="88" fill="#4f5d75" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.10em">LUZ Y TONO</text>
+
+        <text x="1140" y="76" fill="#4f5d75" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.10em">CRÍTICO</text>
+        <text x="1140" y="88" fill="#4f5d75" font-size="8" font-weight="500" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.10em">NIVEL 3</text>
+
+        <!-- ============================================================
+             ARROWS — informe/arbitraje cita a diagnostico/sintesis.
+             Drawn before every node rect (z-order rule). Mismo eje x en
+             cada columna: línea recta, sin codo.
+             ============================================================ -->
+
+        <line x1="140" y1="200" x2="140" y2="240" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="380" y1="200" x2="380" y2="240" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="620" y1="200" x2="620" y2="240" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="860" y1="200" x2="860" y2="240" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="1140" y1="200" x2="1140" y2="240" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- Etiquetado una sola vez (columna 1); el patrón se repite idéntico en las otras cuatro -->
+        <rect x="148" y="214" width="32" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="164" y="223" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">CITA</text>
+
+        <!-- ============================================================
+             NODES — informe/arbitraje (motor) sobre diagnostico/sintesis (LLM)
+             Pattern: opaque paper mask, then styled box, tag, title, 2 sublabels.
+             ============================================================ -->
+
+        <!-- ── Agente 1 · Informe ──────────────────────────────────── -->
+        <rect x="40" y="104" width="200" height="96" rx="6" fill="#f5f5f5"/>
+        <rect x="40" y="104" width="200" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="48" y="112" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+        <text x="62" y="121" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+        <text x="140" y="144" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Informe</text>
+        <text x="140" y="160" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">ComposicionEspacialEngine</text>
+        <text x="140" y="174" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">auditable · recomputable</text>
+
+        <!-- ── Agente 1 · Diagnóstico ───────────────────────────────── -->
+        <rect x="40" y="240" width="200" height="96" rx="6" fill="#f5f5f5"/>
+        <rect x="40" y="240" width="200" height="96" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+        <rect x="48" y="248" width="28" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+        <text x="62" y="257" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LLM</text>
+        <text x="140" y="280" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Diagnóstico</text>
+        <text x="140" y="296" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">LLM · Gemini 2.5 Flash</text>
+        <text x="140" y="310" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">cita el informe en prosa</text>
+
+        <!-- ── Agente 2 · Informe ──────────────────────────────────── -->
+        <rect x="280" y="104" width="200" height="96" rx="6" fill="#f5f5f5"/>
+        <rect x="280" y="104" width="200" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="288" y="112" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+        <text x="302" y="121" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+        <text x="380" y="144" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Informe</text>
+        <text x="380" y="160" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">LineasDireccionEngine</text>
+        <text x="380" y="174" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">auditable · recomputable</text>
+
+        <!-- ── Agente 2 · Diagnóstico ───────────────────────────────── -->
+        <rect x="280" y="240" width="200" height="96" rx="6" fill="#f5f5f5"/>
+        <rect x="280" y="240" width="200" height="96" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+        <rect x="288" y="248" width="28" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+        <text x="302" y="257" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LLM</text>
+        <text x="380" y="280" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Diagnóstico</text>
+        <text x="380" y="296" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">LLM · Gemini 2.5 Flash</text>
+        <text x="380" y="310" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">cita el informe en prosa</text>
+
+        <!-- ── Agente 3 · Informe ──────────────────────────────────── -->
+        <rect x="520" y="104" width="200" height="96" rx="6" fill="#f5f5f5"/>
+        <rect x="520" y="104" width="200" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="528" y="112" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+        <text x="542" y="121" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+        <text x="620" y="144" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Informe</text>
+        <text x="620" y="160" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">EspacioAislamientoEngine</text>
+        <text x="620" y="174" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">auditable · recomputable</text>
+
+        <!-- ── Agente 3 · Diagnóstico ───────────────────────────────── -->
+        <rect x="520" y="240" width="200" height="96" rx="6" fill="#f5f5f5"/>
+        <rect x="520" y="240" width="200" height="96" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+        <rect x="528" y="248" width="28" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+        <text x="542" y="257" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LLM</text>
+        <text x="620" y="280" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Diagnóstico</text>
+        <text x="620" y="296" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">LLM · Gemini 2.5 Flash</text>
+        <text x="620" y="310" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">cita el informe en prosa</text>
+
+        <!-- ── Agente 4 · Informe ──────────────────────────────────── -->
+        <rect x="760" y="104" width="200" height="96" rx="6" fill="#f5f5f5"/>
+        <rect x="760" y="104" width="200" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="768" y="112" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+        <text x="782" y="121" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+        <text x="860" y="144" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Informe</text>
+        <text x="860" y="160" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">LuzTonoEngine</text>
+        <text x="860" y="174" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">auditable · recomputable</text>
+
+        <!-- ── Agente 4 · Diagnóstico ───────────────────────────────── -->
+        <rect x="760" y="240" width="200" height="96" rx="6" fill="#f5f5f5"/>
+        <rect x="760" y="240" width="200" height="96" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+        <rect x="768" y="248" width="28" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+        <text x="782" y="257" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LLM</text>
+        <text x="860" y="280" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Diagnóstico</text>
+        <text x="860" y="296" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">LLM · Gemini 2.5 Flash</text>
+        <text x="860" y="310" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">cita el informe en prosa</text>
+
+        <!-- ── Crítico · Arbitraje ─────────────────────────────────── -->
+        <rect x="1040" y="104" width="200" height="96" rx="6" fill="#f5f5f5"/>
+        <rect x="1040" y="104" width="200" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="1048" y="112" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+        <text x="1062" y="121" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+        <text x="1140" y="144" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Arbitraje</text>
+        <text x="1140" y="160" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">PrioridadEngine</text>
+        <text x="1140" y="174" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">auditable · recomputable</text>
+
+        <!-- ── Crítico · Síntesis ──────────────────────────────────── -->
+        <rect x="1040" y="240" width="200" height="96" rx="6" fill="#f5f5f5"/>
+        <rect x="1040" y="240" width="200" height="96" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+        <rect x="1048" y="248" width="28" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+        <text x="1062" y="257" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LLM</text>
+        <text x="1140" y="280" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Síntesis</text>
+        <text x="1140" y="296" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">LLM · Gemini 2.5 Pro</text>
+        <text x="1140" y="310" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">cita arbitraje + diagnósticos</text>
+
+        <!-- ============================================================
+             LEGEND — horizontal strip at the bottom
+             ============================================================ -->
+        <line x1="40" y1="392" x2="1240" y2="392" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+        <text x="40" y="412" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.12em">LEYENDA</text>
+
+        <rect x="132" y="423" width="14" height="10" rx="2" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="152" y="432" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Informe / arbitraje — motor determinista, recomputable</text>
+
+        <rect x="132" y="441" width="14" height="10" rx="2" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+        <text x="152" y="450" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Diagnóstico / síntesis — LLM (Gemini), prosa que cita el informe</text>
+
+        <line x1="132" y1="468" x2="146" y2="468" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <text x="152" y="472" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">cita explícita [campo.valor] — mismo patrón en las cinco columnas</text>
+
+      </svg>

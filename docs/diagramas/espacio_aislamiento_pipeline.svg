@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 1020" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="espacio-aislamiento-pipeline-title espacio-aislamiento-pipeline-desc">
+  <title id="espacio-aislamiento-pipeline-title">Pipeline del Agente 3 — espacio y aislamiento del sujeto</title>
+  <desc id="espacio-aislamiento-pipeline-desc">Diagrama de flujo que muestra cómo el especialista de espacio y aislamiento recibe la percepción compartida del orquestador, obtiene una máscara de figura por GrabCut o por umbral de Otsu sobre el mapa de saliencia según si el sujeto es discreto, y calcula sobre esa misma máscara dos métricas independientes —el espacio negativo y un índice de separación figura-fondo por densidad de detalle—, cada una con su propio gate de aplicabilidad, antes de fusionar el resultado en un informe auditable que un LLM cita para redactar el diagnóstico final.</desc>
+
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap');</style>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+  <!-- ============================================================
+       ARROWS (drawn before nodes — z-order rule)
+       ============================================================ -->
+
+  <!-- N1 Percepción compartida -> N2 Cargar y reescalar -->
+  <line x1="640" y1="136" x2="640" y2="176" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N2 -> N3 Obtener máscara -->
+  <line x1="640" y1="256" x2="640" y2="292" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N3 -> N4 Espacio negativo (left attach 572, elbow down-left-down) -->
+  <path d="M 572,404 V 420 Q 572,428 564,428 H 232 Q 224,428 224,436 V 452"
+        fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N3 -> N5 Nitidez figura-fondo (right attach 708, elbow down-right-down) -->
+  <path d="M 708,404 V 420 Q 708,428 716,428 H 1048 Q 1056,428 1056,436 V 452"
+        fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- Branch labels -->
+  <rect x="366" y="408" width="64" height="12" rx="2" fill="#f5f5f5"/>
+  <text x="398" y="417" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">ESPACIO</text>
+
+  <rect x="850" y="408" width="64" height="12" rx="2" fill="#f5f5f5"/>
+  <text x="882" y="417" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">NITIDEZ</text>
+
+  <!-- N4 Espacio negativo -> N6 Informe (attach 568, elbow down-right-down) -->
+  <path d="M 224,548 V 564 Q 224,572 232,572 H 560 Q 568,572 568,580 V 596"
+        fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N5 Nitidez figura-fondo -> N6 Informe (attach 712, elbow down-left-down) -->
+  <path d="M 1056,548 V 564 Q 1056,572 1048,572 H 720 Q 712,572 712,580 V 596"
+        fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- N6 Informe -> N7 Diagnóstico -->
+  <line x1="640" y1="708" x2="640" y2="744" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================================
+       NODES
+       ============================================================ -->
+
+  <!-- N1 · Percepción compartida (entrada) -->
+  <rect x="420" y="40" width="440" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="420" y="40" width="440" height="96" rx="6" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+  <rect x="428" y="48" width="28" height="12" rx="2" fill="transparent" stroke="rgba(122,131,153,0.50)" stroke-width="0.8"/>
+  <text x="442" y="57" fill="#7a8399" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">IN</text>
+  <text x="640" y="80" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Percepción compartida</text>
+  <text x="640" y="96" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">bbox · sujeto_discreto · fuente</text>
+  <text x="640" y="110" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">mapa_saliencia_path · ruta_imagen</text>
+
+  <!-- N2 · Cargar y reescalar -->
+  <rect x="480" y="176" width="320" height="80" rx="6" fill="#f5f5f5"/>
+  <rect x="480" y="176" width="320" height="80" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="488" y="184" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="502" y="193" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="640" y="210" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Cargar y reescalar</text>
+  <text x="640" y="226" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">tools/imagen.py: cargar_imagen()</text>
+  <text x="640" y="240" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">reescalar a 1024px · INTER_AREA</text>
+
+  <!-- N3 · Obtener máscara -->
+  <rect x="440" y="292" width="400" height="112" rx="6" fill="#f5f5f5"/>
+  <rect x="440" y="292" width="400" height="112" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="448" y="300" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="462" y="309" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="640" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Obtener máscara</text>
+  <text x="640" y="348" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">GrabCut(bbox) si sujeto_discreto</text>
+  <text x="640" y="362" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">si no: Otsu sobre mapa_saliencia</text>
+  <text x="640" y="376" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">cv2.setRNGSeed(0) antes de cada llamada</text>
+
+  <!-- N4 · Espacio negativo -->
+  <rect x="84" y="452" width="280" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="84" y="452" width="280" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="92" y="460" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="106" y="469" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="224" y="492" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Espacio negativo</text>
+  <text x="224" y="508" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">cobertura = |máscara| / total</text>
+  <text x="224" y="522" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">ratio_espacio_negativo = 1 − cobertura</text>
+  <text x="224" y="536" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">gate: fuente == 'yolo'</text>
+
+  <!-- N5 · Nitidez figura-fondo -->
+  <rect x="916" y="452" width="280" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="916" y="452" width="280" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <rect x="924" y="460" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+  <text x="938" y="469" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="1056" y="492" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Nitidez figura-fondo</text>
+  <text x="1056" y="508" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">erosiona frontera · var. Laplaciano</text>
+  <text x="1056" y="522" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">índice = (fig − fondo) / (fig + fondo)</text>
+  <text x="1056" y="536" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">gate: identidad ∧ textura ≥ 50</text>
+
+  <!-- N6 · InformeEspacioAislamiento (focal) -->
+  <rect x="420" y="596" width="440" height="112" rx="6" fill="#f5f5f5"/>
+  <rect x="420" y="596" width="440" height="112" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+  <rect x="428" y="604" width="28" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+  <text x="442" y="613" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+  <text x="640" y="636" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">InformeEspacioAislamiento</text>
+  <text x="640" y="652" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">ratio_espacio_negativo · ratio_nitidez</text>
+  <text x="640" y="666" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">var_laplaciano_figura · var_laplaciano_fondo</text>
+  <text x="640" y="680" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">fuente_mascara · dimensiones_imagen · verificacion_path</text>
+
+  <!-- N7 · DiagnosticoEspacioAislamiento (LLM) -->
+  <rect x="480" y="744" width="320" height="96" rx="6" fill="#f5f5f5"/>
+  <rect x="480" y="744" width="320" height="96" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+  <rect x="488" y="752" width="28" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+  <text x="502" y="761" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LLM</text>
+  <text x="640" y="778" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">DiagnosticoEspacioAislamiento</text>
+  <text x="640" y="794" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Gemini 2.5 Flash · cita el informe</text>
+  <text x="640" y="810" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">→ salida_espacio_aislamiento.json</text>
+
+  <!-- ============================================================
+       EDITORIAL CALLOUTS (max 2, margins only)
+       ============================================================ -->
+
+  <path d="M 1160,68 Q 1020,72 868,88" fill="none" stroke="rgba(45,49,66,0.40)" stroke-width="1" stroke-dasharray="4,3"/>
+  <circle cx="860" cy="88" r="2" fill="#2d3142"/>
+  <text x="1240" y="60" fill="#2d3142" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">sin bbox no hay máscara:</text>
+  <text x="1240" y="76" fill="#2d3142" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">el más dependiente del Nivel 1</text>
+
+  <path d="M 1160,418 Q 1185,428 1196,452" fill="none" stroke="rgba(45,49,66,0.40)" stroke-width="1" stroke-dasharray="4,3"/>
+  <circle cx="1196" cy="452" r="2" fill="#2d3142"/>
+  <text x="1240" y="402" fill="#2d3142" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">esto no mide enfoque:</text>
+  <text x="1240" y="418" fill="#2d3142" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">mide densidad de detalle</text>
+
+  <!-- ============================================================
+       LEGEND
+       ============================================================ -->
+  <line x1="40" y1="880" x2="1240" y2="880" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+  <text x="40" y="900" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.12em">LEYENDA</text>
+
+  <rect x="132" y="913" width="14" height="10" rx="2" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+  <text x="152" y="922" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Entrada — percepción compartida (bbox, sujeto_discreto, fuente)</text>
+
+  <rect x="132" y="931" width="14" height="10" rx="2" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+  <text x="152" y="940" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Motor determinista (NumPy / OpenCV / GrabCut) — auditable, recomputable</text>
+
+  <rect x="132" y="949" width="14" height="10" rx="2" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+  <text x="152" y="958" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">InformeEspacioAislamiento — el contrato que el crítico puede citar</text>
+
+  <rect x="132" y="967" width="14" height="10" rx="2" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+  <text x="152" y="976" fill="#4f5d75" font-size="9" font-family="'Geist', sans-serif">Diagnóstico — LLM (Gemini), redacta citando el informe</text>
+
+</svg>
