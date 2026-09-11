@@ -133,7 +133,6 @@
   <text x="640" y="918" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">→ salida_composicion_espacial.json</text>
 
   <!-- ============================================================
-       EDITORIAL CALLOUTS (max 2, margins only)
        ============================================================ -->
 
   <path d="M 1160,68 Q 1020,72 868,88" fill="none" stroke="rgba(45,49,66,0.40)" stroke-width="1" stroke-dasharray="4,3"/>

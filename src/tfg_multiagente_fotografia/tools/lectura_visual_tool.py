@@ -24,27 +24,11 @@ MODELO = "gemini-2.5-flash"
 TEMPERATURA = 0.2
 
 # --- Envío de la imagen ---
-# Mismo espacio de trabajo que los Agentes 2, 3 y 4, pero aquí por un motivo distinto y
-# operativo: `data/` tiene fotografías de ~200 MP y `inline_data` de Gemini no admite
-# peticiones de ese tamaño. Se reduce ANTES de codificar. Además abarata la llamada sin
-# perder nada relevante: las observaciones son sobre el contenido de la escena, no sobre
-# detalle fino.
 LADO_MAYOR_ENVIO = 1024
 CALIDAD_JPEG = 90
 
-# Se lee con cv2 y NO con PIL a propósito: Ultralytics parchea PIL globalmente con un
-# chequeo anti "decompression bomb" (~178.9 MP) que lanza excepción y tumbaría el pipeline
-# con las imágenes grandes del corpus. `cv2.imread` no pasa por ahí.
-
-# --- Contrato de salida ---
-# Cota superior de observaciones. Existe para que el canal no verificable no pueda crecer
-# sin límite dentro de la crítica final: la métrica de validación que justifica toda esta
-# ampliación es qué FRACCIÓN del texto descansa en algo no auditable, y una lista larga la
-# empeora por construcción.
 MAX_OBSERVACIONES = 6
 
-# Se anota en el JSON persistido. Cambiar el prompt DEBE cambiar este número: si no, se
-# seguirían sirviendo desde caché lecturas hechas con otras instrucciones y nada lo diría.
 VERSION_PROMPT = 1
 
 PROMPT = """Vas a ver UNA fotografía y solo eso. Describe su CONTENIDO.
