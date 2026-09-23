@@ -51,7 +51,7 @@ N_INIT_KMEANS = 10
 # NO es una condición de gate —`peso_matiz_dominante` no separa nada, va de 0.281 a
 # 0.908 sin banda vacía— sino parte de la DEFINICIÓN de la métrica: un grupo sin masa
 # no es un matiz dominante, es un artefacto de haber pedido 5.
-PESO_MIN_MATIZ = 0.15
+PESO_MIN_MATIZ = 0.05
 # Dos grupos más cercanos que esto son EL MISMO matiz y se fusionan ANTES de filtrar
 # por masa. Sin este paso, k-means —obligado a devolver k grupos haya k colores o
 # solo uno— parte el matiz dominante en rodajas y `matices_dominantes` publica dos
@@ -87,7 +87,7 @@ COMPLEMENTARIO_TOLERANCIA = 30.0  # ...con esta holgura
 # El umbral es SÓLIDO, a diferencia del LONGITUD_MIN_HORIZONTE del Agente 2 (que
 # separa por 0.023): sobre data/ hay 4 imágenes en 0.000 y la siguiente en 0.287, así
 # que cualquier corte intermedio da exactamente el mismo resultado.
-RATIO_CROMATICO_MIN = 0.10
+RATIO_CROMATICO_MIN = 0.09
 
 # Etiqueta reservada al gate cerrado. NO es una quinta categoría de la taxonomía: es
 # la marca de que no había nada que clasificar, y solo aparece con confianza 0.

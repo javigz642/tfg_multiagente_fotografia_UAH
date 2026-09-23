@@ -64,7 +64,14 @@ def build_model(num_classes:int = 5, pretrained: bool= True):
 
 class ContextClassifier:
     def __init__(self, weights_path, class_to_idx_path, threshold_path, gradcam_dir, device = None):
-        self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if device is None:
+            if torch.cuda.is_available():
+                device = torch.devide("cuda")
+            elif torch.backends.mps.is_available():
+                device = torch.device("mps")
+            else:
+                device = torch.device("cpu")
+        self.device = device
         with open(class_to_idx_path, encoding="utf-8") as f:
             self.class_to_idx = json.load(f)
         self.idx_to_class = {v: k for k, v in self.class_to_idx.items()}

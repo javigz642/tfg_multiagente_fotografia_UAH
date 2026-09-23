@@ -408,7 +408,7 @@ def cargar_modelo_nulo():
     if len(tabla["rejilla_n"]) != len(tabla["score_nulo"]):
         raise ValueError(
             f"{MODELO_NULO_PATH.name}: 'rejilla_n' y 'score_nulo' tienen distinta longitud "
-            f"({len(tabla['rejilla_n'])} vs {len(tabla['score_nulo'])}). Regenéralo con: {regenerar}"
+            f"({len(tabla['rejilla_n'])} vs {len(tabla['score_nulo'])})."
         )
 
     # Parámetros con los que se generó la tabla y que este módulo tiene que seguir
@@ -428,8 +428,7 @@ def cargar_modelo_nulo():
             raise ValueError(
                 f"{MODELO_NULO_PATH.name} se generó con {clave} = {valor_tabla}, pero este "
                 f"módulo usa {valor_modulo}. La línea base ya no describe a este estimador, "
-                f"así que el gate estaría contrastando contra otro algoritmo. "
-                f"Regenera la tabla con: {regenerar}"
+                "así que el gate estaría contrastando contra otro algoritmo."
             )
 
     return tabla
