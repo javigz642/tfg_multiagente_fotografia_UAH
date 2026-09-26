@@ -266,7 +266,7 @@ class InformeLuzTono(BaseModel):
             "Esquema 'monocromático' (<30°), 'análogo' (<60°), 'complementario' "
             "(par a 180°±30°), 'otro' o 'sin_color' con gate cerrado. 'Monocromático' se refiere "
             "solo a los píxeles cromáticos. valor_norm es None; confianza 1 si "
-            "ratio_pixeles_cromaticos >= 0.10."
+            "ratio_pixeles_cromaticos >= 0.09."
         ),
     )
     spread_cromatico: float = Field(
@@ -296,7 +296,7 @@ class InformeLuzTono(BaseModel):
         le=1.0,
         description=(
             "Fracción de píxeles con saturación y valor suficientes, en [0,1]. Abre el gate "
-            "cromático desde 0.10; 1 - valor es la fracción acromática."
+            "cromático desde 0.09; 1 - valor es la fracción acromática."
         ),
     )
 
