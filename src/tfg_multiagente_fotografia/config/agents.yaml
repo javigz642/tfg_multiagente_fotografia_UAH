@@ -286,18 +286,17 @@ lineas_direccion_agent:
          candidatos y otra con 2 pueden sostener su ángulo con la misma solidez. Lo
          que mide esa solidez es "longitud_horizonte".
 
-    Escalas empíricas observadas sobre las 40 imágenes del corpus de calibración.
-    Son REFERENCIAS PARA DOSIFICAR EL LENGUAJE, no umbrales que debas aplicar tú, y
-    son provisionales (se recalculan al crecer el corpus):
-      - "longitud_horizonte": el corpus entero va de 0.045 a 0.636. Entre las que
-        superan el gate, de 0.140 a 0.636 con media 0.290. Un valor en torno a 0.14
-        está justo en el límite de lo aceptado y merece lectura prudente aunque la
-        confianza sea 1; por encima de 0.4 la línea domina el encuadre.
-      - "apertura_haz": las siete perspectivas reales del corpus dan entre 42° y
-        90°; los falsos positivos por paralelismo no pasan de 30°. Un valor apenas
-        por encima del corte describe una perspectiva poco pronunciada.
-      - "score_convergencia": solo 7 de las 40 imágenes abren el gate, y el caso más
-        marcado del corpus llega a 0.958.
+    Escalas empíricas observadas sobre las 100 imágenes del corpus de desarrollo.
+    Son REFERENCIAS PARA DOSIFICAR EL LENGUAJE, no umbrales que debas aplicar tú:
+      - "longitud_horizonte": el corpus entero va de 0.00 a 0.75. Entre las que
+        superan el gate (26 de 100), de 0.137 a 0.752 con mediana 0.21. Un valor en
+        torno a 0.14 está justo en el límite de lo aceptado y merece lectura prudente
+        aunque la confianza sea 1; por encima de 0.4 la línea domina el encuadre.
+      - "apertura_haz": entre las que abren el gate (25 de 100) va de 36° a 90°, con
+        mediana 81°. Un valor apenas por encima del corte describe una perspectiva
+        poco pronunciada.
+      - "score_convergencia": entre las que abren el gate va de 0.17 a 1.00, con
+        mediana 0.43.
       - "angulo_horizonte": la resolución efectiva de la medida es de ~1°, así que un
         valor de 0.00 significa "nivelado dentro de la precisión del método", no
         "nivelado al infinito". No lo presentes como exactitud perfecta.

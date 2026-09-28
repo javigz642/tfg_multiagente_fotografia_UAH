@@ -138,7 +138,7 @@ class ComposicionEspacialEngine():
             margen_patron=margen_patron,
             # valor_norm=None deliberado: la cota teórica (1/2) no refleja el rango
             # real (~[0, 0.16]) y normalizar por ella diría que todo está equilibrado.
-            # Pendiente de calibración empírica por percentiles (validación §5).
+            # Pendiente de calibración empírica por percentiles.
             d_equilibrio=MetricaConfianza[float](valor=d_equilibrio_valor, confianza=confianza_equilibrio_valor, fuente_confianza=fuente_confianza_equilibrio),
             coord_centro_masa=coord_centro_masa,
             verificacion_path=verificacion_path,

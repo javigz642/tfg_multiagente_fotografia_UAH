@@ -48,4 +48,6 @@ logs.txt
 
 #Otros
 verOutputs.ipynb
+/experimentos
+~$*.xlsx
 

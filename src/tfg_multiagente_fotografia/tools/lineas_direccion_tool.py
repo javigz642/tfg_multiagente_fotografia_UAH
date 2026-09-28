@@ -78,7 +78,7 @@ HOUGH_MAX_HUECO = 10
 #     separaba convergencia de paralelismo. En imagen17 (vegetación) la apertura
 #     saltó de 10.6° a 70.0° y el gate se abrió; de 4 imágenes abriendo se pasó a
 #     10, incluidos un retrato y un producto — exactamente los falsos positivos que
-#     motivaron el descarte de la regla en Aclaraciones §4.
+#     motivaron el descarte de la regla en Aclaraciones
 # La lección, que vale para todo el sistema: este umbral NO es solo del horizonte,
 # define la PARTICIÓN, y por tanto sostiene también la calibración del punto de
 # fuga. La aplicabilidad del horizonte se acota en su gate, no aquí.

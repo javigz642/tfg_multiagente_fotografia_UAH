@@ -28,7 +28,7 @@ SUBCARPETA = "luz_tono"
 # --- Espacio de trabajo ---
 # LADO_MAYOR_TRABAJO se importa de tools/imagen.py (razonamiento completo allí).
 
-# --- Exposición (Aclaraciones §3.4.1) ---
+# --- Exposición (Aclaraciones 3.4.1) ---
 # CIELAB: L va de 0 a 100 y es perceptualmente uniforme, que es el motivo de usarlo
 # en vez del gris de BGR (donde la misma diferencia numérica significa cosas
 # distintas según el tramo).
@@ -37,7 +37,7 @@ L_CENTRO = 50.0           # exposición centrada, referencia del `valor_norm`
 CLIPPING_SOMBRAS = 5.0    # L < 5   -> sombra recortada
 CLIPPING_LUCES = 95.0     # L > 95  -> luz quemada
 
-# --- Armonía cromática (Aclaraciones §3.4.2) ---
+# --- Armonía cromática (Aclaraciones 3.4.2) ---
 # Filtro de píxeles acromáticos: sin él, el matiz de un gris es ruido puro (H no
 # está definido cuando S -> 0) y contaminaría los grupos.
 SAT_MIN = 0.15
@@ -74,7 +74,7 @@ DECIMALES_MATIZ = 1
 # no más preciso. Se submuestrea de forma DETERMINISTA (paso fijo, no aleatoria).
 MAX_PIXELES_KMEANS = 50_000
 
-# --- Taxonomía de esquemas (cortes de Aclaraciones §3.4.2, sin tocar) ---
+# --- Taxonomía de esquemas (cortes de Aclaraciones 3.4.2, sin tocar) ---
 SPREAD_MONOCROMATICO = 30.0   # por debajo: un solo matiz
 SPREAD_ANALOGO = 60.0         # por debajo: matices vecinos
 COMPLEMENTARIO_CENTRO = 180.0  # par de matices opuestos...
@@ -196,7 +196,7 @@ def fusionar_matices(centros, masa, umbral=UMBRAL_FUSION_MATIZ):
 
 
 def clasificar_esquema(centros, spread):
-    """Etiqueta el esquema comparando contra las plantillas de Aclaraciones §3.4.2.
+    """Etiqueta el esquema comparando contra las plantillas de Aclaraciones 3.4.2.
 
     El orden importa: "complementario" se comprueba ANTES que "otro" pero DESPUÉS de
     los de spread bajo, porque una paleta monocromática no puede tener a la vez un par
@@ -425,7 +425,7 @@ class LuzTonoEngine:
             esquema_cromatico=MetricaConfianza[str](
                 valor=esquema,
                 # None SIEMPRE: es una categoría, no una adherencia. Se descarta la
-                # propuesta de §3.4.2 de puntuarla (1 identificable / 0.5 "otro")
+                # propuesta de 3.4.2 de puntuarla (1 identificable / 0.5 "otro")
                 # porque mezcla adherencia con aplicabilidad, que es justo lo que
                 # MetricaConfianza separa.
                 valor_norm=None,
