@@ -81,9 +81,8 @@ MARGEN_FRONTERA_RATIO = 0.01
 # es una escena casi sin detalle, que es literalmente lo que esta condición describe. Ante dos
 # huecos igual de limpios se toma el más estricto, mismo criterio que el percentil 99 del
 # Agente 2: un falso positivo rompe la verificabilidad, un falso negativo solo hace callar.
-# PENDIENTE DE RECALIBRAR: el corte se fijó con máscaras de GrabCut, y con SAM cambian las dos
-# varianzas (además, experimentos.md ya señalaba que este comentario estaba desactualizado:
-# imagen14 es ahora un tren). Se mantiene 50 como valor provisional.
+# PENDIENTE DE RECALIBRAR sobre C2 con las máscaras de SAM (experimentos.md, §4); las cifras de
+# este comentario están desactualizadas (imagen14 es ahora un tren). Valor provisional: 50.
 VAR_LAPLACIANO_MIN = 50.0
 
 # Valor de `fuente` (percepción compartida) que abre el gate. Ver el bloque de por qué.
