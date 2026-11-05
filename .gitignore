@@ -31,6 +31,8 @@ wheels/
 data/
 # Conjunto de prueba C3 (40 fotos de Unsplash): fuera de data/ para que los tests no lo recorran.
 data_prueba/
+# La plantilla de anotación lleva miniaturas; se versiona solo el CSV exportado.
+experimentos/anotaciones/*.xlsx
 
 # Las salidas del sistema son regenerables y no se versionan.
 outputs/

@@ -498,7 +498,8 @@ Tabla final: pregunta → criterio → resultado (sí / en parte / no) → cifra
 | `experimentos/config_experimentos.yaml` | Rutas (EVA externo, `data/`, `data_prueba/`), fotos de repetición, criterios de éxito y tarifas | [pendiente] |
 | `experimentos/comun.py` | Utilidades: localizar la raíz, leer CSV con codificación y separador robustos, medir las condiciones, verificador de citas, IC de Wilson, comprobar la congelación | [pendiente] |
 | `experimentos/ejecutar_lote.py` | Lanzador por lotes (abajo) | [pendiente] |
-| Plantillas de anotación | Excel de contexto + aplicabilidad (ciega, sobre `data_prueba/`) y de segmentación/protagonista, con la guía del §6.2. Se puede adaptar `experimentos/plantilla_revision.py` | [pendiente] |
+| Plantilla de contexto + aplicabilidad | `experimentos/plantilla_anotacion_prueba.py`: `plantilla` genera `anotaciones/anotacion_prueba.xlsx` (ciega, sobre `data_prueba/`); `exportar` la valida y escribe `anotaciones/anotacion_prueba.csv` | [verificado] |
+| Plantilla de segmentación/protagonista | Solo fotos con `fuente = yolo`, sobre las imágenes de verificación; se genera después de ejecutar E2 | [pendiente] |
 
 **Lanzador por lotes.** Para cada imagen de una lista:
 
