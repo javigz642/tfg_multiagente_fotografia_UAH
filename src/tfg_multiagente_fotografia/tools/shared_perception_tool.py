@@ -104,8 +104,9 @@ class SharedPerceptionEngine:
 
         # Clip a los límites de la imagen ANTES de derivar el centroide, para que
         # el bbox devuelto (y no solo el dibujado) sea siempre válido. Necesario
-        # porque este rect puede inicializar cv2.grabCut (GC_INIT_WITH_RECT) en
-        # el Agente 3, que exige un rectángulo contenido en la imagen.
+        # porque este rect es el prompt de SAM en el Agente 3, y su `relleno_bbox`
+        # (área de máscara / área del rect) solo tiene sentido con un rect dentro
+        # de la imagen.
         x1, y1 = max(0, x), max(0, y)
         x2, y2 = min(w_img, x + w_c), min(h_img, y + h_c)
         w_c, h_c = x2 - x1, y2 - y1

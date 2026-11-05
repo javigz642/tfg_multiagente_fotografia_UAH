@@ -333,7 +333,8 @@ class InformeEspacioAislamiento(BaseModel):
         ...,
         description=(
             "Fracción del encuadre no ocupada por la máscara del sujeto, en [0,1]. "
-            "valor_norm es None y la confianza vale 1 solo si fuente='yolo'."
+            "valor_norm es None y la confianza vale 1 solo si fuente='yolo' y la "
+            "segmentación no se ha rechazado (segmentacion_fiable distinto de False)."
         ),
     )
 
@@ -343,7 +344,8 @@ class InformeEspacioAislamiento(BaseModel):
         description=(
             "Índice de densidad de detalle (var_figura - var_fondo)/(var_figura + var_fondo), "
             "en [-1,1]: positivo favorece a la figura. No mide enfoque. "
-            "valor_norm = (valor + 1)/2; confianza 1 si fuente='yolo' y existe textura suficiente."
+            "valor_norm = (valor + 1)/2; confianza 1 si fuente='yolo', la segmentación no se ha "
+            "rechazado y existe textura suficiente."
         ),
     )
     var_laplaciano_figura: float = Field(
@@ -367,8 +369,37 @@ class InformeEspacioAislamiento(BaseModel):
     fuente_mascara: str = Field(
         ...,
         description=(
-            "'grabcut' si la máscara se inicializó con el bbox o 'prior_saliencia' si procede "
-            "del mapa de saliencia. La vía de segmentación no determina por sí sola la confianza."
+            "'sam2.1_b' si la máscara la generó SAM 2 con el bbox como prompt o "
+            "'prior_saliencia' si procede del mapa de saliencia. La vía de segmentación no "
+            "determina por sí sola la confianza."
+        ),
+    )
+
+    # --- Calidad de la segmentación (solo vía SAM) ---
+    # Escalares planos y NO MetricaConfianza a propósito: prioridad_tool.py trata como métrica
+    # todo campo con {valor, confianza}, y estos no se arbitran con W; son la evidencia del gate.
+    score_segmentacion: Optional[float] = Field(
+        None,
+        ge=0.0,
+        le=1.0,
+        description=(
+            "Calidad que SAM predice para su propia máscara, en [0,1]. None en la vía de "
+            "saliencia, que no tiene esa medida."
+        ),
+    )
+    relleno_bbox: Optional[float] = Field(
+        None,
+        ge=0.0,
+        description=(
+            "Área de la máscara / área del bbox en el espacio de trabajo. Puede superar 1 si la "
+            "máscara desborda el bbox. None en la vía de saliencia."
+        ),
+    )
+    segmentacion_fiable: Optional[bool] = Field(
+        None,
+        description=(
+            "Gate de calidad: score_segmentacion y relleno_bbox dentro de sus umbrales. Con "
+            "False las dos métricas tienen confianza 0. None en la vía de saliencia."
         ),
     )
 

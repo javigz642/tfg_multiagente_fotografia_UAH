@@ -58,7 +58,7 @@ def validar_salida(image_path: Path, salida: dict):
             f"fuente={salida['fuente']} incoherente con sujeto_discreto={salida['sujeto_discreto']}"
         )
 
-    # El bbox debe caer dentro de la imagen (lo consumirá cv2.grabCut en el Agente 3)
+    # El bbox debe caer dentro de la imagen (es el prompt de SAM en el Agente 3)
     cx, cy, w, h = salida["bbox"]
     assert w > 0 and h > 0, f"bbox con dimensiones no positivas: {salida['bbox']}"
     assert cx - w / 2 >= -1 and cy - h / 2 >= -1, f"bbox se sale por arriba/izquierda: {salida['bbox']}"

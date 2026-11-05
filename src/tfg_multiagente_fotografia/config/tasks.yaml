@@ -334,7 +334,7 @@ espacio_aislamiento_task:
   expected_output: >
     Un objeto JSON con exactamente dos campos, "informe" y "diagnostico".
 
-    "informe": los 7 campos que devuelve la herramienta, tal cual:
+    "informe": los 10 campos que devuelve la herramienta, tal cual:
     - "dimensiones_imagen": lista [ancho, alto] en píxeles.
     - "ratio_espacio_negativo" y "ratio_nitidez": cada uno un objeto con "valor",
       "valor_norm", "confianza" y "fuente_confianza". Los dos "valor" son números. El
@@ -343,6 +343,8 @@ espacio_aislamiento_task:
       que llegue como null, en cuyo caso también se deja tal cual.
     - "var_laplaciano_figura" y "var_laplaciano_fondo": números.
     - "fuente_mascara": la cadena devuelta, copiada tal cual.
+    - "score_segmentacion" y "relleno_bbox": números, o null si llegan como null.
+    - "segmentacion_fiable": true, false o null, tal como llegue.
     - "verificacion_path": la ruta devuelta por la herramienta, copiada carácter a
       carácter, sin duplicar las barras invertidas ni añadir escapes.
 
@@ -394,6 +396,13 @@ espacio_aislamiento_task:
     5. UNA sola frase de salvedad, y solo por la confianza que valga 0. Enuncia el
        HALLAZGO POSITIVO en términos de la escena, citando únicamente la confianza y
        sin copiar el texto de "fuente_confianza" dentro de la cita:
+       - EXCEPCIÓN, y se mira antes que las otras dos: si "fuente_confianza" empieza
+         por "la segmentacion del sujeto no es fiable", el cierre NO describe la
+         escena. Escribe que el contorno del sujeto no se ha podido delimitar con
+         garantías, así que ni el aire que lo rodea ni su separación del fondo son
+         medibles en esta imagen, citando [segmentacion_fiable = false]. Nunca
+         presentes eso como un rasgo de la fotografía, y nunca cites la puntuación
+         ni el umbral.
        - Con "ratio_espacio_negativo.confianza" = 0: que la escena no ofrece un
          objeto único y acotado que aislar, porque el interés visual está distribuido
          —como en un paisaje, una fachada o una textura—. Nunca "no se pudo detectar

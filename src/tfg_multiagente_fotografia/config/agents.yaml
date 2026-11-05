@@ -699,7 +699,7 @@ espacio_aislamiento_agent:
       - fuente: la cadena "yolo", "saliencia" o "sin_sujeto_claro".
       - mapa_saliencia_path: la ruta al PNG del mapa de saliencia.
 
-    Devuelve un diccionario con 7 campos:
+    Devuelve un diccionario con 10 campos:
       - "dimensiones_imagen": (ancho, alto) de la imagen original en píxeles.
       - "ratio_espacio_negativo": fracción del encuadre que NO ocupa el sujeto, en
         [0, 1]. Métrica envuelta.
@@ -707,7 +707,14 @@ espacio_aislamiento_agent:
         en [-1, 1]. Métrica envuelta.
       - "var_laplaciano_figura" y "var_laplaciano_fondo": las dos varianzas crudas de
         las que sale ese índice. Son la evidencia que lo sostiene.
-      - "fuente_mascara": "grabcut" o "prior_saliencia", cómo se obtuvo la máscara.
+      - "fuente_mascara": "sam2.1_b" o "prior_saliencia", cómo se obtuvo la máscara.
+      - "score_segmentacion": calidad que el segmentador SAM predice para su propia
+        máscara, en [0, 1]. null en la vía "prior_saliencia".
+      - "relleno_bbox": área de la máscara entre área del bbox. null en la vía
+        "prior_saliencia".
+      - "segmentacion_fiable": true si las dos anteriores están dentro de sus
+        umbrales, false si no, null en la vía "prior_saliencia". Es la evidencia del
+        gate de segmentación, no una métrica que diagnosticar.
       - "verificacion_path": ruta a la imagen de verificación visual.
 
     Las dos métricas envueltas llegan como {valor, valor_norm, confianza,
@@ -742,11 +749,12 @@ espacio_aislamiento_agent:
     LAS DOS VÍAS Y LOS DOS GATES SON COSAS DISTINTAS, y confundirlas es el error que
     más daño haría a tu informe:
       - La VÍA la decide "sujeto_discreto" y la verás en "fuente_mascara": con un bbox
-        disponible se segmenta con GrabCut, y sin él se recurre al mapa de saliencia.
+        disponible se segmenta con SAM, y sin él se recurre al mapa de saliencia.
         Eso dice CÓMO se midió.
-      - El GATE lo decide de dónde salió el bbox, y eso dice si lo medido es CITABLE.
-      Consecuencia práctica: "fuente_mascara" = "grabcut" NO significa confianza 1.
-      Puedes recibir perfectamente una medición hecha con GrabCut y con confianza 0.
+      - El GATE lo deciden de dónde salió el bbox y si la segmentación es fiable, y eso
+        dice si lo medido es CITABLE.
+      Consecuencia práctica: "fuente_mascara" = "sam2.1_b" NO significa confianza 1.
+      Puedes recibir perfectamente una medición hecha con SAM y con confianza 0.
       No deduzcas la fiabilidad de la vía: léela en "confianza".
 
     POR QUÉ SE CIERRAN TUS GATES, para que sepas qué decir en cada caso:
@@ -754,14 +762,20 @@ espacio_aislamiento_agent:
          Entonces no hay garantía de que la región segmentada sea un objeto: puede ser
          una masa de vegetación, un patrón de muro o una zona de contraste sin
          entidad. Cierra las DOS métricas.
-      2. Solo para "ratio_nitidez": la escena no tiene detalle suficiente en ninguna
+      2. La segmentación no es fiable ("segmentacion_fiable" = false): el segmentador
+         ha devuelto un contorno de baja calidad, un fragmento o la caja entera, así
+         que la región medida puede no ser el sujeto. Cierra las DOS métricas. Si
+         también falla el motivo 1, "fuente_confianza" da el motivo 1.
+      3. Solo para "ratio_nitidez": la escena no tiene detalle suficiente en ninguna
          región, así que comparar la densidad de detalle de dos zonas no significa
          nada. Cierra solo esa.
-      Que un gate se cierre es un HALLAZGO compositivo legítimo, no un fallo del
-      análisis ni algo que haya que disculpar: significa que la escena no ofrece una
-      figura recortable sobre la que hablar de aislamiento, y eso describe un tipo de
-      fotografía muy común —un paisaje, una fachada, una textura— donde el interés
-      visual está distribuido en vez de concentrado en un objeto.
+      Que un gate se cierre por los motivos 1 o 3 es un HALLAZGO compositivo legítimo,
+      no un fallo del análisis ni algo que haya que disculpar: significa que la escena
+      no ofrece una figura recortable sobre la que hablar de aislamiento, y eso
+      describe un tipo de fotografía muy común —un paisaje, una fachada, una
+      textura— donde el interés visual está distribuido en vez de concentrado en un
+      objeto. El motivo 2 es distinto: NO dice nada de la escena, solo que el contorno
+      del sujeto no se ha podido delimitar con garantías, y así debe decirse.
 
     ESCALAS DE LECTURA. Son ABSOLUTAS: salen del dominio de cada magnitud, no de
     comparar con otras fotos. Sirven para dosificar el lenguaje, no son umbrales que

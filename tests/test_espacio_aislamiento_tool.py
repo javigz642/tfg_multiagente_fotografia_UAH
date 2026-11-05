@@ -5,8 +5,13 @@ import sys
 import cv2
 import numpy as np
 
+import tfg_multiagente_fotografia.tools.espacio_aislamiento_tool as modulo_espacio
 from tfg_multiagente_fotografia.tools.espacio_aislamiento_tool import (
     FUENTE_CON_IDENTIDAD,
+    FUENTE_MASCARA_SAM,
+    RELLENO_MAX,
+    RELLENO_MIN,
+    SAM_SCORE_MIN,
     VAR_LAPLACIANO_MIN,
     espacio_aislamiento_engine as engine,
 )
@@ -70,7 +75,7 @@ def _analizar_sintetico(nombre, bgr, mapa, fuente):
     ruta_mapa = DIR_TMP / f"{nombre}_saliency.png"
     cv2.imwrite(str(ruta_img), bgr)
     cv2.imwrite(str(ruta_mapa), mapa)
-    # bbox irrelevante en esta vía (sujeto_discreto=False no llama a GrabCut), pero el contrato
+    # bbox irrelevante en esta vía (sujeto_discreto=False no llama a SAM), pero el contrato
     # de entrada lo exige, así que se pasa uno coherente con el rectángulo.
     alto, ancho = bgr.shape[:2]
     bbox = [ancho / 2, alto / 2, ancho / 4, alto / 4]
@@ -167,11 +172,108 @@ def casos_analiticos():
           "A8 sin identidad, la nitidez tambien tiene que cerrar (hereda la condicion)")
     check(con_yolo.ratio_nitidez.confianza == 1.0,
           "A8 con identidad y textura de sobra, la nitidez deberia abrir")
+    check(con_yolo.segmentacion_fiable is None and con_yolo.score_segmentacion is None
+          and con_yolo.relleno_bbox is None,
+          "A8 la via de saliencia no tiene medida de calidad: los tres campos deben ser None")
     print("  A8 independencia de gates ..... nitidez hereda la condicion de identidad")
+
+    casos_gate_segmentacion()
 
     for p in DIR_TMP.glob("*"):
         p.unlink()
     DIR_TMP.rmdir()
+
+
+def _elipse(ancho, alto, rect):
+    """Máscara elíptica inscrita en `rect`: relleno ~pi/4, dentro del rango admitido."""
+    m = np.zeros((alto, ancho), np.uint8)
+    x, y, w, h = rect
+    cv2.ellipse(m, (x + w // 2, y + h // 2), (w // 2, h // 2), 0, 0, 360, 1, -1)
+    return m > 0
+
+
+def _analizar_sam_simulado(nombre, bgr, rect, mascara, score, fuente=FUENTE_CON_IDENTIDAD):
+    """Ejecuta la vía SAM con `mascara_sam` sustituida por una respuesta fija.
+
+    Así el gate de segmentación se prueba con ground truth exacto y sin cargar el modelo: se
+    comprueba la LÓGICA del gate, no la calidad de SAM (eso lo cubre la parte B).
+    """
+    DIR_TMP.mkdir(parents=True, exist_ok=True)
+    ruta_img = DIR_TMP / f"{nombre}.png"
+    cv2.imwrite(str(ruta_img), bgr)
+    x, y, w, h = rect
+    bbox = [x + w / 2, y + h / 2, w, h]
+    original = modulo_espacio.mascara_sam
+    modulo_espacio.mascara_sam = lambda img, r: (mascara.copy(), score)
+    try:
+        # La vía SAM no lee el mapa de saliencia; se pasa una ruta existente por contrato.
+        return engine.analizar(str(ruta_img), bbox, True, fuente, str(ruta_img))
+    finally:
+        modulo_espacio.mascara_sam = original
+
+
+def casos_gate_segmentacion():
+    """A9-A14: el gate de calidad de la segmentación (vía SAM, con SAM simulado)."""
+    prefijo = "la segmentacion del sujeto no es fiable"
+    ancho, alto, rect = 900, 600, (300, 200, 300, 200)
+    bgr, _ = _lienzo_con_figura(ancho, alto, rect, 60, 10)
+    elipse = _elipse(ancho, alto, rect)
+
+    # --- A9: segmentación buena -> gate abierto y campos publicados exactos ---
+    buena = _analizar_sam_simulado("a9_buena", bgr, rect, elipse, 0.99)
+    relleno_esperado = elipse.sum() / (rect[2] * rect[3])
+    check(buena.fuente_mascara == FUENTE_MASCARA_SAM,
+          f"A9 fuente_mascara deberia ser {FUENTE_MASCARA_SAM}, es {buena.fuente_mascara}")
+    check(buena.segmentacion_fiable is True, "A9 una segmentacion buena deberia ser fiable")
+    check(abs(buena.relleno_bbox - relleno_esperado) < TOL_AREA,
+          f"A9 relleno_bbox {buena.relleno_bbox} != {relleno_esperado}")
+    check(buena.score_segmentacion == 0.99, "A9 score_segmentacion no se publico tal cual")
+    check(buena.ratio_espacio_negativo.confianza == 1.0 and buena.ratio_nitidez.confianza == 1.0,
+          "A9 con identidad, segmentacion fiable y textura, los dos gates deberian abrir")
+    print(f"  A9 segmentacion buena ......... relleno={buena.relleno_bbox:.4f}, gates abiertos")
+
+    # --- A10: score bajo -> cierra las DOS, el valor medido no cambia ---
+    mala = _analizar_sam_simulado("a10_score_bajo", bgr, rect, elipse, SAM_SCORE_MIN - 0.01)
+    check(mala.segmentacion_fiable is False, "A10 score bajo deberia dar segmentacion no fiable")
+    check(mala.ratio_espacio_negativo.confianza == 0.0 and mala.ratio_nitidez.confianza == 0.0,
+          "A10 una segmentacion no fiable deberia cerrar las dos metricas")
+    check(all((m.fuente_confianza or "").startswith(prefijo)
+              for m in (mala.ratio_espacio_negativo, mala.ratio_nitidez)),
+          "A10 el motivo de cierre deberia empezar por el prefijo que lee el agente")
+    check(abs(mala.ratio_nitidez.valor - buena.ratio_nitidez.valor) < TOL,
+          "A10 el VALOR medido no debe depender del gate, solo la confianza")
+    print("  A10 score bajo ................ cierra las dos, mismo valor medido")
+
+    # --- A11: máscara VACÍA con score alto -> cierra (regresión de imagen51 con GrabCut) ---
+    vacia = _analizar_sam_simulado("a11_vacia", bgr, rect, np.zeros((alto, ancho), bool), 0.99)
+    check(vacia.relleno_bbox == 0.0 and vacia.segmentacion_fiable is False,
+          "A11 una mascara vacia deberia dar relleno 0 y segmentacion no fiable")
+    check(vacia.ratio_espacio_negativo.confianza == 0.0,
+          "A11 una mascara vacia NO puede abrir el espacio negativo (fallo de imagen51)")
+    print("  A11 mascara vacia ............. relleno=0, cierra (regresion imagen51)")
+
+    # --- A12: máscara que rellena la caja entera -> cierra por relleno alto ---
+    caja = np.zeros((alto, ancho), bool)
+    caja[rect[1]:rect[1] + rect[3], rect[0]:rect[0] + rect[2]] = True
+    llena = _analizar_sam_simulado("a12_caja_llena", bgr, rect, caja, 0.99)
+    check(llena.relleno_bbox > RELLENO_MAX and llena.segmentacion_fiable is False,
+          "A12 una mascara que rellena la caja deberia rechazarse por relleno alto")
+    print(f"  A12 caja rellena .............. relleno={llena.relleno_bbox:.2f}, cierra")
+
+    # --- A13: el umbral del score es inclusivo ---
+    borde = _analizar_sam_simulado("a13_borde", bgr, rect, elipse, SAM_SCORE_MIN)
+    check(borde.segmentacion_fiable is True, "A13 score == SAM_SCORE_MIN deberia ser fiable")
+    print("  A13 score en el umbral ........ fiable (umbral inclusivo)")
+
+    # --- A14: sin identidad Y segmentación mala -> el motivo publicado es el de identidad ---
+    ambos = _analizar_sam_simulado("a14_ambos", bgr, rect, elipse, 0.1, fuente="saliencia")
+    motivo = ambos.ratio_espacio_negativo.fuente_confianza or ""
+    check("fuente=saliencia" in motivo and not motivo.startswith(prefijo),
+          "A14 con los dos motivos, fuente_confianza deberia dar el de identidad")
+    print("  A14 dos motivos a la vez ...... prevalece el de identidad")
+
+
+N_CASOS_ANALITICOS = 14
 
 
 # =============================================================================
@@ -185,7 +287,7 @@ def integracion():
         key=lambda p: (len(p.stem), p.stem),
     )
     tool = SharedPerceptionTool()
-    abren_esp = abren_nit = 0
+    abren_esp = abren_nit = rechazadas = 0
 
     for ruta in rutas:
         p = tool._run(str(ruta))
@@ -217,13 +319,29 @@ def integracion():
             check(total == 0.0,
                   f"{n}: valor_norm None solo se admite con varianza total nula")
 
+        # --- El gate de segmentación, recomputado desde sus dos operandos publicados ---
+        seg = inf.segmentacion_fiable
+        if inf.fuente_mascara == FUENTE_MASCARA_SAM:
+            esperado_seg = (inf.score_segmentacion >= SAM_SCORE_MIN
+                            and RELLENO_MIN <= inf.relleno_bbox <= RELLENO_MAX)
+            check(seg == esperado_seg,
+                  f"{n}: segmentacion_fiable={seg} no cuadra con score/relleno publicados")
+        else:
+            check(seg is None and inf.score_segmentacion is None and inf.relleno_bbox is None,
+                  f"{n}: la via de saliencia no debe publicar medidas de calidad de SAM")
+
         # --- LAS DOS CONFIANZAS, RECOMPUTADAS DESDE LOS CAMPOS PUBLICADOS ---
         hay_identidad = p["fuente"] == FUENTE_CON_IDENTIDAD
+        seg_ok = seg is not False
         hay_textura = max(inf.var_laplaciano_figura, inf.var_laplaciano_fondo) >= VAR_LAPLACIANO_MIN
-        check(en.confianza == (1.0 if hay_identidad else 0.0),
-              f"{n}: confianza de espacio {en.confianza} no cuadra con fuente={p['fuente']}")
-        check(ni.confianza == (1.0 if (hay_identidad and hay_textura) else 0.0),
-              f"{n}: confianza de nitidez {ni.confianza} no cuadra con sus dos condiciones")
+        check(en.confianza == (1.0 if (hay_identidad and seg_ok) else 0.0),
+              f"{n}: confianza de espacio {en.confianza} no cuadra con sus dos condiciones")
+        check(ni.confianza == (1.0 if (hay_identidad and seg_ok and hay_textura) else 0.0),
+              f"{n}: confianza de nitidez {ni.confianza} no cuadra con sus tres condiciones")
+
+        # --- Regresión de imagen51: un gate abierto nunca puede descansar en una máscara vacía ---
+        if en.confianza == 1.0:
+            check(en.valor < 1.0, f"{n}: gate de espacio abierto con la mascara VACIA")
 
         # --- Un gate cerrado SIEMPRE explica por que; uno abierto no inventa motivo ---
         check((en.fuente_confianza is None) == (en.confianza == 1.0),
@@ -232,7 +350,7 @@ def integracion():
               f"{n}: fuente_confianza de nitidez incoherente con su confianza")
 
         # --- La VIA depende de sujeto_discreto, NO del gate (son ortogonales) ---
-        esperada = "grabcut" if p["sujeto_discreto"] else "prior_saliencia"
+        esperada = FUENTE_MASCARA_SAM if p["sujeto_discreto"] else "prior_saliencia"
         check(inf.fuente_mascara == esperada,
               f"{n}: via {inf.fuente_mascara} no cuadra con sujeto_discreto={p['sujeto_discreto']}")
 
@@ -245,15 +363,20 @@ def integracion():
 
         # --- DETERMINISMO: dos analisis completos, model_dump identico ---
         check(inf.model_dump() == engine.analizar(*args).model_dump(),
-              f"{n}: el analisis NO es determinista (grabCut sin sembrar el RNG?)")
+              f"{n}: el analisis NO es determinista (SAM fuera de un dispositivo fijo?)")
 
         abren_esp += en.confianza == 1.0
         abren_nit += ni.confianza == 1.0
+        rechazadas += seg is False
+        calidad = ("" if seg is None else
+                   f" seg={inf.score_segmentacion:.3f}/{inf.relleno_bbox:.2f}"
+                   f"{'' if seg else ' RECHAZADA'}")
         print(f"  {n:<12} {p['fuente']:<17} esp_neg={en.valor:.3f}({en.confianza:.0f}) "
-              f"nitidez={ni.valor:+.3f}({ni.confianza:.0f})")
+              f"nitidez={ni.valor:+.3f}({ni.confianza:.0f}){calidad}")
 
     print(f"\n  gates abiertos: espacio {abren_esp}/{len(rutas)}  "
-          f"nitidez {abren_nit}/{len(rutas)}")
+          f"nitidez {abren_nit}/{len(rutas)}  "
+          f"(segmentaciones SAM rechazadas: {rechazadas})")
     return len(rutas)
 
 
@@ -267,7 +390,8 @@ def main():
         for f in fallos:
             print(f"  - {f}")
         return 1
-    print(f"TODO OK: 8/8 casos analiticos + {n}/{n} imagenes")
+    print(f"TODO OK: {N_CASOS_ANALITICOS}/{N_CASOS_ANALITICOS} casos analiticos + "
+          f"{n}/{n} imagenes")
     return 0
 
 
