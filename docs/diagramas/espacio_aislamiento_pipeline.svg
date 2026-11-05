@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 1236" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="espacio-aislamiento-pipeline-title espacio-aislamiento-pipeline-desc">
+      <title id="espacio-aislamiento-pipeline-title">Flujo de la herramienta de espacio y aislamiento del sujeto</title>
+      <desc id="espacio-aislamiento-pipeline-desc">La herramienta del Agente 3 segmenta al sujeto con SAM 2.1 cuando hay sujeto discreto, o con el mapa de saliencia si no lo hay; un gate nuevo valora la calidad de la máscara de SAM, de la que salen el espacio negativo y la nitidez figura-fondo, que forman un informe de 10 campos que el LLM cita en su diagnóstico.</desc>
+      <defs>
+        <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap');</style>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- ============ CONECTORES (antes que los nodos) ============ -->
+      <g fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)">
+        <!-- Entrada → SAM (sujeto discreto) -->
+        <path d="M428 152 V184 Q428 192 420 192 H304 Q296 192 296 200 V228"/>
+        <!-- Entrada → saliencia (sin sujeto discreto) -->
+        <path d="M532 152 V184 Q532 192 540 192 H656 Q664 192 664 200 V228"/>
+        <!-- SAM → gate de calidad -->
+        <path d="M296 340 V380"/>
+        <!-- Gate → máscara de figura -->
+        <path d="M296 492 V504 Q296 512 304 512 H420 Q428 512 428 520 V532"/>
+        <!-- Saliencia → máscara de figura -->
+        <path d="M664 340 V504 Q664 512 656 512 H540 Q532 512 532 520 V532"/>
+        <!-- Máscara → espacio negativo -->
+        <path d="M428 628 V648 Q428 656 420 656 H304 Q296 656 296 664 V688"/>
+        <!-- Máscara → nitidez -->
+        <path d="M532 628 V648 Q532 656 540 656 H656 Q664 656 664 664 V688"/>
+        <!-- Espacio → informe -->
+        <path d="M296 800 V820 Q296 828 304 828 H420 Q428 828 428 836 V856"/>
+        <!-- Nitidez → informe -->
+        <path d="M664 800 V820 Q664 828 656 828 H540 Q532 828 532 836 V856"/>
+        <!-- Informe → diagnóstico -->
+        <path d="M480 1000 V1040"/>
+      </g>
+
+      <!-- Etiquetas de las dos vías (máscara opaca, 6 px por encima del conector) -->
+      <rect x="314" y="170" width="96" height="16" rx="2" fill="#f5f5f5"/>
+      <text x="362" y="182" fill="#7a8399" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">DISCRETO: SÍ</text>
+      <rect x="550" y="170" width="96" height="16" rx="2" fill="#f5f5f5"/>
+      <text x="598" y="182" fill="#7a8399" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">DISCRETO: NO</text>
+
+      <!-- ============ NODOS ============ -->
+
+      <!-- 1. Entrada: imagen y percepción compartida -->
+      <rect x="320" y="40" width="320" height="112" rx="6" fill="#f5f5f5"/>
+      <rect x="320" y="40" width="320" height="112" rx="6" fill="#4f5d75" fill-opacity="0.10" stroke="#7a8399" stroke-width="1"/>
+      <rect x="328" y="48" width="28" height="14" rx="2" fill="none" stroke="#7a8399" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="342" y="58" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">IN</text>
+      <text x="480" y="84" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Imagen y percepción compartida</text>
+      <text x="480" y="106" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">ruta_imagen → lado mayor 1024 px</text>
+      <text x="480" y="124" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">bbox · sujeto_discreto · fuente</text>
+      <text x="480" y="142" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">mapa_saliencia_path</text>
+
+      <!-- 2. Segmentar con SAM 2.1 -->
+      <rect x="136" y="228" width="320" height="112" rx="6" fill="#f5f5f5"/>
+      <rect x="136" y="228" width="320" height="112" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="144" y="236" width="28" height="14" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="158" y="246" fill="#2d3142" fill-opacity="0.80" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+      <text x="296" y="272" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Segmentar con SAM 2.1</text>
+      <text x="296" y="294" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">sam2.1_b · bbox como prompt</text>
+      <text x="296" y="312" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">DEVICE_SAM = cpu (fijo)</text>
+      <text x="296" y="330" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">→ máscara + score</text>
+
+      <!-- 3. Máscara por saliencia (vía alternativa) -->
+      <rect x="504" y="228" width="320" height="112" rx="6" fill="#f5f5f5"/>
+      <rect x="504" y="228" width="320" height="112" rx="6" fill="#2d3142" fill-opacity="0.02" stroke="#2d3142" stroke-opacity="0.20" stroke-width="1" stroke-dasharray="4,3"/>
+      <rect x="512" y="236" width="28" height="14" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.30" stroke-width="0.8"/>
+      <text x="526" y="246" fill="#2d3142" fill-opacity="0.70" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+      <text x="664" y="272" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Máscara por saliencia</text>
+      <text x="664" y="294" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">Otsu sobre mapa_saliencia</text>
+      <text x="664" y="312" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">fuente_mascara = prior_saliencia</text>
+      <text x="664" y="330" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">sin medida de calidad</text>
+
+      <!-- 4. Gate de calidad de la segmentación (FOCO: lo nuevo) -->
+      <rect x="136" y="380" width="320" height="112" rx="6" fill="#f5f5f5"/>
+      <rect x="136" y="380" width="320" height="112" rx="6" fill="#eb6c36" fill-opacity="0.08" stroke="#eb6c36" stroke-width="1"/>
+      <rect x="144" y="388" width="32" height="14" rx="2" fill="none" stroke="#eb6c36" stroke-opacity="0.50" stroke-width="0.8"/>
+      <text x="160" y="398" fill="#eb6c36" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">GATE</text>
+      <text x="296" y="424" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Calidad de la segmentación</text>
+      <text x="296" y="446" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">relleno_bbox = |máscara| / |bbox|</text>
+      <text x="296" y="464" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">score ≥ 0,90 ∧ 0,20 ≤ relleno ≤ 0,95</text>
+      <text x="296" y="482" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">→ segmentacion_fiable</text>
+
+      <!-- 5. Máscara de figura (artefacto común) -->
+      <rect x="320" y="532" width="320" height="96" rx="6" fill="#f5f5f5"/>
+      <rect x="320" y="532" width="320" height="96" rx="6" fill="#2d3142" fill-opacity="0.05" stroke="#4f5d75" stroke-width="1"/>
+      <text x="480" y="574" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Máscara de figura</text>
+      <text x="480" y="596" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">booleana · espacio de trabajo</text>
+      <text x="480" y="614" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">figura = máscara · fondo = resto</text>
+
+      <!-- 6. Espacio negativo -->
+      <rect x="136" y="688" width="320" height="112" rx="6" fill="#f5f5f5"/>
+      <rect x="136" y="688" width="320" height="112" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="144" y="696" width="28" height="14" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="158" y="706" fill="#2d3142" fill-opacity="0.80" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+      <text x="296" y="732" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Espacio negativo</text>
+      <text x="296" y="754" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">cobertura = |máscara| / total</text>
+      <text x="296" y="772" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">ratio = 1 − cobertura</text>
+      <text x="296" y="790" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">gate: identidad ∧ seg. fiable</text>
+
+      <!-- 7. Nitidez figura-fondo -->
+      <rect x="504" y="688" width="320" height="112" rx="6" fill="#f5f5f5"/>
+      <rect x="504" y="688" width="320" height="112" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="512" y="696" width="28" height="14" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.40" stroke-width="0.8"/>
+      <text x="526" y="706" fill="#2d3142" fill-opacity="0.80" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+      <text x="664" y="732" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Nitidez figura-fondo</text>
+      <text x="664" y="754" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">erosión de frontera · var. Laplaciano</text>
+      <text x="664" y="772" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">índice = (fig − fondo)/(fig + fondo)</text>
+      <text x="664" y="790" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">gate: identidad ∧ seg. ∧ textura ≥ 50</text>
+
+      <!-- 8. Informe (FOCO: el contrato citable, 10 campos) -->
+      <rect x="320" y="856" width="320" height="144" rx="6" fill="#f5f5f5"/>
+      <rect x="320" y="856" width="320" height="144" rx="6" fill="#eb6c36" fill-opacity="0.08" stroke="#eb6c36" stroke-width="1"/>
+      <rect x="328" y="864" width="28" height="14" rx="2" fill="none" stroke="#eb6c36" stroke-opacity="0.50" stroke-width="0.8"/>
+      <text x="342" y="874" fill="#eb6c36" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ENG</text>
+      <text x="480" y="898" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">InformeEspacioAislamiento</text>
+      <text x="480" y="920" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">dimensiones_imagen · fuente_mascara</text>
+      <text x="480" y="938" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">ratio_espacio_negativo · ratio_nitidez</text>
+      <text x="480" y="956" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">var_laplaciano ×2 · verificacion_path</text>
+      <text x="480" y="974" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">score_segmentacion · relleno_bbox</text>
+      <text x="480" y="992" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">segmentacion_fiable</text>
+
+      <!-- 9. Diagnóstico (LLM) -->
+      <rect x="320" y="1040" width="320" height="96" rx="6" fill="#f5f5f5"/>
+      <rect x="320" y="1040" width="320" height="96" rx="6" fill="#2d3142" fill-opacity="0.03" stroke="#2d3142" stroke-opacity="0.30" stroke-width="1"/>
+      <rect x="328" y="1048" width="28" height="14" rx="2" fill="none" stroke="#2d3142" stroke-opacity="0.30" stroke-width="0.8"/>
+      <text x="342" y="1058" fill="#2d3142" fill-opacity="0.70" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LLM</text>
+      <text x="480" y="1082" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">DiagnosticoEspacioAislamiento</text>
+      <text x="480" y="1104" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">Gemini 2.5 Flash · cita el informe</text>
+      <text x="480" y="1122" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">→ salida_espacio_aislamiento.json</text>
+
+      <!-- ============ LEYENDA ============ -->
+      <line x1="40" y1="1172" x2="920" y2="1172" stroke="#2d3142" stroke-opacity="0.10" stroke-width="0.8"/>
+      <text x="40" y="1192" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEYENDA</text>
+
+      <rect x="40" y="1204" width="16" height="10" rx="2" fill="#4f5d75" fill-opacity="0.10" stroke="#7a8399" stroke-width="0.8"/>
+      <text x="62" y="1213" fill="#4f5d75" font-size="10" font-family="'Geist', sans-serif">Entrada</text>
+
+      <rect x="128" y="1204" width="16" height="10" rx="2" fill="#ffffff" stroke="#2d3142" stroke-width="0.8"/>
+      <text x="150" y="1213" fill="#4f5d75" font-size="10" font-family="'Geist', sans-serif">Motor determinista</text>
+
+      <rect x="276" y="1204" width="16" height="10" rx="2" fill="#2d3142" fill-opacity="0.02" stroke="#2d3142" stroke-opacity="0.35" stroke-width="0.8" stroke-dasharray="3,2"/>
+      <text x="298" y="1213" fill="#4f5d75" font-size="10" font-family="'Geist', sans-serif">Vía alternativa</text>
+
+      <rect x="408" y="1204" width="16" height="10" rx="2" fill="#2d3142" fill-opacity="0.05" stroke="#4f5d75" stroke-width="0.8"/>
+      <text x="430" y="1213" fill="#4f5d75" font-size="10" font-family="'Geist', sans-serif">Artefacto intermedio</text>
+
+      <rect x="568" y="1204" width="16" height="10" rx="2" fill="#eb6c36" fill-opacity="0.08" stroke="#eb6c36" stroke-width="0.8"/>
+      <text x="590" y="1213" fill="#4f5d75" font-size="10" font-family="'Geist', sans-serif">Foco: gate nuevo y contrato</text>
+
+      <rect x="768" y="1204" width="16" height="10" rx="2" fill="#2d3142" fill-opacity="0.03" stroke="#2d3142" stroke-opacity="0.30" stroke-width="0.8"/>
+      <text x="790" y="1213" fill="#4f5d75" font-size="10" font-family="'Geist', sans-serif">LLM (Gemini)</text>
+    </svg>

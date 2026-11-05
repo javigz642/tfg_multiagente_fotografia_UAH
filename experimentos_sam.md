@@ -248,7 +248,7 @@ Añadir a la lista de congelación de la campaña 1 (`experimentos.md`, §11):
 |---|---|
 | 2.x Estado del arte | GrabCut pasa a antecedente; se añade la segmentación guiada por prompt (SAM 2, Ravi et al., 2024 [X]) |
 | 4.x Tecnologías y modelos | SAM 2.1 base en CPU, con la justificación de reproducibilidad |
-| 6.x Agente 3 | Cálculo (SAM y relleno), condiciones de aplicabilidad (tercer gate), **Figura 28** (redibujar: la actual muestra GrabCut) y el número de campos de evidencia |
+| 6.x Agente 3 | Cálculo (SAM y relleno), condiciones de aplicabilidad (tercer gate) y el número de campos de evidencia. **Figura 28** ya redibujada: sustituir la de la memoria por `docs/diagramas/espacio_aislamiento_pipeline.png` (fuente editable en el `.html` del mismo nombre). Si se recalibran los umbrales, cambiar sus valores en el nodo «Calidad de la segmentación» |
 | 8 | Tabla 11 (pregunta nueva), Tabla 14 (protocolo E-SEG), Tabla 15 (la segmentación es la de SAM), anotación A3 en Instrumentos, amenazas de §9 |
 | 9 | Apartado nuevo para E-SEG; Tablas 18-23 regeneradas; Figuras 35 y 36 regeneradas con la tanda nueva |
 | 9.7 y 10 | «Condición de relleno de la máscara» y «segmentación de propósito general» dejan de ser trabajo futuro y pasan a aportaciones. Lo mismo en `guia_redaccion_9.7_cap10.md` y `redaccion_definitiva_9.7_cap10.md` |
