@@ -72,12 +72,15 @@ MD5 de referencia, para comprobar que se usan exactamente los mismos pesos:
 | `models/yolo/yolo11m.pt` | `2c2bcbb54c3829b20d31a32524ee0f03` |
 | `models/sam/sam2.1_b.pt` | `e57666d5a782119e02af8f0de6713e32` |
 
-**Reproducibilidad de la segmentación.** La máscara de SAM no tiene azar, pero sí depende del
-entorno: cambia ligeramente entre versiones de `ultralytics` (del 0,1 al 0,3 % de los píxeles
-entre 8.4.102 y 8.4.202) y, en algún píxel suelto, entre CPU y GPU (medido con MPS; con CUDA
-no se ha comprobado). Por eso el especialista
-fija `DEVICE_SAM = "cpu"` y las versiones están congeladas en `uv.lock`: **no ejecutar
-`uv lock --upgrade`** sin recalibrar los umbrales de `espacio_aislamiento_tool.py`.
+**Reproducibilidad.** `torch` y `torchvision` están fijados a la misma versión en todas las
+plataformas (`torch==2.6.0`, con CUDA 12.4 fuera de macOS), y el resto de versiones están
+congeladas en `uv.lock`: **no ejecutar `uv lock --upgrade`** sin recalibrar los umbrales de
+`espacio_aislamiento_tool.py`. La máscara de SAM no tiene azar, pero sí depende del entorno:
+cambia ligeramente entre versiones de `ultralytics` (del 0,1 al 0,3 % de los píxeles entre
+8.4.102 y 8.4.202) y, en algún píxel suelto, entre CPU y GPU; por eso el especialista fija
+`DEVICE_SAM = "cpu"`. Aun con las mismas versiones, dos máquinas distintas (GPU frente a CPU,
+ARM frente a x86) no dan resultados idénticos bit a bit, así que los experimentos de la memoria
+se ejecutan en una sola máquina.
 
 ## Ejecución
 

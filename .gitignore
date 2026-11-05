@@ -29,6 +29,8 @@ wheels/
 
 # --- Datos e Imágenes ---
 data/
+# Conjunto de prueba C3 (campaña 2): fuera de data/ para que los tests no lo recorran.
+data_c3/
 
 # Las salidas del sistema son regenerables y no se versionan.
 outputs/

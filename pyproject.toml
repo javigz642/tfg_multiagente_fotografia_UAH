@@ -11,8 +11,8 @@ dependencies = [
     "pillow>=12.2.0",
     "scikit-learn>=1.7.2",
     "streamlit>=1.40.0",
-    "torch>=2.6.0",
-    "torchvision>=0.21.0",
+    "torch==2.6.0",
+    "torchvision==0.21.0",
     "ultralytics>=8.4.102",
 ]
 

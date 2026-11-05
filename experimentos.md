@@ -3,8 +3,9 @@
 > **Campaña 1 (GrabCut).** Este plan corresponde a la campaña ejecutada el 2026-09-28, con el
 > especialista de espacio segmentando con GrabCut. Desde la rama `agente3-sam` el segmentador es
 > SAM 2.1: lo que aquí se dice de GrabCut, de `ITER_GRABCUT`, del gate de relleno «que no existe» y de
-> la caché `mascaras.npz` ya no describe el sistema. El diseño de la revalidación está en
-> [`experimentos_sam.md`](experimentos_sam.md); el resto de este documento sigue vigente.
+> la caché `mascaras.npz` ya no describe el sistema. El plan de la campaña 2 (C2 para calibrar y un
+> conjunto de prueba nuevo, C3) está en [`experimentos_campana2.md`](experimentos_campana2.md); el resto
+> de este documento sigue vigente.
 
 Documento de trabajo para preparar y rehacer la validación experimental del TFG. Recoge el análisis
 del índice «Validación experimental y Resultados (cap. 8 y 9)», el estado real del sistema y de los
