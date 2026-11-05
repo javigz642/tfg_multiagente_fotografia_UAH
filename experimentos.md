@@ -17,13 +17,13 @@ El sistema no emite un juicio estético. Por eso la validación no mide si una c
 artísticamente. Tampoco demuestra que el vector W sea óptimo, porque W es una hipótesis de diseño. Lo
 que se mide son las **garantías de ingeniería** que el sistema dice ofrecer:
 
-| Pregunta | Qué comprueba | Objetivos (§1.4.2) | Resultados |
-|---|---|---|---|
-| **P1 Contexto** | ¿El clasificador asigna el contexto correcto y rechaza lo que no reconoce? | 1.º y 3.º | §9.1 |
-| **P2 Aplicabilidad** | ¿Las condiciones de aplicabilidad cierran una métrica cuando su regla no aplica? | 2.º | §9.2 |
-| **P3 Citas** | ¿Toda cifra del texto sale del informe, sin alterarse y sin citar métricas cerradas? ¿El crítico respeta el arbitraje? | 2.º y 3.º | §9.3 |
-| **P4 Coste y reproducibilidad** | ¿Cuánto cuesta y tarda un análisis, y es reproducible? | 1.º | §9.4 |
-| Interfaz | ¿Es usable? | 4.º | No se valida (no hay estudio con usuarios) |
+| Pregunta | Qué comprueba | Objetivos (§1.4.2) | Experimento | Resultados |
+|---|---|---|---|---|
+| **Contexto** | ¿El clasificador asigna el contexto correcto y rechaza lo que no reconoce? | 1.º y 3.º | E1 | §9.1 |
+| **Aplicabilidad** | ¿Las condiciones de aplicabilidad cierran una métrica cuando su regla no aplica? | 2.º | E2 | §9.2 |
+| **Citas** | ¿Las cifras del texto salen del informe, sin alterarse y sin citar métricas cerradas? ¿El crítico respeta el arbitraje? | 2.º y 3.º | E3 | §9.3 |
+| **Reproducibilidad y coste** | ¿Los registros son fieles a las herramientas? ¿Cuánto cuesta y tarda un análisis? | 1.º | E4 | §9.4 |
+| Interfaz | ¿Es usable? | 4.º | — | No se valida (no hay estudio con usuarios) |
 
 Tampoco se compara con un sistema de agente único.
 
@@ -79,9 +79,9 @@ ejecutando las herramientas, no leyendo los JSON. Las copias del LLM se evalúan
 - **SAM corre en CPU** (`DEVICE_SAM = "cpu"`). La máscara no tiene azar, pero varía en algún píxel suelto
   entre CPU y GPU [verificado].
 - **Por qué no basta con fijar versiones:** con las mismas versiones, dos máquinas no dan resultados
-  idénticos bit a bit. Con torch 2.6.0 en las dos, YOLO detecta sujeto en 61 fotos de C2 en un Mac y
-  en 60 en el equipo Windows [verificado]. La versión única es una garantía adicional; la regla sigue
-  siendo una sola máquina.
+  idénticos bit a bit. Con torch 2.6.0 en las dos, YOLO detecta sujeto en 61 fotos del conjunto de
+  calibración en un Mac y en 60 en el equipo Windows [verificado]. La versión única es una garantía
+  adicional; la regla sigue siendo una sola máquina.
 
 ---
 
@@ -89,21 +89,22 @@ ejecutando las herramientas, no leyendo los JSON. Las copias del LLM se evalúan
 
 | Conjunto | Dónde está | Tamaño | Papel |
 |---|---|---|---|
-| **EVA, prueba** | `Curso_CNN_FineTunning/clasificador_contexto/data/splits/test.csv` + `EVA_together/{image_id}.jpg` | 725 (136 animal, 143 arquitectura, 152 paisaje, 139 producto, 155 retrato) | E1 |
-| **EVA, other** (`sort = 6`) | `.../splits/otro.csv` | 273 | E1: sustituto aproximado (*near-OOD*) de imágenes fuera de distribución |
-| **EVA, validación** | `.../splits/val.csv` | 725 | E1: control del umbral de rechazo |
-| **C2, calibración** | `data/imagen{1..100}.jpg` | 100 fotos de Unsplash | **Solo para ajustar umbrales** (§4) y para la reproducibilidad |
-| **C3, prueba** | `data_prueba/test{1..40}.jpg` | 40 fotos de Unsplash no vistas | **Resultados de E1 (parte externa), E2, E3 y E4** (§5) |
-| **R, reproducibilidad** | `imagen62` (animal), `imagen9` (arquitectura), `imagen35` (paisaje), `imagen86` (producto), `imagen50` (retrato) de C2 | 5 × 3 repeticiones | E4 |
+| **EVA-test** | `Curso_CNN_FineTunning/clasificador_contexto/data/splits/test.csv` + `EVA_together/{image_id}.jpg` | 725 (136 animal, 143 arquitectura, 152 paisaje, 139 producto, 155 retrato) | E1 |
+| **EVA-other** (`sort = 6`) | `.../splits/otro.csv` | 273 | E1: sustituto aproximado (*near-OOD*) de imágenes fuera de distribución |
+| **EVA-val** | `.../splits/val.csv` | 725 | E1: control del umbral de rechazo |
+| **Conjunto de calibración** | `data/imagen{1..100}.jpg` | 100 fotos de Unsplash | **Solo para ajustar umbrales** (§4) y para las fotos de repetición |
+| **Conjunto de prueba** | `data_prueba/test{1..40}.jpg` | 40 fotos de Unsplash no vistas | **Todos los resultados de E1 (parte externa), E2, E3 y E4** (§5) |
+| **Fotos de repetición** | `imagen62` (animal), `imagen9` (arquitectura), `imagen35` (paisaje), `imagen86` (producto), `imagen50` (retrato), del conjunto de calibración | 5 × 3 repeticiones | E4 |
 
 **Por qué hay dos conjuntos de Unsplash.** Si se calibra y se mide sobre las mismas fotos, las tasas de
-error salen optimistas. C2 se usa para ajustar los umbrales y C3, que nadie ha mirado al calibrar, para
-medir. R se toma de C2 porque la reproducibilidad no depende de la calibración.
+error salen optimistas. El conjunto de calibración se usa para ajustar los umbrales y el de prueba, que
+nadie ha mirado al calibrar, para medir. Las fotos de repetición salen del conjunto de calibración porque
+la reproducibilidad no depende de la calibración.
 
-**C2.** Son 100 fotos con selección intencional y estratificada: 18 por categoría y 10 de «otro», con
-subtipos pensados para abrir y cerrar cada condición (Tabla 13 de la memoria). Tienen entre 2,07 y
-25,96 MP. Falta **versionar el manifiesto** `experimentos/manifiesto_C2.csv`, con nombre, MD5,
-dimensiones, URL y autor [pendiente].
+**Conjunto de calibración.** Son 100 fotos con selección intencional y estratificada: 18 por categoría y
+10 de «otro», con subtipos pensados para abrir y cerrar cada condición (Tabla 13 de la memoria). Tienen
+entre 2,07 y 25,96 MP. Falta **versionar el manifiesto** `experimentos/manifiesto_calibracion.csv`, con
+nombre, MD5, dimensiones, URL y autor [pendiente].
 
 **EVA.** No se copian imágenes al repositorio: la ruta va en la configuración. Los pesos del sistema son
 idénticos al checkpoint `fase4_fine_tuning_ligero.pt` del proyecto externo (MD5
@@ -112,12 +113,13 @@ desplegado.
 
 ---
 
-## 4. Calibración sobre C2
+## 4. Calibración de umbrales (conjunto de calibración)
 
-Se hace **antes** de abrir C3, con el método de huecos: se ordena la variable de decisión y se busca
-el salto limpio entre las imágenes que deben abrir y las que deben cerrar. Ante dos huecos igual de
-limpios se toma el más estricto, porque un falso positivo rompe la verificabilidad y un falso negativo
-solo hace callar al sistema. El capítulo 6 muestra la distribución que justifica cada umbral.
+Se hace **antes** de ejecutar nada sobre el conjunto de prueba, con el método de huecos: se ordena la
+variable de decisión y se busca el salto limpio entre las imágenes que deben abrir y las que deben
+cerrar. Ante dos huecos igual de limpios se toma el más estricto, porque un falso positivo rompe la
+verificabilidad y un falso negativo solo hace callar al sistema. El capítulo 6 muestra la distribución
+que justifica cada umbral.
 
 | Componente | Parámetro (valor actual) | Cómo se fija |
 |---|---|---|
@@ -128,17 +130,17 @@ solo hace callar al sistema. El capítulo 6 muestra la distribución que justifi
 | Luz y tono | `RATIO_CROMATICO_MIN = 0.09` | Histograma del ratio con el corte; hay casos pegados a él (0,086; 0,093; 0,099) |
 | Luz y tono | `PESO_MIN_MATIZ = 0.05` | Ablación fusión/filtro con el valor actual |
 | Luz y tono | `UMBRAL_FUSION_MATIZ = 15`, `SAT_MIN` / `VAL_MIN = 0.15` | Solo documentar |
-| Líneas | `LONGITUD_MIN_HORIZONTE = 0.13`, `ANGULO_MAX_HORIZONTE = 10` | Rectángulo de aceptación sobre C2 |
-| Líneas | `APERTURA_MIN_GRADOS = 35` | Histograma de apertura sobre C2 |
+| Líneas | `LONGITUD_MIN_HORIZONTE = 0.13`, `ANGULO_MAX_HORIZONTE = 10` | Rectángulo de aceptación sobre el conjunto de calibración, con la definición amplia del horizonte (§6.2) |
+| Líneas | `APERTURA_MIN_GRADOS = 35` | Histograma de apertura sobre el conjunto de calibración |
 | Líneas | `modelo_nulo_fuga.json` | No depende del corpus; solo documentar |
 | Percepción | `CONF_YOLO_THRESHOLD = 0.75` | Barrido de identidad según el umbral; documentar |
-| Percepción | `BLOB_AREA_MIN/MAX_RATIO` | No se activan en C2: declararlos como no ejercitados |
-| Composición | Escalas de lectura del prompt (margen 0,01/0,15; `d_equilibrio` 0,03/0,12) | Recalcular los percentiles sobre C2 y actualizar `agents.yaml` |
-| Clasificador | `umbral_otro = 0.85` | No se toca; se controla con la partición de validación (E1) |
+| Percepción | `BLOB_AREA_MIN/MAX_RATIO` | No se activan en el conjunto de calibración: declararlos como no ejercitados |
+| Composición | Escalas de lectura del prompt (margen 0,01/0,15; `d_equilibrio` 0,03/0,12) | Recalcular los percentiles sobre el conjunto de calibración y actualizar `agents.yaml` |
+| Clasificador | `umbral_otro = 0.85` | No se toca; se controla con EVA-val (E1) |
 | Nivel 3 | W (versión 1.1) | Hipótesis de diseño: no se calibra |
 
 Para calibrar el Agente 3 hace falta revisar la segmentación (`bien` / `parcial` / `mal`) de las fotos
-`yolo` de C2 sobre las imágenes de verificación del sistema actual.
+`yolo` del conjunto de calibración sobre las imágenes de verificación del sistema actual.
 
 Después de calibrar:
 
@@ -149,21 +151,23 @@ Después de calibrar:
 
 ---
 
-## 5. C3: el conjunto de prueba
+## 5. El conjunto de prueba
 
 ### 5.1 Composición (40 fotos)
 
-La lógica es la misma que la de C2: 7 fotos por categoría y 5 para «otro». En cada categoría hay
-casos en los que cada condición **debería abrirse** y casos en los que **debería cerrarse**. Además se
-refuerzan los dos puntos débiles de la percepción, que son la elección del sujeto y la segmentación
-difícil.
+La lógica es la misma que la del conjunto de calibración: 7 fotos por categoría y 5 para «otro». En
+cada categoría hay casos en los que cada condición **debería abrirse** y casos en los que **debería
+cerrarse**. Además se refuerzan los dos puntos débiles de la percepción, que son la elección del sujeto
+y la segmentación difícil.
+
+Los códigos de fila (A1…O5) solo identifican el objetivo de selección y aparecen en el manifiesto.
 
 **Arquitectura (7)**
 
 | # | Foto | Qué pone a prueba |
 |---|---|---|
 | A1 | Calle o pasillo con un punto de fuga claro | Convergencia abre |
-| A2 | Fachada frontal plana, sin perspectiva | Convergencia cierra; sus horizontales no deben abrir el horizonte |
+| A2 | Fachada frontal plana, sin perspectiva | Convergencia cierra. Con la definición amplia, sus horizontales **sí** cuentan como referencia de nivel |
 | A3 | Contrapicado de un edificio alto (verticales que convergen) | Convergencia, caso límite |
 | A4 | Interior con perspectiva (estación, iglesia, biblioteca) | Convergencia en interior |
 | A5 | Edificio aislado como protagonista (una casa sola) | Sujeto fuera de COCO: falso negativo esperado |
@@ -225,115 +229,175 @@ difícil.
 | O1 | Vehículo sin personas | Rechazo a «otro» y pesos uniformes |
 | O2 | Deporte con varias personas en movimiento | Elección del sujeto; movimiento |
 | O3 | Fuegos artificiales o escena nocturna abstracta | Sin sujeto discreto |
-| O4 | Textura que llena todo el encuadre (hojas, arena, un patrón) | Rama `sin_sujeto_claro`, que **no se da nunca en C2** |
+| O4 | Textura que llena todo el encuadre (hojas, arena, un patrón) | Rama `sin_sujeto_claro`, que **no se da nunca en el conjunto de calibración** |
 | O5 | Escena sin dominante (persona y animal a la par, un mercado) | Contexto ambiguo |
 
-**Comprobación de cobertura.** Antes de cerrar la lista, cuenta cuántas fotos deberían abrir y cuántas
-deberían cerrar cada condición. Se buscan **al menos 4 de cada lado** en las condiciones cromática, de
-horizonte, de convergencia, de identidad y de textura. Si una foto no cumple lo que se esperaba de
-ella, **se queda igual**: el subtipo es un objetivo de selección, no una etiqueta. La etiqueta real la
-da la anotación ciega.
+**Comprobación de cobertura.** Tras la anotación, cuenta cuántas fotos aplican y cuántas no en cada
+condición. Se buscan **al menos 4 de cada lado** en las condiciones cromática, de horizonte, de
+convergencia, de identidad y de textura; si alguna no llega, se declara. Si una foto no cumple lo que se
+esperaba de ella, **se queda igual**: el subtipo es un objetivo de selección, no una etiqueta. La
+etiqueta real la da la anotación ciega.
 
 ### 5.2 Reglas de selección
 
-- **Fuente:** Unsplash, con la misma licencia que C2 y, si es posible, de fotógrafos distintos.
+- **Fuente:** Unsplash, con la misma licencia que el conjunto de calibración y, si es posible, de
+  fotógrafos distintos.
 - **Una búsqueda por fila de la tabla:** se coge la **primera foto que cumpla claramente la
   descripción**, no la que «parece que va a salir bien».
-- **Ninguna foto de C3 pasa por el sistema, la app ni los tests hasta congelar.**
+- **Ninguna foto del conjunto de prueba pasa por el sistema, la app ni los tests hasta congelar.**
   - Se guardan en `data_prueba/`, no en `data/`, porque los tests recorren `data/`.
   - `data_prueba/` está en `.gitignore`.
 - **No se sustituye ninguna foto después de ver resultados.** Si una resulta inválida (corrupta o
-  duplicada de C2), se sustituye con la misma regla y se declara.
-- **Variedad** de orientación, y resolución parecida a la de C2 (de 2 a 26 MP).
-- **Manifiesto** `experimentos/manifiesto_C3.csv` con: nombre (`test1`…`test40`), fila de la tabla,
+  duplicada del conjunto de calibración), se sustituye con la misma regla y se declara.
+- **Variedad** de orientación, y resolución parecida a la del conjunto de calibración (de 2 a 26 MP).
+- **Manifiesto** `experimentos/manifiesto_prueba.csv` con: nombre (`test1`…`test40`), fila de la tabla,
   URL, autor, MD5, dimensiones y fecha de descarga.
 
 **Cómo se hizo (2026-11-05)** [verificado]. La selección la ejecutó un asistente con
-`experimentos/descargar_C3.py` y la API oficial de Unsplash. Las consultas se fijaron antes de buscar;
-en cada fila se revisaron las 15 primeras candidatas por relevancia y se tomó la primera que cumplía
-claramente la descripción. Se descartaron automáticamente las fotos de pago, las que no tenían entre
-2 y 26 MP y las casi idénticas a una de C2 (hash perceptual). La foto elegida y los motivos de cada
-descarte están en `experimentos/seleccion_C3.json` y en el manifiesto. Los nombres `testN` se asignan
-con una permutación de semilla fija, para que el número no delate la categoría. **El manifiesto no se
-abre hasta terminar la anotación A1/A2.**
+`experimentos/descargar_prueba.py` y la API oficial de Unsplash. Las consultas se fijaron antes de
+buscar; en cada fila se revisaron las 15 primeras candidatas por relevancia y se tomó la primera que
+cumplía claramente la descripción. Se descartaron automáticamente las fotos de pago, las que no tenían
+entre 2 y 26 MP y las casi idénticas a una del conjunto de calibración (hash perceptual). La foto elegida
+y los motivos de cada descarte están en `experimentos/seleccion_prueba.json` y en el manifiesto. Los
+nombres `testN` se asignan con una permutación de semilla fija, para que el número no delate la
+categoría. **El manifiesto, `seleccion_prueba.json` y `data_prueba/_seleccion/` no se abren hasta
+terminar la anotación de contexto y de aplicabilidad.**
 
-- **Excepción: P2 es una foto derivada** (`test14.jpg`). En cuatro consultas (60 candidatas) no
-  apareció ningún horizonte inclinado más de 10°. Se tomó la primera candidata válida de la primera
-  consulta de P2, que no está en C3, y se giró 15° con recorte al mayor rectángulo inscrito de la
-  misma proporción (sin esquinas vacías). El ángulo se conoce por construcción. Se declara en el §8.3
-  de la memoria.
-- **Para interpretar E2:** la guía A2 solo pregunta si hay un horizonte legible, no por su ángulo.
-  En P2 la anotación será `si`; si el sistema cierra la métrica por el ángulo, la foto cuenta como
-  falso negativo, que es el error tolerable.
+- **Excepción: P2 es una foto derivada.** En cuatro consultas (60 candidatas) no apareció ningún
+  horizonte inclinado más de 10°. Se tomó la primera candidata válida de la primera consulta de P2, que
+  no está en el conjunto de prueba, y se giró 15° con recorte al mayor rectángulo inscrito de la misma
+  proporción (sin esquinas vacías). El ángulo se conoce por construcción. Se declara en el §8.3 de la
+  memoria.
+- **Para interpretar E2:** la guía de aplicabilidad pregunta si hay una referencia horizontal legible,
+  no por su ángulo. En P2 la anotación será `si`; si el sistema cierra la métrica por el ángulo, la foto
+  cuenta como falso negativo, que es el error tolerable.
 
-### 5.3 Anotación de C3
+### 5.3 Anotación del conjunto de prueba
 
 El autor es el único anotador y sigue la guía del §6.2.
 
-1. **A1 (contexto) y A2 (aplicabilidad), a ciegas**, antes de ejecutar nada.
-2. **Segmentación y protagonista**, solo en las fotos con `fuente = yolo`, después de A2.
+1. **Anotación de contexto y anotación de aplicabilidad, a ciegas**, antes de ejecutar nada.
+2. **Anotación de segmentación y protagonista**, solo en las fotos con `fuente = yolo`, después de la de
+   aplicabilidad.
    - Segmentación: `bien` / `parcial` / `mal`.
    - Protagonista: `si` / `no`.
    - Se revisan sobre las imágenes de verificación del Agente 3. Esta anotación no puede ser ciega a la
-     máscara; A2 sí lo es.
+     máscara; la de aplicabilidad sí lo es.
+3. **Opcional: segundo anotador.** Si otra persona anota la aplicabilidad de 15 fotos, se informa el
+   acuerdo (κ de Cohen) por condición. Reduce el peso de la limitación del anotador único.
 
 ---
 
-## 6. Experimentos
+## 6. Experimentos y criterios de éxito
 
-Criterios de éxito (Tabla 14 de la memoria). Se fijan **antes** de ejecutar y no se relajan después:
+### 6.0 Criterios de éxito (Tabla 14 de la memoria)
 
-| Experimento | Conjunto | Qué se mide | Criterio de éxito |
+Se fijan **antes** de ejecutar sobre el conjunto de prueba y no se relajan después. Todos se escriben con
+«≥» y «≤». Se juzgan sobre la **estimación puntual**; el IC de Wilson al 95 % se informa siempre al lado,
+para que se vea la incertidumbre que deja una muestra de 40 fotos.
+
+| Experimento | Conjunto | Criterios de éxito | Descriptivo (sin umbral) |
 |---|---|---|---|
-| **E1** Clasificador | EVA (prueba, validación, other) y C3 | Exactitud y F1 por clase; cobertura y exactitud con el umbral de 0,85; % enviado a «otro» | F1 ≥ 0,75 en cada clase de EVA prueba; exactitud sobre las aceptadas de C3 ≥ 0,85; ≤ 20 % de C3 enviado a «otro» |
-| **E2** Aplicabilidad | C3 anotado | Matriz abierta/cerrada × aplica/no aplica por condición | 0 falsos positivos por condición |
-| **E3** Citas | T40 (C3 analizado) | Clase de cada cita; controles del crítico; fidelidad de la transcripción | 0 citas a métricas cerradas; ≥ 95 % de citas exactas; 100 % de críticas con las afirmaciones en orden |
-| **E4** Coste y reproducibilidad | T40 y R × 3 | Latencia, tokens, coste, memoria y fallos; identidad entre repeticiones | 100 % de informes transcritos idénticos a la herramienta y arbitraje idéntico en las 3 repeticiones |
+| **E1** Clasificador | EVA-test, EVA-val, EVA-other y conjunto de prueba | (a) F1 ≥ 0,75 en cada clase de EVA-test; (b) exactitud sobre las aceptadas del conjunto de prueba ≥ 0,85; (c) ≤ 20 % de las 35 fotos de las cinco clases enviado a «otro» | Cuántas de las 5 fotos de «otro» se rechazan; tabla de cobertura en EVA-val y EVA-other |
+| **E2** Aplicabilidad | Conjunto de prueba anotado | (a) Precisión de apertura global ≥ 90 %; (b) precisión de apertura ≥ 80 % en cada condición; (c) sensibilidad global ≥ 60 % | Tasa de FP y de FN por condición; horizonte con la definición estrecha |
+| **E3** Citas | Tanda de prueba (40 análisis) | (a) ≥ 95 % de citas exactas; (b) ≤ 1 % de citas a métricas cerradas, en los especialistas y en el crítico por separado; (c) afirmaciones en el orden del arbitraje en ≥ 95 % de las críticas | Resto de controles del crítico; ejecuciones que fallan al primer intento |
+| **E4** Reproducibilidad y coste | Fotos de repetición y tanda de prueba | (a) Capa Python idéntica bit a bit en las 3 ejecuciones (100 %); (b) ≥ 95 % de informes transcritos fieles a la herramienta; (c) arbitraje transcrito igual al recalculado en ≥ 95 % de las críticas | Coste, latencia, memoria, fallos; variabilidad entre las 3 repeticiones del sistema completo |
 
-> La memoria escribe los criterios de E1 con «>» y «<» en la Tabla 14 y con «≥» y «≤» en la Tabla 24.
-> Hay que unificarlos (se recomienda «≥» y «≤»).
+**Veredicto por experimento:** «sí» si cumple todos sus criterios, «en parte» si cumple alguno y «no» si
+no cumple ninguno.
 
-### 6.1 E1: clasificador de contexto (P1) → §9.1
+**Por qué estos criterios.** La primera campaña (sobre el conjunto de calibración, antes de SAM) usó
+criterios absolutos: 0 falsos positivos, 0 citas a métricas cerradas y 100 % de registros idénticos.
+Resultaron inadecuados por dos motivos:
+
+1. **No son medibles con 40 fotos.** Aunque una condición dé 0 falsos positivos sobre 15 negativos, el
+   IC al 95 % de su tasa llega al 20 %. «Cero errores» no demuestra lo que pretende y, en cambio, un solo
+   error lo tumba.
+2. **No son compatibles con un componente no determinista.** El LLM copia los informes y el arbitraje;
+   exigirle el 100 % contradice el propio límite declarado en el §8.
+
+Los nuevos criterios distinguen lo que el sistema garantiza **por construcción** (la capa Python, a la
+que se le sigue exigiendo el 100 %) de lo que garantiza **con una tolerancia** (las decisiones
+heurísticas y las copias del LLM, a las que se les exige un error de como mucho 1 de cada 10 o 1 de
+cada 20). La revisión se hizo el 2026-11-05, **antes de abrir el conjunto de prueba**, y se declara en
+el §8.5 de la memoria.
+
+**Justificación de cada umbral:**
+
+- **E1.** Se mantienen los de la primera campaña. El criterio (c) se calcula ahora sobre las 35 fotos de
+  las cinco clases: las 5 de «otro» están elegidas para ser rechazadas y ocuparían por sí solas 12,5 de
+  los 20 puntos.
+- **E2.** La **precisión de apertura** (VP / (VP + FP)) mide la garantía que se ofrece al usuario: «si el
+  sistema cita una métrica, su regla aplica». El 90 % global admite como mucho 1 apertura indebida de cada
+  10; el 80 % por condición tolera que una condición concreta, con pocas aperturas, tenga algún error
+  más. La sensibilidad mínima evita que el criterio se cumpla cerrándolo todo. Una condición con menos de
+  5 aperturas se informa, pero no se juzga por separado; sí entra en el global.
+- **E3.** Una cita a una métrica cerrada de cada 100 es el mismo orden de tolerancia que el resto. El
+  95 % de citas exactas y de críticas en orden equivale a como mucho 1 error de cada 20 (2 de las 40
+  críticas).
+- **E4.** La capa Python es determinista en una misma máquina, así que ahí el 100 % sí es justo: una
+  diferencia sería un fallo real. La fidelidad de las copias se mide sobre la tanda de prueba (160
+  informes y 40 arbitrajes) y no sobre las 5 fotos de repetición, que dan una muestra demasiado pequeña
+  para un umbral. Las repeticiones quedan como dato descriptivo.
+
+### 6.1 E1: clasificador de contexto → §9.1
 
 - **No usa LLM.** Se hace entero en un notebook en pocos minutos de GPU.
 - **Procedimiento:**
-  1. **EVA prueba, sin umbral:** exactitud, F1 por clase, matriz de confusión e IC del 95 %.
+  1. **EVA-test, sin umbral:** exactitud, F1 por clase, matriz de confusión e IC del 95 %.
      - Transform: Resize 256 → CenterCrop 224 → normalización ImageNet.
      - Sirve también de comprobación de integridad: debe dar 0,8510.
-  2. **EVA prueba + other, con 0,85:** cobertura, exactitud sobre las aceptadas, errores capturados,
-     aciertos perdidos y % de other enviado a «otro».
-  3. **EVA validación + other:** la misma tabla, para comprobar que 0,85 no depende de haberse elegido
-     con la partición de prueba.
-  4. **C3:** exactitud frente a A1 con 6 etiquetas, exactitud sobre las aceptadas, % enviado a
-     «otro», matriz de confusión 6×6 y confianza en C3 frente a EVA.
+  2. **EVA-test + EVA-other, con 0,85:** cobertura, exactitud sobre las aceptadas, errores capturados,
+     aciertos perdidos y % de EVA-other enviado a «otro».
+  3. **EVA-val + EVA-other:** la misma tabla, para comprobar que 0,85 no depende de haberse elegido con
+     EVA-test.
+  4. **Conjunto de prueba:** exactitud frente a la anotación de contexto (6 etiquetas), exactitud sobre
+     las aceptadas, % de las 35 fotos de las cinco clases enviado a «otro», rechazos entre las 5 de
+     «otro», matriz de confusión 6×6 y confianza frente a EVA.
   5. **Grad-CAM:** un acierto y un error del par que más se confunde (producto → arquitectura).
-- Los pasos 1 a 3 no dependen del segmentador ni de C3. Si ya hay predicciones guardadas con los mismos
-  pesos (mismo MD5), no hace falta repetirlos.
-- **Resultados:** `experimentos/resultados/E1/predicciones_{prueba,other,val,C3}.csv`, `metricas.json`,
-  matrices de confusión y Grad-CAM.
-- **Limitaciones:** el umbral se eligió con la partición de prueba; other es *near-OOD*; C3 lo anota un
-  único anotador.
+- Los pasos 1 a 3 no dependen del segmentador ni del conjunto de prueba. Si ya hay predicciones guardadas
+  con los mismos pesos (mismo MD5), no hace falta repetirlos.
+- **Resultados:** `experimentos/resultados/E1/predicciones_{eva_test,eva_other,eva_val,prueba}.csv`,
+  `metricas.json`, matrices de confusión y Grad-CAM.
+- **Limitaciones:** el umbral se eligió con EVA-test; EVA-other es *near-OOD*; el conjunto de prueba lo
+  anota un único anotador.
 
-### 6.2 E2: condiciones de aplicabilidad (P2) → §9.2
+### 6.2 E2: condiciones de aplicabilidad → §9.2
 
-- **No usa API.** Se ejecutan las cuatro herramientas sobre C3 y se cruza cada decisión con la anotación.
-- **Guía de anotación A2.** Se responde `si` / `no` / `dudoso` a cada pregunta (Tabla 15):
+- **No usa API.** Se ejecutan las cuatro herramientas sobre el conjunto de prueba y se cruza cada decisión
+  con la anotación.
+- **Guía de anotación de aplicabilidad.** Se responde `si` / `no` / `dudoso` a cada pregunta (Tabla 15):
 
   | Condición | Métricas | La regla aplica si… |
   |---|---|---|
   | Cromática | `esquema_cromatico` | La imagen tiene color analizable (no es B/N, nocturna ni desaturada) |
-  | Horizonte | `angulo_horizonte` | Hay un horizonte natural legible |
+  | Horizonte (**amplia, principal**) | `angulo_horizonte` | Hay una referencia horizontal legible para juzgar si la foto está nivelada: un horizonte natural **o** una horizontal estructural de la escena (cornisa, línea del suelo, orilla, borde de mesa) que cruza más de la mitad del ancho |
+  | Horizonte (estrecha, secundaria) | `angulo_horizonte` | Hay un horizonte natural legible (cielo contra tierra o mar) |
   | Convergencia | `score_convergencia` | La profundidad se organiza por perspectiva lineal |
-  | Espacio | `ratio_espacio_negativo` | Hay sujeto discreto y, si la fuente es YOLO, la segmentación no es `mal`. En la definición amplia, además, tampoco puede ser `parcial`: tiene que ser `bien` |
+  | Espacio | `ratio_espacio_negativo` | Hay sujeto discreto y, si la fuente es YOLO, la segmentación no es `mal`. En la variante estricta, además, tampoco puede ser `parcial`: tiene que ser `bien` |
   | Nitidez | `ratio_nitidez` | Lo mismo que espacio |
   | Composición | `d_tercios`, `d_centro`, `patron_dominante` | Hay sujeto discreto y, si la fuente es YOLO, el objeto detectado es el protagonista |
 
-  Para el contexto, A1 usa animal / arquitectura / paisaje / producto / retrato / otro.
+  Se anotan por separado las dos preguntas de horizonte (`horizonte_natural` y `horizontal_estructural`);
+  la amplia es `si` si cualquiera de las dos lo es.
+
+  **Por qué la definición amplia es la principal.** `angulo_horizonte` mide si la foto está nivelada.
+  En arquitectura o en bodegón, una cornisa o el borde de una mesa son una referencia legítima para eso,
+  así que abrir la métrica con ellas no es un error. La definición estrecha penalizaba ese comportamiento
+  y concentró la mayoría de los falsos positivos de horizonte de la primera campaña. Se informa como
+  análisis secundario.
+
+  La anotación de contexto usa animal / arquitectura / paisaje / producto / retrato / otro.
 
 - **Definición de error:**
   - **Falso positivo** (grave): la métrica está abierta y la regla no aplica.
   - **Falso negativo** (tolerable): la métrica está cerrada y la regla aplica.
   - Las imágenes `dudoso` se excluyen de la matriz y se cuentan aparte.
+- **Medidas:**
+  - **Precisión de apertura** = VP / (VP + FP): de las veces que la métrica se abre, cuántas aplica.
+    Global (sumando las 6 condiciones) y por condición.
+  - **Sensibilidad** = VP / (VP + FN): de las veces que la regla aplica, cuántas se abre. Global.
+  - Tasa de FP = FP / (FP + VN) y tasa de FN, por condición, con IC de Wilson.
 - **Procedimiento:**
   1. Ejecutar los 4 engines sobre las 40 fotos. Extraer por imagen la `confianza`, el motivo de cierre
      y la variable de decisión de cada métrica.
@@ -341,15 +405,16 @@ Criterios de éxito (Tabla 14 de la memoria). Se fijan **antes** de ejecutar y n
      con la del código (40 × 6 = 240 decisiones).
   3. **Tabla 1:** % de fotos con cada métrica abierta (con IC), reparto de `fuente`
      (`yolo` / `saliencia` / `sin_sujeto_claro`), cobertura por dimensión y motivos de cierre.
-  4. **Tabla 2:** por condición, VP, FP, FN, VN y dudosas; tasa de FP con IC de Wilson al 95 %; tasa de
-     FN; lista de imágenes de cada error.
-- **Resultados:** `experimentos/resultados/E2/gates_C3.csv` (una fila por imagen y métrica), `tabla1.csv`,
-  `tabla2.csv`, `fp_fn.json` y hojas de revisión de cada falso positivo.
+  4. **Tabla 2:** por condición, VP, FP, FN, VN y dudosas; precisión de apertura, tasa de FP con IC y
+     tasa de FN; lista de imágenes de cada error. Una fila adicional con el horizonte estrecho y otra con
+     la variante estricta de espacio y nitidez.
+- **Resultados:** `experimentos/resultados/E2/gates_prueba.csv` (una fila por imagen y métrica),
+  `tabla1.csv`, `tabla2.csv`, `fp_fn.json` y hojas de revisión de cada falso positivo.
 
-### 6.3 E3: fidelidad de las citas (P3) → §9.3
+### 6.3 E3: fidelidad de las citas → §9.3
 
-- **Tanda T40:** las 40 fotos de C3, una vez cada una, con lectura visual. Las ejecuciones las hace el
-  lanzador (§7) y el análisis un notebook.
+- **Tanda de prueba:** las 40 fotos del conjunto de prueba, una vez cada una, con lectura visual. Las
+  ejecuciones las hace el lanzador (§7) y el análisis un notebook.
 - **Verificador** (`experimentos/comun.py`):
   - **Extracción:** cada cita `[campo = valor]` de los diagnósticos y de la crítica, incluidos los
     valores tupla de los campos `coord_*`.
@@ -371,25 +436,34 @@ Criterios de éxito (Tabla 14 de la memoria). Se fijan **antes** de ejecutar y n
     Citar `confianza`, `score_segmentacion`, `relleno_bbox` o `segmentacion_fiable` **no** es
     violación: son la justificación del cierre, no la métrica.
   - **Controles del crítico:**
-    - arbitraje transcrito igual al recalculado;
-    - afirmaciones en el orden de dimensiones del arbitraje;
+    - afirmaciones en el orden de dimensiones del arbitraje (criterio de éxito);
     - una salvedad por cada métrica cerrada;
     - etiqueta igual a la del orquestador;
     - síntesis sin cifras fuera de las citas;
     - `campos_citados` coherente con lo citado.
-  - **Fidelidad de transcripción:** se recalcula cada herramienta y se compara campo a campo con el
-    `informe` del JSON. En el Agente 3 son 10 campos: uno booleano y dos que pueden ser `null`.
 - **Métricas:**
   - por autor (4 especialistas y crítico): nº de citas, % exactas, truncadas, alteradas y citas a
     cerradas;
   - cumplimiento de cada control del crítico;
-  - informes transcritos fieles;
   - ejecuciones que fallan en el primer intento.
 - **Una ejecución que falla se repite y el fallo se contabiliza.**
 
-### 6.4 E4: coste, latencia y reproducibilidad (P4) → §9.4
+### 6.4 E4: reproducibilidad y coste → §9.4
 
-- **Coste y latencia (T40):**
+- **Determinismo de la capa Python (sin API, criterio a):** ejecutar los engines 3 veces sobre las fotos
+  de repetición, en el mismo proceso y en procesos distintos, y comparar los informes bit a bit. Separa
+  la variabilidad de las herramientas de la del LLM.
+- **Fidelidad de las copias (tanda de prueba, criterios b y c):**
+  - se recalcula cada herramienta y se compara campo a campo con el `informe` del JSON (160 informes).
+    En el Agente 3 son 10 campos: uno booleano y dos que pueden ser `null`;
+  - se recalcula el arbitraje y se compara con el que transcribe el crítico (40 críticas).
+- **Repeticiones del sistema completo (descriptivo):**
+  - Las 5 fotos de repetición se analizan 3 veces, en una tanda aparte.
+  - La lectura visual se reutiliza de la primera repetición, así que la variabilidad medida es la de
+    los especialistas y el crítico.
+  - Se informa: informes transcritos idénticos a la herramienta; arbitraje y etiqueta iguales en las 3
+    repeticiones; qué parte de las citas se repite.
+- **Coste y latencia (tanda de prueba, descriptivo):**
   - tiempo total y por agente;
   - tokens de entrada, salida y razonamiento por modelo;
   - USD por análisis con las tarifas oficiales consultadas en una fecha concreta [pendiente: consultarlas
@@ -398,21 +472,11 @@ Criterios de éxito (Tabla 14 de la memoria). Se fijan **antes** de ejecutar y n
   - fallos y reintentos.
 
   La primera ejecución de cada proceso incluye la carga de los modelos y se excluye de la latencia.
-  Coste y latencia son descriptivos y no tienen umbral.
-- **Reproducibilidad (R × 3):**
-  - Las 5 fotos de R se analizan 3 veces, en una tanda aparte.
-  - La lectura visual se reutiliza de la primera repetición, así que la variabilidad medida es la de
-    los especialistas y el crítico.
-  - Se mide: informes transcritos idénticos a la herramienta; arbitraje y etiqueta iguales en las 3
-    repeticiones; qué parte de las citas se repite.
-- **Determinismo de la capa Python (sin API):** ejecutar los engines 3 veces sobre R, en el mismo
-  proceso y en procesos distintos, y comparar los informes bit a bit. Separa la variabilidad de las
-  herramientas de la del LLM.
 - **Presupuesto:** (40 + 15) análisis × ~0,13 USD ≈ **7,4 USD** sin descontar la caché.
 
 ### 6.5 Casos ilustrativos → §9.5
 
-Tres casos de C3, **elegidos a partir de los resultados de E2 y E3**, no antes:
+Tres casos del conjunto de prueba, **elegidos a partir de los resultados de E2 y E3**, no antes:
 
 - un acierto típico;
 - un cierre correcto o un falso negativo por la cobertura de COCO;
@@ -422,7 +486,7 @@ Se muestran las imágenes de verificación del sistema y un extracto de la crít
 
 ### 6.6 Resumen → §9.6
 
-Tabla final: pregunta → criterio → resultado (sí / no / en parte) → cifra clave. Se genera leyendo
+Tabla final: pregunta → criterio → resultado (sí / en parte / no) → cifra clave. Se genera leyendo
 `experimentos/resultados/E*/metricas.json`, no se escribe a mano.
 
 ---
@@ -431,10 +495,10 @@ Tabla final: pregunta → criterio → resultado (sí / no / en parte) → cifra
 
 | Instrumento | Qué hace | Estado |
 |---|---|---|
-| `experimentos/config_experimentos.yaml` | Rutas (EVA externo, `data/`, `data_prueba/`), lista R, criterios de éxito y tarifas | [pendiente] |
+| `experimentos/config_experimentos.yaml` | Rutas (EVA externo, `data/`, `data_prueba/`), fotos de repetición, criterios de éxito y tarifas | [pendiente] |
 | `experimentos/comun.py` | Utilidades: localizar la raíz, leer CSV con codificación y separador robustos, medir las condiciones, verificador de citas, IC de Wilson, comprobar la congelación | [pendiente] |
 | `experimentos/ejecutar_lote.py` | Lanzador por lotes (abajo) | [pendiente] |
-| Plantillas de anotación | CSV de A1, A2 y segmentación/protagonista, con la guía del §6.2 | [pendiente] |
+| Plantillas de anotación | Excel de contexto + aplicabilidad (ciega, sobre `data_prueba/`) y de segmentación/protagonista, con la guía del §6.2. Se puede adaptar `experimentos/plantilla_revision.py` | [pendiente] |
 
 **Lanzador por lotes.** Para cada imagen de una lista:
 
@@ -461,16 +525,16 @@ declararlo.
 experimentos/
 ├── config_experimentos.yaml
 ├── congelacion.json              # generado al congelar
-├── manifiesto_C2.csv / manifiesto_C3.csv
-├── anotaciones/                  # A1, A2 y segmentación de C3 (CSV utf-8, separador ',')
+├── manifiesto_calibracion.csv / manifiesto_prueba.csv
+├── anotaciones/                  # contexto, aplicabilidad y segmentación del conjunto de prueba
 ├── comun.py
 ├── ejecutar_lote.py
 ├── 00_preparacion.ipynb          # manifiestos, plantillas, validación de anotaciones, congelación
-├── 01_calibracion_C2.ipynb       # apoyo al cap. 6: distribuciones con el umbral y tabla de constantes
+├── 01_calibracion.ipynb          # apoyo al cap. 6: distribuciones con el umbral y tabla de constantes
 ├── E1_clasificador.ipynb
 ├── E2_aplicabilidad.ipynb
 ├── E3_citas.ipynb
-├── E4_coste_reproducibilidad.ipynb
+├── E4_reproducibilidad_coste.ipynb
 ├── E5_casos_y_resumen.ipynb
 └── resultados/{E1,E2,E3,E4,E5}/
 ```
@@ -479,16 +543,17 @@ experimentos/
 
 ## 8. Límites de la validez (§8.6)
 
-- **Anotador único.** El contexto y la aplicabilidad los anota el autor.
-- **Tamaño de C3.** Con 40 imágenes, los intervalos de confianza son anchos.
-- **Selección intencional.** C2 y C3 contienen ejemplos claros de cada categoría y no representan las
-  fotos de un usuario cualquiera.
-- **other es solo una aproximación** a un conjunto fuera de distribución.
-- **El umbral del clasificador se eligió con la partición de prueba de EVA.** Se controla con la de
-  validación.
-- **LLM no determinista.** Hay una sola ejecución por imagen; la variabilidad solo se mide en R y con la
-  lectura visual fija.
-- **Anotación acotada.** Solo se anota el horizonte natural, no las horizontales estructurales.
+- **Anotador único.** El contexto y la aplicabilidad los anota el autor (salvo el segundo anotador
+  opcional del §5.3).
+- **Tamaño del conjunto de prueba.** Con 40 imágenes, los intervalos de confianza son anchos; por eso los
+  criterios son tolerancias y no «cero errores».
+- **Selección intencional.** Los dos conjuntos de Unsplash contienen ejemplos claros de cada categoría y
+  no representan las fotos de un usuario cualquiera.
+- **EVA-other es solo una aproximación** a un conjunto fuera de distribución.
+- **El umbral del clasificador se eligió con EVA-test.** Se controla con EVA-val.
+- **LLM no determinista.** Hay una sola ejecución por imagen; la variabilidad solo se mide en las fotos de
+  repetición y con la lectura visual fija.
+- **Una foto derivada.** P2 se giró a propósito porque no apareció ningún horizonte inclinado natural.
 - **Una sola máquina.** Los resultados bit a bit no son portables a otro hardware (§2.3).
 - **Coste aproximado.** Se calcula con las tarifas de una fecha y sin descontar la caché, así que es una
   cota superior.
@@ -505,26 +570,27 @@ Se guarda en `experimentos/congelacion.json`:
   - `models/yolo/yolo11m.pt` (`2c2bcbb54c3829b20d31a32524ee0f03`);
   - `models/sam/sam2.1_b.pt` (`e57666d5a782119e02af8f0de6713e32`);
   - `parametros/*.json` y `config/*.yaml`;
-  - los manifiestos de C2 y C3.
+  - `manifiesto_calibracion.csv` y `manifiesto_prueba.csv`.
 - [ ] Valores de todas las constantes del §4.
 - [ ] Modelos de Gemini, `FLAG_CRITICO_VE_IMAGEN` y la versión del prompt de la lectura visual.
 - [ ] Máquina, GPU, CUDA, Python y versiones de los paquetes (`torch 2.6.0+cu124`,
       `ultralytics 8.4.102`…).
-- [ ] Criterios de éxito escritos en `config_experimentos.yaml`.
-- [ ] Lista de C3 cerrada y anotaciones A1 y A2 de C3 hechas.
+- [ ] Criterios de éxito del §6.0 escritos en `config_experimentos.yaml`.
+- [ ] Conjunto de prueba cerrado y anotaciones de contexto y aplicabilidad hechas.
 
 ---
 
 ## 10. Orden de trabajo
 
-1. Elegir y descargar C3 en `data_prueba/` y crear el manifiesto, **sin pasar ninguna foto por el sistema**.
-2. Anotar A1 y A2 de C3 a ciegas.
-3. Calibrar sobre C2 (§4): actualizar el código, los comentarios, `agents.yaml` y la Figura 28, y
-   ejecutar `tests/`.
+1. ~~Elegir y descargar el conjunto de prueba en `data_prueba/` y crear el manifiesto, **sin pasar
+   ninguna foto por el sistema**.~~ Hecho el 2026-11-05.
+2. Anotar contexto y aplicabilidad del conjunto de prueba a ciegas.
+3. Calibrar sobre el conjunto de calibración (§4): actualizar el código, los comentarios, `agents.yaml` y
+   la Figura 28, y ejecutar `tests/`.
 4. Preparar los instrumentos (§7) y congelar (§9).
 5. Sin API: E1, E2 y el determinismo de E4. Anotar la segmentación y el protagonista de las fotos `yolo`
-   de C3.
-6. Con API, en la máquina Windows: T40 y después R × 3.
+   del conjunto de prueba.
+6. Con API, en la máquina Windows: tanda de prueba y después las repeticiones.
 7. E3, E4, casos ilustrativos y resumen. Actualizar la memoria (§11).
 
 ---
@@ -535,12 +601,13 @@ Se guarda en `experimentos/congelacion.json`:
 |---|---|
 | 4.x Tecnologías | Añadir SAM 2.1 base, en CPU por reproducibilidad, con su cita (Ravi et al., 2024) |
 | 6.x Agente 3 | Máscara con SAM; condición de segmentación fiable (score y relleno); informe de 10 campos. Sustituir la **Figura 28** por `docs/diagramas/espacio_aislamiento_pipeline.png` |
-| 6.x Umbrales | Distribuciones y valores calibrados sobre C2 |
-| 8.3 Conjuntos (Tablas 12 y 13) | C2 como conjunto de calibración; C3 como conjunto de prueba, con su composición (§5.1) |
+| 6.x Umbrales | Distribuciones y valores calibrados sobre el conjunto de calibración |
+| 8.3 Conjuntos (Tablas 12 y 13) | Conjunto de calibración (`data/`, 100 fotos) y conjunto de prueba (`data_prueba/`, 40 fotos), con su composición (§5.1) y la foto derivada P2 |
 | 8.4 Instrumentos | Añadir la RAM máxima al registro |
-| 8.5 Protocolos (Tabla 14) | Los experimentos se miden sobre C3; unificar «≥» / «≤» |
-| 8.6 Límites | Sustituir «umbrales ajustados sobre el mismo corpus» por «tamaño de C3» y «una sola máquina» |
-| 9 | Todos los resultados sobre C3; regenerar las tablas y las Figuras 35 a 37 |
+| 8.5 Protocolos (Tabla 14) | Sustituir por la tabla del §6.0, con «≥» / «≤», y una frase que declare la revisión de los criterios antes de abrir el conjunto de prueba |
+| 8.5 Guía de anotación (Tabla 15) | Horizonte con la definición amplia como principal y la estrecha como secundaria |
+| 8.6 Límites | Sustituir «umbrales ajustados sobre el mismo corpus» por «tamaño del conjunto de prueba», «una foto derivada» y «una sola máquina» |
+| 9 | Todos los resultados sobre el conjunto de prueba; precisión de apertura en E2; regenerar las tablas y las Figuras 35 a 37. Tabla 24 con «sí / en parte / no» |
 | 9.7 y 10 | Quitar del trabajo futuro la «condición de relleno de la máscara» y la «segmentación de propósito general» |
 
 **Por qué SAM y no GrabCut.** Basta una frase en el apartado del Agente 3 (o en 4.x), como decisión de

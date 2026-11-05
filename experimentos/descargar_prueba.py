@@ -1,11 +1,11 @@
-"""Selección y descarga del conjunto de prueba C3 (40 fotos de Unsplash) en `data_prueba/`.
+"""Selección y descarga del conjunto de prueba (40 fotos de Unsplash) en `data_prueba/`.
 
 Aplica las reglas del §5.2 de `experimentos.md`:
   - una búsqueda por fila de la tabla del §5.1, con la consulta fijada aquí ANTES de buscar;
   - de los resultados, por orden de relevancia, se elige la PRIMERA foto que cumple
     claramente la descripción de la fila;
   - se descartan automáticamente: fotos Unsplash+ (de pago), fotos fuera de 2–26 MP
-    (rango de C2) y fotos casi idénticas a alguna de `data/` (C2) o a otra ya elegida;
+    (rango del conjunto de calibración) y fotos casi idénticas a alguna de `data/` o a otra ya elegida;
   - ninguna foto pasa por el sistema: aquí solo se calcula un hash perceptual con PIL.
 
 Uso responsable de la API (https://unsplash.com/api-terms):
@@ -16,9 +16,9 @@ Uso responsable de la API (https://unsplash.com/api-terms):
   - el manifiesto guarda autor y enlace para la atribución.
 
 Subcomandos (desde la raíz del proyecto):
-    uv run python experimentos/descargar_C3.py buscar      # búsquedas pendientes + hojas de contacto
-    uv run python experimentos/descargar_C3.py hojas       # rehace las hojas sin llamar a la API
-    uv run python experimentos/descargar_C3.py descargar   # baja las elegidas en seleccion_C3.json
+    uv run python experimentos/descargar_prueba.py buscar      # búsquedas pendientes + hojas de contacto
+    uv run python experimentos/descargar_prueba.py hojas       # rehace las hojas sin llamar a la API
+    uv run python experimentos/descargar_prueba.py descargar   # baja las elegidas en seleccion_prueba.json
 """
 from __future__ import annotations
 
@@ -38,11 +38,11 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageOps
 
 RAIZ = Path(__file__).resolve().parents[1]
-DIR_C2 = RAIZ / "data"
-DIR_C3 = RAIZ / "data_prueba"
-DIR_CACHE = DIR_C3 / "_seleccion"          # respuestas de la API, miniaturas y hojas (no versionado)
-FICHERO_SELECCION = RAIZ / "experimentos" / "seleccion_C3.json"
-FICHERO_MANIFIESTO = RAIZ / "experimentos" / "manifiesto_C3.csv"
+DIR_CALIBRACION = RAIZ / "data"
+DIR_PRUEBA = RAIZ / "data_prueba"
+DIR_CACHE = DIR_PRUEBA / "_seleccion"          # respuestas de la API, miniaturas y hojas (no versionado)
+FICHERO_SELECCION = RAIZ / "experimentos" / "seleccion_prueba.json"
+FICHERO_MANIFIESTO = RAIZ / "experimentos" / "manifiesto_prueba.csv"
 
 API = "https://api.unsplash.com"
 USER_AGENT = "tfg-multiagente-fotografia/1.0 (seleccion de conjunto de prueba)"
@@ -166,12 +166,12 @@ def hamming(a: int, b: int) -> int:
     return bin(a ^ b).count("1")
 
 
-def hashes_C2() -> dict[str, int]:
-    cache = DIR_CACHE / "dhash_C2.json"
+def hashes_calibracion() -> dict[str, int]:
+    cache = DIR_CACHE / "dhash_calibracion.json"
     if cache.exists():
         return {k: int(v) for k, v in json.loads(cache.read_text()).items()}
     hs = {}
-    for f in sorted(DIR_C2.glob("*.jp*g")):
+    for f in sorted(DIR_CALIBRACION.glob("*.jp*g")):
         with Image.open(f) as im:
             im.draft("RGB", (256, 256))
             hs[f.name] = dhash(im)
@@ -205,7 +205,7 @@ def buscar() -> None:
     hojas()
 
 
-def _filtros(c: dict, h: int | None, hs_c2: dict[str, int], hs_elegidas: dict[str, int]) -> list[str]:
+def _filtros(c: dict, h: int | None, hs_calibracion: dict[str, int], hs_elegidas: dict[str, int]) -> list[str]:
     motivos = []
     if c.get("premium") or c.get("plus"):
         motivos.append("Unsplash+")
@@ -213,9 +213,9 @@ def _filtros(c: dict, h: int | None, hs_c2: dict[str, int], hs_elegidas: dict[st
     if not MP_MIN <= mp <= MP_MAX:
         motivos.append(f"{mp:.0f} MP")
     if h is not None:
-        d2 = min(((hamming(h, v), k) for k, v in hs_c2.items()), default=(99, ""))
+        d2 = min(((hamming(h, v), k) for k, v in hs_calibracion.items()), default=(99, ""))
         if d2[0] <= DIST_DUPLICADO:
-            motivos.append(f"dup C2 {d2[1]}")
+            motivos.append(f"dup calibracion {d2[1]}")
         for fila, v in hs_elegidas.items():
             if hamming(h, v) <= DIST_DUPLICADO:
                 motivos.append(f"dup {fila}")
@@ -224,7 +224,7 @@ def _filtros(c: dict, h: int | None, hs_c2: dict[str, int], hs_elegidas: dict[st
 
 def hojas() -> None:
     """Una hoja de contacto por fila con las candidatas numeradas por relevancia."""
-    hs_c2 = hashes_C2()
+    hs_calibracion = hashes_calibracion()
     dir_min = DIR_CACHE / "miniaturas"
     dir_min.mkdir(exist_ok=True)
     resumen = {}
@@ -239,7 +239,7 @@ def hojas() -> None:
                 f_min.write_bytes(_bajar(c["urls"]["small"]))   # CDN, sin cuota
             im = Image.open(f_min).convert("RGB")
             h = dhash(im)
-            motivos = _filtros(c, h, hs_c2, {})
+            motivos = _filtros(c, h, hs_calibracion, {})
             celdas.append((pos, c, im, motivos, h))
         resumen.setdefault(fila, {}).update({c["id"]: str(h) for _, c, _, _, h in celdas})
         sufijo = "" if n == 1 else f"_{n}"
@@ -283,9 +283,9 @@ def rotar_y_recortar(im: Image.Image, grados: float) -> Image.Image:
 
 
 def descargar() -> None:
-    """Baja las fotos elegidas en seleccion_C3.json y escribe el manifiesto."""
+    """Baja las fotos elegidas en seleccion_prueba.json y escribe el manifiesto."""
     sel = _leer_seleccion()
-    hs_c2 = hashes_C2()
+    hs_calibracion = hashes_calibracion()
     orden = [f[0] for f in FILAS]
     numeros = list(range(1, len(FILAS) + 1))
     random.Random(SEMILLA_NUMERACION).shuffle(numeros)
@@ -299,7 +299,7 @@ def descargar() -> None:
             elegida = sel[fila]
             n = elegida.get("consulta_n", 1)
             c = next(x for x in _candidatas(fila, n) if x["id"] == elegida["id"])
-            destino = DIR_C3 / f"{nombre_de[fila]}.jpg"
+            destino = DIR_PRUEBA / f"{nombre_de[fila]}.jpg"
             meta = DIR_CACHE / f"descarga_{fila}.json"
             grados = elegida.get("rotacion_grados")
             # Foto derivada: el original se guarda aparte y en data_prueba/ va la versión girada.
@@ -319,7 +319,7 @@ def descargar() -> None:
             with Image.open(io.BytesIO(datos)) as im:
                 ancho, alto = ImageOps.exif_transpose(im).size
                 h = dhash(im)
-            motivos = _filtros(c, h, hs_c2, hs_elegidas)
+            motivos = _filtros(c, h, hs_calibracion, hs_elegidas)
             if motivos:
                 print(f"  ¡AVISO {fila}! {motivos}")
             hs_elegidas[fila] = h

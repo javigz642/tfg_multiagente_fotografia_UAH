@@ -238,6 +238,6 @@
   "posicion": 2,
   "id": "oQl0eVYd_n8",
   "rotacion_grados": 15,
-  "descartes": "FOTO DERIVADA: en las 4 consultas («tilted horizon ocean», «dutch angle landscape», «dutch angle ocean», «tilted horizon sunset») ninguna candidata tenía el horizonte inclinado más de 10°. Se toma la primera candidata válida de la consulta 1 (#1 descartada por duplicado de C2 imagen23.jpg) y se gira 15°."
+  "descartes": "FOTO DERIVADA: en las 4 consultas («tilted horizon ocean», «dutch angle landscape», «dutch angle ocean», «tilted horizon sunset») ninguna candidata tenía el horizonte inclinado más de 10°. Se toma la primera candidata válida de la consulta 1 (#1 descartada por duplicado del conjunto de calibración imagen23.jpg) y se gira 15°."
  }
 }

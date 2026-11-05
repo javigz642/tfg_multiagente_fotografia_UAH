@@ -33,7 +33,7 @@ SUBCARPETA = "espacio_aislamiento"
 
 # --- Segmentación ---
 # SAM 2.1 (base) de Ultralytics con el rect del bbox como prompt. Sustituye a GrabCut, que en
-# C2 devolvía máscaras vacías o desbordadas SIN AVISAR (imagen51: 0 px y las dos métricas
+# el conjunto de calibración (data/) devolvía máscaras vacías o desbordadas SIN AVISAR (imagen51: 0 px y las dos métricas
 # abiertas con confianza 1). Además de una máscara más fiel, SAM devuelve una PUNTUACIÓN: la
 # calidad que el propio modelo predice para su máscara. Eso permite un gate de calidad que
 # GrabCut no podía tener. Los pesos (154 MB) se descargan solos a esta ruta la primera vez.
@@ -81,7 +81,7 @@ MARGEN_FRONTERA_RATIO = 0.01
 # es una escena casi sin detalle, que es literalmente lo que esta condición describe. Ante dos
 # huecos igual de limpios se toma el más estricto, mismo criterio que el percentil 99 del
 # Agente 2: un falso positivo rompe la verificabilidad, un falso negativo solo hace callar.
-# PENDIENTE DE RECALIBRAR sobre C2 con las máscaras de SAM (experimentos.md, §4); las cifras de
+# PENDIENTE DE RECALIBRAR sobre el conjunto de calibración (data/) con las máscaras de SAM (experimentos.md, §4); las cifras de
 # este comentario están desactualizadas (imagen14 es ahora un tren). Valor provisional: 50.
 VAR_LAPLACIANO_MIN = 50.0
 
