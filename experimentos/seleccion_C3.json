@@ -1,0 +1,243 @@
+{
+ "A1": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "1xQa2_rLC68",
+  "descartes": ""
+ },
+ "A2": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "B1yRgQ2zAaw",
+  "descartes": ""
+ },
+ "A3": {
+  "consulta_n": 1,
+  "posicion": 4,
+  "id": "mklT0zc47PI",
+  "descartes": "#1-#3: varios edificios; la fila pide un edificio alto"
+ },
+ "A4": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "Y7pijhr5oqU",
+  "descartes": ""
+ },
+ "A5": {
+  "consulta_n": 1,
+  "posicion": 2,
+  "id": "GAkJ2oAIH3k",
+  "descartes": "#1: 42 MP"
+ },
+ "A6": {
+  "consulta_n": 1,
+  "posicion": 2,
+  "id": "_OYIxRbFBNw",
+  "descartes": "#1: escena abstracta, no se reconoce claramente arquitectura"
+ },
+ "A7": {
+  "consulta_n": 1,
+  "posicion": 7,
+  "id": "GNZM0Vvpchw",
+  "descartes": "#1-#5: más de 26 MP; #6: no hay ninguna persona visible"
+ },
+ "P1": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "n7a2OJDSZns",
+  "descartes": ""
+ },
+ "P3": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "sp-p7uuT0tw",
+  "descartes": ""
+ },
+ "P4": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "mgfcRci18So",
+  "descartes": ""
+ },
+ "P5": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "4jSNPP4d2Z8",
+  "descartes": ""
+ },
+ "P6": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "kbKEuU-YEIw",
+  "descartes": ""
+ },
+ "P7": {
+  "consulta_n": 1,
+  "posicion": 4,
+  "id": "PYXUUsM4E9c",
+  "descartes": "#1: tres caballos (la fila pide un animal); #2: 30 MP; #3: el caballo no es pequeño"
+ },
+ "R1": {
+  "consulta_n": 1,
+  "posicion": 2,
+  "id": "C1q4fP3dLf8",
+  "descartes": "#1: toda la imagen movida, no solo el fondo desenfocado"
+ },
+ "R2": {
+  "consulta_n": 1,
+  "posicion": 5,
+  "id": "53ouhY5koKY",
+  "descartes": "#1, #2, #4: más de 26 MP; #1-#4: pared sin persona"
+ },
+ "R3": {
+  "consulta_n": 1,
+  "posicion": 2,
+  "id": "Q-xrCXIY3Vo",
+  "descartes": "#1: 42 MP"
+ },
+ "R4": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "_hQfqHt0MTg",
+  "descartes": ""
+ },
+ "R5": {
+  "consulta_n": 1,
+  "posicion": 3,
+  "id": "J381-UAGpBQ",
+  "descartes": "#1-#2: fondo oscuro pero rostro iluminado de forma uniforme, sin sombra parcial"
+ },
+ "R6": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "xOjzehJ49Hk",
+  "descartes": ""
+ },
+ "R7": {
+  "consulta_n": 1,
+  "posicion": 2,
+  "id": "Q_Sei-TqSlc",
+  "descartes": "#1: 54 MP"
+ },
+ "N1": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "qN2sDnMbabg",
+  "descartes": ""
+ },
+ "N2": {
+  "consulta_n": 1,
+  "posicion": 3,
+  "id": "2A8YO-cBFkw",
+  "descartes": "#1: animales apenas visibles tras la ventanilla de un coche; #2: varias vacas (la fila pide un animal)"
+ },
+ "N3": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "a7bdqjeG6M4",
+  "descartes": ""
+ },
+ "N4": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "xUUZcpQlqpM",
+  "descartes": ""
+ },
+ "N5": {
+  "consulta_n": 1,
+  "posicion": 10,
+  "id": "yfg64UUG4EU",
+  "descartes": "#1-#9: el animal se distingue claramente del fondo (#6 además 45 MP)"
+ },
+ "N6": {
+  "consulta_n": 1,
+  "posicion": 2,
+  "id": "QHo9JLbYdPs",
+  "descartes": "#1: el gato está sobre la valla, no detrás"
+ },
+ "N7": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "nbklTnbXZ68",
+  "descartes": ""
+ },
+ "D1": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "XtUd5SiX464",
+  "descartes": ""
+ },
+ "D2": {
+  "consulta_n": 2,
+  "posicion": 4,
+  "id": "nDd3dIkkOLo",
+  "descartes": "consulta 1: #1-#2 más de 26 MP, #3-#15 no son blanco sobre blanco; consulta 2: #1-#3 fondo blanco sin objeto (#2 además 46 MP)"
+ },
+ "D3": {
+  "consulta_n": 2,
+  "posicion": 6,
+  "id": "8F8LVnS1HVE",
+  "descartes": "consulta 1: renders abstractos, no objetos (#7 y #12 además más de 26 MP); consulta 2: #1-#4 frasco rojo, no oscuro; #5 30 MP"
+ },
+ "D4": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "uluH5a0sRdw",
+  "descartes": ""
+ },
+ "D5": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "Y_bxfTa_iUA",
+  "descartes": ""
+ },
+ "D6": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "OUqsj-zMCbw",
+  "descartes": ""
+ },
+ "D7": {
+  "consulta_n": 1,
+  "posicion": 2,
+  "id": "FxGfjHNrsnI",
+  "descartes": "#1: libro girado, no llena su caja"
+ },
+ "O1": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "xBRQfR2bqNI",
+  "descartes": ""
+ },
+ "O2": {
+  "consulta_n": 1,
+  "posicion": 3,
+  "id": "iiwYpGkbDgM",
+  "descartes": "#1: jugadores diminutos de noche, el deporte no se aprecia con claridad; #2: 28 MP"
+ },
+ "O3": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "RLs8LZcONCA",
+  "descartes": ""
+ },
+ "O4": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "xljtGZ2-P3Y",
+  "descartes": ""
+ },
+ "O5": {
+  "consulta_n": 1,
+  "posicion": 1,
+  "id": "NAjYWkVPwnc",
+  "descartes": ""
+ },
+ "P2": {
+  "consulta_n": 1,
+  "posicion": 2,
+  "id": "oQl0eVYd_n8",
+  "rotacion_grados": 15,
+  "descartes": "FOTO DERIVADA: en las 4 consultas («tilted horizon ocean», «dutch angle landscape», «dutch angle ocean», «tilted horizon sunset») ninguna candidata tenía el horizonte inclinado más de 10°. Se toma la primera candidata válida de la consulta 1 (#1 descartada por duplicado de C2 imagen23.jpg) y se gira 15°."
+ }
+}

@@ -29,8 +29,8 @@ wheels/
 
 # --- Datos e Imágenes ---
 data/
-# Conjunto de prueba C3: fuera de data/ para que los tests no lo recorran.
-data_c3/
+# Conjunto de prueba C3 (40 fotos de Unsplash): fuera de data/ para que los tests no lo recorran.
+data_prueba/
 
 # Las salidas del sistema son regenerables y no se versionan.
 outputs/

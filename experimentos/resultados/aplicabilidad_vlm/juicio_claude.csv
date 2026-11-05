@@ -1,0 +1,101 @@
+imagen,color,horizonte_natural,horizontal_estructural,perspectiva,protagonista,protagonista_nombre,espacio,nitidez,anclaje,comentario
+imagen1,si,no,no,si,no,,no,no,no,Canal entre almacenes de ladrillo rojo: perspectiva central fuerte; el cielo no toca tierra ni mar y no hay horizontal que cruce el encuadre; sin protagonista.
+imagen2,si,no,no,si,no,,no,no,no,Pasillo cubierto en tonos arena: las luminarias y los muros convergen al fondo; las horizontales de los plafones son cortas; sin protagonista.
+imagen3,no,no,no,si,no,,no,no,no,Túnel blanco y gris casi acromático (los carteles son mínimos); perspectiva central muy marcada; sin protagonista.
+imagen4,si,no,no,si,no,,no,no,no,Callejón entre edificios con cielo azul: convergencia hacia el fondo; el edificio del fondo es pequeño y no actúa como protagonista.
+imagen5,si,no,si,si,no,,no,no,no,Pasarela metálica con luz anaranjada: las vigas del techo cruzan el encuadre en horizontal y todo converge al fondo; sin protagonista.
+imagen6,si,no,si,no,si,edificio de balcones,si,si,si,Fachada frontal de un edificio moderno recortada sobre el cielo; forjados horizontales de lado a lado; vista frontal sin convergencia.
+imagen7,si,no,si,no,no,,no,no,no,Fachada antigua desaturada con ramas verdes: la cornisa cruza el encuadre; la fachada lo llena todo y no hay sujeto separable.
+imagen8,si,no,si,no,si,edificio central,no,no,si,Edificio de ladrillo de Nueva York encajado entre vecinos: acera y rótulo horizontales; es el sujeto pero llena el encuadre sin borde propio.
+imagen9,si,no,si,no,no,,no,no,no,Tres casas tienda de colores con el mismo peso; acera y balcones horizontales; vista frontal sin fuga.
+imagen10,dudoso,no,no,si,si,rascacielos central,dudoso,si,si,Contrapicado de torres de cristal: casi acromático con tinte azul; fuerte convergencia vertical; la torre central se recorta contra el cielo pero ocupa gran parte del encuadre.
+imagen11,dudoso,no,no,si,si,torre de cristal,dudoso,si,si,"Contrapicado de una torre de esquina sobre cielo blanco: tinte verdoso leve, casi acromático; convergencia vertical clara; la torre domina pero ocupa la mitad del encuadre."
+imagen12,si,no,no,dudoso,si,esquina de edificio de ladrillo,si,si,si,"Esquina de ladrillo rojo contra cielo azul verdoso plano: mucho espacio libre; las cornisas son diagonales por el contrapicado, no horizontales."
+imagen13,dudoso,no,no,si,no,,no,no,no,"Nave barroca blanca con bancos de madera: color escaso (blancos, marrones y pequeños frescos); perspectiva central hacia el altar, que es pequeño y no protagoniza."
+imagen14,no,no,si,no,si,tren de metro,si,si,si,Andén en blanco y negro: el borde del andén y las vigas cruzan el encuadre; vista frontal sin fuga dominante; el tren es el sujeto delimitado.
+imagen15,dudoso,no,no,si,no,,no,no,no,Escalera mecánica con virado frío desaturado: convergencia fuerte hacia el fondo; las personas son pequeñas y no son protagonistas.
+imagen16,no,no,no,no,si,torre iluminada,si,si,si,Torre de noche con franjas de luz blanca: escena nocturna sin color; las franjas son curvas; la torre se recorta sobre el cielo negro.
+imagen17,no,no,no,si,no,,no,no,no,Contrapicado en blanco y negro entre bloques: las fachadas convergen hacia el centro del cielo; sin sujeto único.
+imagen18,no,no,no,dudoso,no,,no,no,no,"Arquitectura abstracta en blanco y negro: diagonales fuertes y contrapicado, pero sin un punto de fuga que organice la profundidad; varios bloques sin protagonista."
+imagen19,si,si,no,no,no,,no,no,no,Mar al atardecer con nubes rosadas: horizonte marino nítido y recto de lado a lado; sin sujeto.
+imagen20,si,si,no,no,no,,no,no,no,"Playa con rocas y mar turquesa: horizonte marino nítido; las rocas son varias y pequeñas, sin protagonista."
+imagen21,si,si,no,no,no,,no,no,no,Salina al atardecer: horizonte llano y nítido bajo el sol; el sol y su reflejo no forman un sujeto delimitado.
+imagen22,si,si,no,no,no,,no,no,no,Lago al anochecer a ras de agua: la línea de agua y arbolado lejano es un horizonte legible; sin sujeto.
+imagen23,si,si,no,no,no,,no,no,no,Atardecer con reflejo en agua en calma: horizonte limpio con montes bajos; el poste es diminuto y no protagoniza.
+imagen24,si,si,no,no,no,,no,no,no,Mar con nubes rosadas y horizonte claramente inclinado: es justo el caso en que medir la nivelación tiene sentido.
+imagen25,si,si,no,no,no,,no,no,no,Playa turquesa con el horizonte marino claramente inclinado: hay horizonte natural sobre el que medir la nivelación.
+imagen26,si,si,no,no,no,,no,no,no,Salina al atardecer con el horizonte inclinado: horizonte natural legible.
+imagen27,si,dudoso,no,si,si,casa,si,si,si,Carretera hacia una casa al pie de montañas: la carretera converge hacia el fondo; el horizonte queda tapado por las montañas y solo se intuye la base del valle.
+imagen28,si,no,no,si,no,,no,no,no,Carretera recta hacia montañas nevadas bajo cielo gris: convergencia clara; el horizonte lo tapan las montañas; sin sujeto.
+imagen29,si,no,no,dudoso,no,,no,no,no,Carretera curva entre árboles otoñales: la curva y el guardarraíl apenas convergen; sin horizonte ni protagonista.
+imagen30,si,no,no,no,no,,no,no,no,"Bosque de abetos al amanecer con montaña al fondo: los árboles y la montaña tapan el horizonte; muchos elementos, sin protagonista."
+imagen31,si,no,no,no,no,,no,no,no,Pinar con sendero al sol: los troncos tapan el horizonte; el sendero no organiza una fuga; sin protagonista.
+imagen32,si,no,no,no,no,,no,no,no,Bosque de abetos con niebla: masa vegetal sin horizonte ni sujeto; la niebla vuelve lisa la mitad superior.
+imagen33,si,dudoso,no,no,si,árbol solitario,si,si,si,Árbol desnudo sobre una colina al atardecer: la cresta de la colina separa cielo y tierra pero es curva y en pendiente; árbol aislado contra un cielo liso.
+imagen34,si,si,no,no,si,faro,si,si,si,Faro blanco sobre un acantilado con mar turquesa: horizonte marino recto bajo nubes oscuras; el faro es pequeño pero inequívoco.
+imagen35,si,si,no,no,si,árbol con dos personas,si,si,si,Siluetas de un árbol y dos personas sobre cielo amarillo: la línea del terreno cruza el encuadre casi recta; protagonista claro en silueta.
+imagen36,si,si,no,no,no,,no,no,no,Puesta de sol entre nubes: la línea de montes lejanos marca el horizonte de lado a lado; sin sujeto.
+imagen37,si,no,no,no,si,mujer caminando,si,si,si,Retrato de cuerpo entero de una mujer caminando en una galería: las baldosas convergen pero no organizan la foto; fondo desenfocado.
+imagen38,si,no,no,dudoso,si,hombre con camisa de cuadros,si,si,si,"Retrato de un joven en una avenida arbolada: la calzada y los árboles convergen detrás, pero la foto la organiza el sujeto."
+imagen39,si,no,no,no,si,mujer de perfil,si,si,si,Retrato de perfil con jersey negro ante una columnata desenfocada; sujeto grande pero recortado contra el fondo.
+imagen40,si,no,no,no,si,hombre sonriendo,si,si,si,Primer plano de un joven con camisa de cuadros roja ante un fondo desenfocado; el sujeto ocupa casi todo el encuadre.
+imagen41,si,no,no,no,si,mujer con vestido de flores,si,si,si,Retrato de una mujer en un parque con edificios detrás: los árboles tapan el horizonte; sujeto claro y bien separado del fondo.
+imagen42,si,no,si,no,si,hombre con abrigo camel,si,si,si,Retrato de moda ante una persiana con grafiti: las lamas de la persiana son horizontales de lado a lado; sujeto claro.
+imagen43,dudoso,no,si,no,si,mujer apoyada en la pared,si,si,si,"Mujer pelirroja apoyada en un muro, con virado frío desaturado: la base del muro cruza el encuadre; sujeto aislado ante una pared casi lisa."
+imagen44,si,no,no,no,si,mujer con mono amarillo,si,si,si,Retrato en un prado con cielo azul: la línea de árboles tapa el horizonte; sujeto muy saturado y protagonista.
+imagen45,si,no,si,no,si,joven apoyada en la puerta,si,si,si,Joven ante una puerta azul y un pilar de piedra: la base de la puerta es una horizontal larga; sujeto delimitado.
+imagen46,si,si,si,no,si,chica de espaldas,si,si,si,Chica con mochila mirando el mar desde un muro: horizonte marino nítido y pretil horizontal; sujeto claro.
+imagen47,si,no,no,no,si,mujer caminando,si,si,si,Mujer caminando junto a fachadas ocre y roja: la acera es diagonal y no organiza una fuga; sujeto claro.
+imagen48,no,no,no,no,si,mujer con vestido girando,si,si,si,Blanco y negro: mujer girando en una explanada con la ciudad desenfocada detrás; los edificios tapan el horizonte.
+imagen49,no,no,no,no,si,hombre con gorro y gafas,si,si,si,Retrato de estudio en blanco y negro ante un fondo gris liso; sujeto claro con mucho detalle frente al fondo.
+imagen50,no,si,no,no,si,mujer en un campo,si,si,si,"Blanco y negro: mujer en un campo con el horizonte llano visible detrás, aunque interrumpido por el sujeto."
+imagen51,no,no,no,no,si,mujer en movimiento,si,si,si,"Blanco y negro con movimiento: mujer barrida al caminar ante un muro y árboles; sujeto claro aunque movido, con fondo texturado con el que comparar."
+imagen52,no,no,no,no,si,mujer con los ojos cerrados,si,si,si,Retrato en blanco y negro ante una tela blanca; sujeto claro con detalle frente a un fondo casi liso.
+imagen53,no,no,no,no,si,hombre de perfil,si,si,si,Retrato en clave baja en blanco y negro: rostro iluminado sobre fondo negro; mucho espacio negativo.
+imagen54,no,dudoso,no,no,si,niña a contraluz,si,si,si,"Blanco y negro: niña a contraluz en un campo; detrás se intuye la línea del horizonte, muy desenfocada."
+imagen55,si,dudoso,no,no,si,cachorro,si,si,si,Cachorro en un prado al atardecer: al fondo hay colinas desenfocadas y no un horizonte nítido; sujeto claro.
+imagen56,si,no,no,no,si,gato asomado,si,si,si,Gato atigrado asomado tras un muro ante una puerta turquesa; sujeto claro con fondo de textura distinta.
+imagen57,si,no,no,no,si,martín pescador,si,si,si,Martín pescador posado ante un fondo completamente desenfocado; el caso de libro del aislamiento por nitidez.
+imagen58,si,dudoso,no,no,si,caballo,si,si,si,"Caballo en un pastizal con montañas y nubes rosadas: la línea de árboles y montes se interrumpe; se intuye la base del valle, pero no hay un horizonte limpio."
+imagen59,si,no,no,no,si,periquito verde,si,si,si,Periquito verde sobre una rama ante un fondo verde azulado desenfocado; sujeto claro.
+imagen60,si,no,si,no,si,gato en la escalera,si,si,si,Gato atigrado sentado en una escalera blanca: los bordes de los peldaños cruzan el encuadre en horizontal; sujeto claro.
+imagen61,si,no,si,no,si,perro labrador,si,si,si,Labrador sentado en un juncal junto a un lago: la línea de árboles tapa el encuentro entre cielo y tierra; la orilla del lago cruza el encuadre en horizontal; sujeto claro. (Sustituye a la foto duplicada de imagen55.)
+imagen62,si,no,no,no,si,cebra,si,si,si,Cebra en la sabana: la línea de árboles y la bruma ocultan el horizonte; sujeto claro ante un prado verde.
+imagen63,si,no,no,no,si,gaviota,si,si,si,Gaviota posándose en el agua con luz dorada: el agua llena el encuadre sin horizonte; sujeto claro con mucho espacio libre.
+imagen64,si,si,no,no,si,oveja,si,si,si,Oveja sobre un dique de hierba contra el cielo: la línea entre hierba y cielo es un horizonte recto de lado a lado; sujeto claro.
+imagen65,si,no,no,no,si,rana azul,si,si,si,Rana dardo azul sobre una roca mojada con el fondo desenfocado; sujeto claro.
+imagen66,si,no,no,no,si,ardilla,si,si,si,Ardilla sobre un tocón ante un fondo verde desenfocado; sujeto claro con mucho espacio libre.
+imagen67,si,no,no,no,si,pez naranja,si,si,si,Pez naranja en un acuario oscuro con otros peces desenfocados; sujeto claro.
+imagen68,si,no,no,no,si,cordero marrón,si,si,si,Cordero marrón cortado por el borde derecho ante un prado desenfocado; sujeto claro.
+imagen69,si,no,no,no,si,gato al sol,si,si,si,Gato atigrado de perfil con luz cálida lateral; ocupa la mitad del encuadre ante una pared y unas baldosas.
+imagen70,si,no,no,no,si,paloma,si,si,si,Paloma sobre una barandilla junto a un estanque: la barandilla y la orilla son diagonales suaves; sujeto claro.
+imagen71,no,no,no,no,si,cebra,si,si,si,Cebra en blanco y negro entre matorrales; sujeto claro aunque la hierba alta le tapa las patas.
+imagen72,dudoso,no,no,no,si,geco,dudoso,si,si,"Geco camuflado sobre grava en tonos arena poco saturados: el sujeto se confunde con un fondo de la misma textura, así que la segmentación es dudosa."
+imagen73,si,no,no,no,si,taza de café,si,si,si,Taza de café con arte latte sobre una mesa oscura desenfocada; sujeto claro.
+imagen74,si,no,si,no,si,botella de whisky,si,si,si,Botella de whisky ante un fondo blanco: el borde de la mesa es una horizontal tenue de lado a lado; sujeto claro.
+imagen75,si,no,si,no,si,jarrón naranja,si,dudoso,si,"Jarrón naranja ante un fondo negro sobre una mesa clara: el borde de la mesa cruza el encuadre; casi toda la escena es lisa, así que comparar nitideces aporta poco."
+imagen76,si,no,no,no,si,reloj de pulsera,si,si,si,Reloj de pulsera sobre un libro rojo en clave baja: el canto del libro es diagonal; sujeto claro. COCO no tiene la clase reloj de pulsera.
+imagen77,dudoso,no,no,no,no,,no,no,no,"Bodegón cenital de libro, manzana, café y flores sobre blanco: casi acromático salvo la manzana; varios elementos con peso parecido, sin protagonista único."
+imagen78,no,no,no,no,si,jarrón blanco,si,si,si,Jarrón blanco con manchas ocre sobre fondo blanco: casi acromático; sujeto claro con algo de textura frente a un fondo liso.
+imagen79,no,no,no,no,si,jarrón blanco,si,no,si,"Jarrón blanco mate sobre fondo gris liso: acromático; sujeto delimitado, pero toda la escena carece de textura para comparar nitidez."
+imagen80,dudoso,no,si,no,si,jarrón con eucalipto,si,si,si,Jarrón blanco con una ramita verde sobre un mantel: el color se reduce a la ramita; el borde de la mesa cruza el encuadre; sujeto claro.
+imagen81,dudoso,no,no,no,si,taza,si,dudoso,si,"Taza en una mancha de luz sobre madera, en clave baja: el color se reduce al parche de madera anaranjada; casi todo el encuadre es negro liso."
+imagen82,dudoso,no,no,no,si,jarrón de porcelana,si,si,si,Jarrón de celadón en penumbra con dominante cálida tipo sepia: color muy poco saturado; el craquelado da textura frente al fondo oscuro.
+imagen83,no,no,no,no,si,taza con plato,si,no,si,"Taza blanca sobre una mesa en clave baja, prácticamente acromática; el borde de la mesa es diagonal; toda la escena es lisa."
+imagen84,si,no,no,no,dudoso,bodegón de libros naranja y vino,dudoso,dudoso,dudoso,"Bodegón ante una tela blanca: naranja, botella, copa y libros forman un grupo sin un único protagonista claro."
+imagen85,si,dudoso,no,no,si,jarrón de mimosas,si,si,si,Mimosas y fruta en una mesa de balcón con la ciudad y el mar desenfocados: el horizonte marino asoma borroso arriba; sujeto claro.
+imagen86,si,no,no,no,no,,no,no,no,"Mesa cenital llena de platos de comida: muchos elementos con el mismo peso, sin protagonista."
+imagen87,si,no,no,no,si,gafas,si,si,si,Gafas sobre un libro abierto con luz cálida y poca profundidad de campo; sujeto claro aunque ocupa buena parte del encuadre.
+imagen88,si,no,no,no,si,colgante dorado,si,si,si,Colgante dorado sobre un abanico rojo con ramas: sujeto pequeño y claro en una escena roja saturada. COCO no tiene la clase joya.
+imagen89,no,no,si,no,si,despertador,si,si,si,Despertador en blanco y negro sobre una mesa con luz lateral: el borde trasero de la mesa cruza el encuadre; sujeto claro.
+imagen90,si,no,si,no,si,jarrón con gerberas,si,si,si,Gerberas amarillas en un jarrón turquesa ante una pared roja: la línea entre mesa y pared cruza el encuadre; sujeto claro.
+imagen91,si,no,no,no,no,,no,no,no,"Gradilla de tubos de ensayo de colores: muchos elementos con el mismo peso, sin un protagonista único."
+imagen92,si,no,no,no,si,vaca,si,si,si,Vaca pastando en colinas verdes que llenan el encuadre sin cielo; sujeto claro.
+imagen93,si,no,no,no,si,mujer con caballo,dudoso,si,si,"Mujer y caballo a contraluz, cabeza con cabeza: forman un único grupo protagonista que ocupa casi todo el encuadre."
+imagen94,si,si,si,no,si,furgoneta amarilla,si,si,si,Furgoneta amarilla aparcada frente al mar: horizonte marino recto y bordillo horizontal; sujeto claro.
+imagen95,si,no,no,no,si,deportivo,si,si,si,Deportivo plateado en contraluz cálido con montes desenfocados: las colinas tapan el horizonte; el sujeto ocupa la mitad izquierda.
+imagen96,si,no,no,no,si,balón y canasta,si,si,si,Balón entrando en la canasta ante un parque desenfocado; sujeto claro.
+imagen97,si,si,no,no,si,fuegos artificiales,dudoso,dudoso,si,Fuegos artificiales de colores sobre una bahía de noche: horizonte de agua y costa lejana; el estallido es el foco pero no es un objeto con borde.
+imagen98,si,no,no,dudoso,si,locomotora de vapor,si,si,si,Locomotora de vapor entre árboles: las vías convergen poco y el sujeto domina; sin horizonte.
+imagen99,dudoso,no,no,no,si,humo de vela,si,si,si,Humo de una vela apagada sobre fondo negro: casi acromático salvo la vela; el humo es el sujeto aunque COCO no lo reconoce.
+imagen100,si,no,no,no,si,avión,si,si,si,Avión visto desde abajo en un cielo turquesa con nubes; sujeto pequeño y claro.

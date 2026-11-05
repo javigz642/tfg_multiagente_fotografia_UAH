@@ -93,7 +93,7 @@ ejecutando las herramientas, no leyendo los JSON. Las copias del LLM se evalúan
 | **EVA, other** (`sort = 6`) | `.../splits/otro.csv` | 273 | E1: sustituto aproximado (*near-OOD*) de imágenes fuera de distribución |
 | **EVA, validación** | `.../splits/val.csv` | 725 | E1: control del umbral de rechazo |
 | **C2, calibración** | `data/imagen{1..100}.jpg` | 100 fotos de Unsplash | **Solo para ajustar umbrales** (§4) y para la reproducibilidad |
-| **C3, prueba** | `data_c3/test{1..40}.jpg` | 40 fotos de Unsplash no vistas | **Resultados de E1 (parte externa), E2, E3 y E4** (§5) |
+| **C3, prueba** | `data_prueba/test{1..40}.jpg` | 40 fotos de Unsplash no vistas | **Resultados de E1 (parte externa), E2, E3 y E4** (§5) |
 | **R, reproducibilidad** | `imagen62` (animal), `imagen9` (arquitectura), `imagen35` (paisaje), `imagen86` (producto), `imagen50` (retrato) de C2 | 5 × 3 repeticiones | E4 |
 
 **Por qué hay dos conjuntos de Unsplash.** Si se calibra y se mide sobre las mismas fotos, las tasas de
@@ -240,13 +240,31 @@ da la anotación ciega.
 - **Una búsqueda por fila de la tabla:** se coge la **primera foto que cumpla claramente la
   descripción**, no la que «parece que va a salir bien».
 - **Ninguna foto de C3 pasa por el sistema, la app ni los tests hasta congelar.**
-  - Se guardan en `data_c3/`, no en `data/`, porque los tests recorren `data/`.
-  - `data_c3/` está en `.gitignore`.
+  - Se guardan en `data_prueba/`, no en `data/`, porque los tests recorren `data/`.
+  - `data_prueba/` está en `.gitignore`.
 - **No se sustituye ninguna foto después de ver resultados.** Si una resulta inválida (corrupta o
   duplicada de C2), se sustituye con la misma regla y se declara.
 - **Variedad** de orientación, y resolución parecida a la de C2 (de 2 a 26 MP).
 - **Manifiesto** `experimentos/manifiesto_C3.csv` con: nombre (`test1`…`test40`), fila de la tabla,
   URL, autor, MD5, dimensiones y fecha de descarga.
+
+**Cómo se hizo (2026-11-05)** [verificado]. La selección la ejecutó un asistente con
+`experimentos/descargar_C3.py` y la API oficial de Unsplash. Las consultas se fijaron antes de buscar;
+en cada fila se revisaron las 15 primeras candidatas por relevancia y se tomó la primera que cumplía
+claramente la descripción. Se descartaron automáticamente las fotos de pago, las que no tenían entre
+2 y 26 MP y las casi idénticas a una de C2 (hash perceptual). La foto elegida y los motivos de cada
+descarte están en `experimentos/seleccion_C3.json` y en el manifiesto. Los nombres `testN` se asignan
+con una permutación de semilla fija, para que el número no delate la categoría. **El manifiesto no se
+abre hasta terminar la anotación A1/A2.**
+
+- **Excepción: P2 es una foto derivada** (`test14.jpg`). En cuatro consultas (60 candidatas) no
+  apareció ningún horizonte inclinado más de 10°. Se tomó la primera candidata válida de la primera
+  consulta de P2, que no está en C3, y se giró 15° con recorte al mayor rectángulo inscrito de la
+  misma proporción (sin esquinas vacías). El ángulo se conoce por construcción. Se declara en el §8.3
+  de la memoria.
+- **Para interpretar E2:** la guía A2 solo pregunta si hay un horizonte legible, no por su ángulo.
+  En P2 la anotación será `si`; si el sistema cierra la métrica por el ángulo, la foto cuenta como
+  falso negativo, que es el error tolerable.
 
 ### 5.3 Anotación de C3
 
@@ -413,7 +431,7 @@ Tabla final: pregunta → criterio → resultado (sí / no / en parte) → cifra
 
 | Instrumento | Qué hace | Estado |
 |---|---|---|
-| `experimentos/config_experimentos.yaml` | Rutas (EVA externo, `data/`, `data_c3/`), lista R, criterios de éxito y tarifas | [pendiente] |
+| `experimentos/config_experimentos.yaml` | Rutas (EVA externo, `data/`, `data_prueba/`), lista R, criterios de éxito y tarifas | [pendiente] |
 | `experimentos/comun.py` | Utilidades: localizar la raíz, leer CSV con codificación y separador robustos, medir las condiciones, verificador de citas, IC de Wilson, comprobar la congelación | [pendiente] |
 | `experimentos/ejecutar_lote.py` | Lanzador por lotes (abajo) | [pendiente] |
 | Plantillas de anotación | CSV de A1, A2 y segmentación/protagonista, con la guía del §6.2 | [pendiente] |
@@ -499,7 +517,7 @@ Se guarda en `experimentos/congelacion.json`:
 
 ## 10. Orden de trabajo
 
-1. Elegir y descargar C3 en `data_c3/` y crear el manifiesto, **sin pasar ninguna foto por el sistema**.
+1. Elegir y descargar C3 en `data_prueba/` y crear el manifiesto, **sin pasar ninguna foto por el sistema**.
 2. Anotar A1 y A2 de C3 a ciegas.
 3. Calibrar sobre C2 (§4): actualizar el código, los comentarios, `agents.yaml` y la Figura 28, y
    ejecutar `tests/`.
