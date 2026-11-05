@@ -33,6 +33,7 @@ La visión por computador corre **local en GPU**; la síntesis del crítico usa 
 - Python `>=3.10,<3.14`.
 - [uv](https://docs.astral.sh/uv/) como gestor de dependencias.
 - GPU con CUDA recomendada (el clasificador y YOLO corren en local); funciona también en CPU.
+  El segmentador SAM del especialista de espacio corre siempre en CPU, a propósito (ver Modelos).
 - Una clave de API de Google Gemini.
 
 ## Instalación
@@ -50,16 +51,33 @@ GEMINI_API_KEY=tu_clave_aqui
 
 ### Modelos
 
-Hacen falta dos artefactos:
+Hacen falta tres artefactos:
 
 - `models/yolo/yolo11m.pt` — YOLO11-medium (Ultralytics), no incluido en el
   repositorio; debe descargarse y colocarse en esa ruta.
+- `models/sam/sam2.1_b.pt` — SAM 2.1 base (Ultralytics), el segmentador del especialista de
+  espacio y aislamiento. No se incluye en el repositorio, pero **se descarga solo** a esa ruta
+  (154 MB) la primera vez que se analiza una imagen con sujeto.
 - `models/clasificador_contexto/pesos_fine_tuning_ligero.pt` — ResNet18 fine-tuneado sobre
   el dataset EVA para clasificar el contexto de la escena; se incluye junto con
   `class_to_idx.json` y `umbral.json`.
 
-Sin estos dos ficheros el sistema no arranca. Contactar con el autor si se necesitan para
-evaluación del TFG.
+Sin YOLO ni el clasificador el sistema no arranca. Contactar con el autor si se necesitan
+para evaluación del TFG.
+
+MD5 de referencia, para comprobar que se usan exactamente los mismos pesos:
+
+| Fichero | MD5 |
+|---|---|
+| `models/yolo/yolo11m.pt` | `2c2bcbb54c3829b20d31a32524ee0f03` |
+| `models/sam/sam2.1_b.pt` | `e57666d5a782119e02af8f0de6713e32` |
+
+**Reproducibilidad de la segmentación.** La máscara de SAM no tiene azar, pero sí depende del
+entorno: cambia ligeramente entre versiones de `ultralytics` (del 0,1 al 0,3 % de los píxeles
+entre 8.4.102 y 8.4.202) y, en algún píxel suelto, entre CPU y GPU (medido con MPS; con CUDA
+no se ha comprobado). Por eso el especialista
+fija `DEVICE_SAM = "cpu"` y las versiones están congeladas en `uv.lock`: **no ejecutar
+`uv lock --upgrade`** sin recalibrar los umbrales de `espacio_aislamiento_tool.py`.
 
 ## Ejecución
 
@@ -89,7 +107,7 @@ src/tfg_multiagente_fotografia/
   parametros/                   # W contextual y modelo nulo del punto de fuga, versionados
   schemas/                      # Contratos Pydantic de cada nivel
   tools/                        # Los engines de visión por computador de cada agente
-models/                         # Artefactos del clasificador de contexto y YOLO (ver arriba)
+models/                         # Artefactos del clasificador de contexto, YOLO y SAM (ver arriba)
 data/                           # Corpus de imágenes de prueba (no versionado)
 outputs/                        # Salidas regenerables (ignoradas por Git)
 tests/                          # Pruebas manuales de los componentes
@@ -108,3 +126,6 @@ uv run python tests/test_lineas_direccion_tool.py
 uv run python tests/test_espacio_aislamiento_tool.py
 uv run python tests/test_luz_tono_tool.py
 ```
+
+El de espacio y aislamiento tarda unos 4-5 minutos: pasa SAM dos veces por cada imagen de
+`data/` para comprobar que el análisis es determinista.
