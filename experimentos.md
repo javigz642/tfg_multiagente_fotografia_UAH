@@ -499,7 +499,8 @@ Tabla final: pregunta → criterio → resultado (sí / en parte / no) → cifra
 | `experimentos/comun.py` | Utilidades: localizar la raíz, leer CSV con codificación y separador robustos, medir las condiciones, verificador de citas, IC de Wilson, comprobar la congelación | [pendiente] |
 | `experimentos/ejecutar_lote.py` | Lanzador por lotes (abajo) | [pendiente] |
 | Plantilla de contexto + aplicabilidad | `experimentos/plantilla_anotacion_prueba.py`: `plantilla` genera `anotaciones/anotacion_prueba.xlsx` (ciega, sobre `data_prueba/`); `exportar` la valida y escribe `anotaciones/anotacion_prueba.csv` | [verificado] |
-| Plantilla de segmentación/protagonista | Solo fotos con `fuente = yolo`, sobre las imágenes de verificación; se genera después de ejecutar E2 | [pendiente] |
+| `experimentos/calibracion.py` | `medir`: variables de decisión de las 100 fotos de `data/` (`resultados/calibracion/medidas_calibracion.csv`, `entorno_calibracion.json`) e imágenes de revisión sin cifras; `plantilla` / `exportar`: revisión de la segmentación y del protagonista de las fotos `yolo` (`anotaciones/segmentacion_calibracion.csv`) | [verificado en 3 fotos; falta ejecutarlo en Windows] |
+| Plantilla de segmentación/protagonista del conjunto de prueba | Solo fotos con `fuente = yolo`; se genera después de ejecutar E2 | [pendiente] |
 
 **Lanzador por lotes.** Para cada imagen de una lista:
 
