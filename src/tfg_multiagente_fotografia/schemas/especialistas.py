@@ -132,7 +132,7 @@ class InformeLineasDireccion(BaseModel):
         description=(
             "Ángulo firmado del candidato a horizonte en grados: positivo si cae hacia la "
             "derecha; |valor| <= 15. valor_norm = 1 - |valor|/15, o None sin candidato. "
-            "Confianza 1 si hay candidato, longitud_horizonte >= 0.1517 y |valor| <= 10."
+            "Confianza 1 si hay candidato, longitud_horizonte >= 0.1517 y |valor| <= 14."
         ),
     )
     longitud_horizonte: float = Field(

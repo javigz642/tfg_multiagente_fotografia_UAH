@@ -225,7 +225,9 @@ def casos_analiticos():
         casos_horizonte = [
             ("nivelado", 5.0, 460, 1.0, "largo y poco inclinado: es un horizonte"),
             ("corto", 0.0, 60, 0.0, "fragmento: no llega a la longitud mínima"),
-            ("inclinado", 12.0, 460, 0.0, "largo pero es estructura de la escena"),
+            # Entre ANGULO_MAX_HORIZONTE (14°) y el cono de candidatos (15°): es candidata
+            # pero el gate la cierra por el ángulo. Antes era 12°, con el corte en 10°.
+            ("inclinado", 14.2, 460, 0.0, "largo pero es estructura de la escena"),
         ]
         for nombre, grados, semi, conf_esperada, motivo in casos_horizonte:
             img = lienzo()
@@ -243,13 +245,25 @@ def casos_analiticos():
                     f"confianza={a.confianza}, se esperaba {conf_esperada} ({motivo}). "
                     f"fuente: {a.fuente_confianza}"
                 )
-                # La longitud publicada debe corresponder al trazo dibujado. Hough
-                # puede recortar los extremos, así que se compara con holgura.
                 largo_esperado = 2 * semi / DIAGONAL
-                assert isclose(informe.longitud_horizonte, largo_esperado, rel_tol=0.15), (
-                    f"longitud={informe.longitud_horizonte:.4f} de diagonal, se dibujó "
-                    f"{largo_esperado:.4f}"
-                )
+                if nombre == "inclinado":
+                    # Cerca de 15° el trazo rasterizado sale escalonado y Hough lo parte en
+                    # trozos, así que la longitud no se compara con lo dibujado. Lo que importa
+                    # es que cierre por el ÁNGULO y no por ser un fragmento.
+                    assert informe.longitud_horizonte >= LONGITUD_MIN_HORIZONTE, (
+                        f"longitud={informe.longitud_horizonte:.4f}: cerraría por fragmento, "
+                        "no por inclinación"
+                    )
+                    assert "inclinado" in a.fuente_confianza, (
+                        f"debe cerrar por inclinación; fuente: {a.fuente_confianza}"
+                    )
+                else:
+                    # La longitud publicada debe corresponder al trazo dibujado. Hough
+                    # puede recortar los extremos, así que se compara con holgura.
+                    assert isclose(informe.longitud_horizonte, largo_esperado, rel_tol=0.15), (
+                        f"longitud={informe.longitud_horizonte:.4f} de diagonal, se dibujó "
+                        f"{largo_esperado:.4f}"
+                    )
                 print(
                     f"[OK] analitico/horizonte_{nombre}: ang={a.valor:+.2f}° (dibujado "
                     f"{grados:+.1f}) long={informe.longitud_horizonte:.4f} adh={a.valor_norm:.2f} "

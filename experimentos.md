@@ -55,7 +55,7 @@ ejecutando las herramientas, no leyendo los JSON. Las copias del LLM se evalúan
 | Condición | Métricas | Abre (`confianza = 1`) si… | Constantes |
 |---|---|---|---|
 | Cromática | `esquema_cromatico` | `ratio_pixeles_cromaticos ≥ RATIO_CROMATICO_MIN` | `RATIO_CROMATICO_MIN = 0.17` |
-| Horizonte | `angulo_horizonte` | Hay candidato, `longitud ≥ 0.1517` y `\|ángulo\| ≤ 10°` | `LONGITUD_MIN_HORIZONTE`, `ANGULO_MAX_HORIZONTE` |
+| Horizonte | `angulo_horizonte` | Hay candidato, `longitud ≥ 0.1517` y `\|ángulo\| ≤ 14°` | `LONGITUD_MIN_HORIZONTE`, `ANGULO_MAX_HORIZONTE` |
 | Convergencia | `score_convergencia` | `n ≥ 2`, `score > score_nulo(n)` y `apertura ≥ 89°` | `MIN_LINEAS_FUGA`, `modelo_nulo_fuga.json`, `APERTURA_MIN_GRADOS` |
 | Espacio | `ratio_espacio_negativo` | `fuente == "yolo"` **y** segmentación fiable | `FUENTE_CON_IDENTIDAD`, `SAM_SCORE_MIN`, `RELLENO_MIN`, `RELLENO_MAX` |
 | Nitidez | `ratio_nitidez` | Lo mismo que espacio **y** `max(var_fig, var_fondo) ≥ VAR_LAPLACIANO_MIN` (2594) | Las anteriores + `VAR_LAPLACIANO_MIN` |
@@ -213,18 +213,21 @@ valores de partida.
 | Umbral | Antes | Ahora | Regla | Tasa FP | Sensibilidad |
 |---|---|---|---|---|---|
 | `RATIO_CROMATICO_MIN` | 0.09 | **0.17** | 2 | 2/23 | 76/76 |
-| `LONGITUD_MIN_HORIZONTE` | 0.13 | **0.1517** | 2, con el ángulo fijo (desviación) | 5/66 | 17/32 (53 %) |
-| `ANGULO_MAX_HORIZONTE` | 10 | 10 | sin recalibrar (desviación) | — | — |
+| `LONGITUD_MIN_HORIZONTE` + `ANGULO_MAX_HORIZONTE` | 0.13; 10° | **0.1517; 14°** | 4 → 2 | 6/66 | 19/32 (59 %) |
 | `APERTURA_MIN_GRADOS` | 35 | **89** | 2 | 3/35 | 4/14 (29 %) |
-| `SAM_SCORE_MIN`, `RELLENO_MIN/MAX` | 0.90; 0.20–0.95 | sin cambios | 3 | — | 60/60 |
-| `VAR_LAPLACIANO_MIN` | 50 | **2594** | 2 | 1/12 | 10/48 (21 %) |
-| Escalas de composición | margen 0.01/0.15; `d_equilibrio` 0.03/0.12 | margen 0.01/0.13; `d_equilibrio` 0.02/0.14 | P10 / P90 | — | — |
+| `SAM_SCORE_MIN`, `RELLENO_MIN/MAX` | 0.90; 0.20–0.95 | sin cambios | 3 | — | 61/61 |
+| `VAR_LAPLACIANO_MIN` | 50 | **2594** | 2 | 1/12 | 10/49 (20 %) |
+| Escalas de composición | margen 0.01/0.15; `d_equilibrio` 0.03/0.12 | margen 0.01/0.14; `d_equilibrio` 0.02/0.14 | P10 / P90 | — | — |
 
-- **Única desviación de la regla: el horizonte.** La pareja que da la regla es (0.09; 0°), porque 28 de
-  86 candidatos miden exactamente 0°. Con un ángulo máximo de 0°, `angulo_horizonte` valdría siempre 0
-  al abrir y la métrica no podría señalar un horizonte torcido. Se deja el ángulo en su valor de diseño
-  (10°) y se calibra solo la longitud. El criterio para desviarse es que el corte deje la métrica sin
-  sentido, no que dé cifras malas.
+- **Ninguna desviación de la regla.** Todos los valores son los que da la regla del §4.1 sobre la medición
+  final (Windows, commit `410abbe`, con las fotos igualadas entre máquinas, §3).
+  *Historia:* con la medición anterior, en la que 4 filas cruzaban medidas de una foto con la anotación
+  de otra, la pareja del horizonte salía (0.09; 0°), un corte degenerado (con 0°, `angulo_horizonte`
+  valdría siempre 0 al abrir). Se había aplicado provisionalmente el ángulo de diseño (10°) como
+  desviación declarada; con los datos corregidos la regla da (0.1517; 14°) y la desviación desaparece.
+- **El horizonte a 14° queda cerca del cono de candidatos (15°).** La P2 del conjunto de prueba (girada
+  15° a propósito, §5.1) se diseñó con el corte en 10°: si su ángulo medido queda por debajo de 14°, el
+  gate abre y la métrica señala la inclinación. E2 lo juzga contra la anotación, no contra el diseño.
 - **Convergencia y nitidez se aplican tal cual** aunque su sensibilidad quede por debajo del 60 %: son
   puntos débiles declarados (§8). En la convergencia, la apertura separa mal las clases (AUC 0.64): una
   perspectiva cuyas líneas salen de un solo lado del punto de fuga da un abanico estrecho (imagen4,
@@ -647,14 +650,15 @@ experimentos/
   el resultado global y sus cifras se informan, pero es la condición más débil (48 % de precisión de
   apertura en la primera campaña) y su evidencia es escasa.
 - **La segmentación fiable no se pudo calibrar.** En el conjunto de calibración no hubo ninguna
-  segmentación `mal` (59 `bien`, 1 `parcial`), así que `SAM_SCORE_MIN` y `RELLENO_MIN/MAX` quedan como
+  segmentación `mal` (60 `bien`, 1 `parcial`), así que `SAM_SCORE_MIN` y `RELLENO_MIN/MAX` quedan como
   «comprobados, no calibrados» (regla 3 del §4.1). Su eficacia solo se observa en el conjunto de prueba.
-- **Tres umbrales con sensibilidad baja en calibración (§4.2).** Horizonte 53 %, convergencia 29 % y
-  nitidez 21 %: sus variables no separan bien las fotos en las que la regla aplica de las que no, y la
+- **Tres umbrales con sensibilidad baja en calibración (§4.2).** Horizonte 59 %, convergencia 29 % y
+  nitidez 20 %: sus variables no separan bien las fotos en las que la regla aplica de las que no, y la
   regla del §4.1 prima los falsos negativos. Esas condiciones callan a menudo cuando podrían hablar.
-- **Desviación declarada en el horizonte (§4.2).** El ángulo máximo se dejó en 10° porque el corte que
-  daba la regla (0°) anulaba la métrica.
-- **La caja de YOLO no siempre es el protagonista.** 11 de las 60 fotos `yolo` de calibración; ningún
+- **Ficheros distintos entre máquinas (§3).** 4 fotos de calibración eran ficheros distintos en el Mac y
+  en Windows; se detectó al hacer el manifiesto y se corrigió antes de congelar. Desde entonces
+  `calibracion.py` comprueba el MD5 contra el manifiesto antes de medir.
+- **La caja de YOLO no siempre es el protagonista.** 11 de las 61 fotos `yolo` de calibración; ningún
   umbral de los calibrados lo corrige, y abre composición (y a veces espacio y nitidez) en esas fotos.
 - **Selección intencional.** Los dos conjuntos de Unsplash contienen ejemplos claros de cada categoría y
   no representan las fotos de un usuario cualquiera.

@@ -12,29 +12,25 @@ tomaron y qué toca después. El plan completo y las justificaciones están en
 
 ```
 Fase 1  Anotar el conjunto de prueba ........... HECHO
-Fase 2  Calibrar umbrales sobre data/ .......... HECHA (medición final e55d0dc, con el código de e3d4bfe)
-Fase 3  Instrumentos + congelación ............. SIGUIENTE  → aquí queda el sistema final
+Fase 2  Calibrar umbrales sobre data/ .......... CASI HECHA (valores finales aplicados, §3.3; falta la medida final, 2.12)
+Fase 3  Instrumentos + congelación ............. EN CURSO  → aquí queda el sistema final
 Fase 4  Ejecutar E1–E4 y escribir resultados ... pendiente
 ```
 
-**BLOQUEO (2026-11-07): 4 fotos de `data/` son ficheros distintos en el Mac y en Windows**
-(imagen48, 61, 63 y 81: otras dimensiones y otro MD5). La anotación de aplicabilidad se hizo sobre
-las versiones del Mac (las miniaturas de `plantilla_revision_humana.xlsx` lo confirman), que son
-además las descargas originales de Unsplash; la calibración midió las de Windows. Por tanto, esas
-4 filas cruzan medidas de una foto con la anotación de otra. También explica la diferencia de YOLO
-61/60 entre máquinas del §2.3 del plan (es imagen61, no el hardware). Estimación con las versiones
-del Mac: color, convergencia y nitidez no cambian; la regla del horizonte pasaría a dar (0.1517; 14°).
-**Decisión del usuario:** igualar las dos máquinas combinando versiones: imagen61 e imagen63 con la
-versión del Mac (la anotada) e imagen48 e imagen81 con la de Windows (ya medidas así). El
-manifiesto recoge esa combinación. La anotación de 48 y 81 parece seguir valiendo para la versión
-de Windows (el nombre del protagonista de imagen48, «chica con vestido», ya no la describe); el
-usuario lo confirma.
+**Siguiente acción (usuario, Windows): paso 2.12.** `git pull` y
+`uv run python experimentos/calibracion.py medir`: deja `medidas_calibracion.csv` con las
+decisiones del sistema final (cambia el horizonte, ahora a 14°; las variables no cambian). Commit y
+push solo de `experimentos/resultados/calibracion/`. Después, la fase 3 sigue con
+`config_experimentos.yaml`, `comun.py` y `ejecutar_lote.py`.
 
-**Siguiente acción (usuario, Windows): paso 2.10.** `git pull`; `calibracion.py medir --rehacer`;
-`calibracion.py plantilla --sobrescribir --conservar --revisar imagen63` (imagen61 sale en blanco
-sola, porque antes no era yolo); revisar las filas en blanco; `calibracion.py exportar`; commit y
-push solo de `experimentos/resultados/calibracion/` y `experimentos/anotaciones/segmentacion_calibracion.csv`.
-Después el asistente vuelve a aplicar la regla (2.11): el horizonte probablemente cambie.
+**Incidencia resuelta (2026-11-07): 4 fotos de `data/` eran ficheros distintos en el Mac y en
+Windows** (imagen48, 61, 63 y 81). La anotación de aplicabilidad se había hecho sobre las versiones
+del Mac; la calibración había medido las de Windows. También explicaba la diferencia de YOLO 61/60
+entre máquinas del §2.3 del plan (era imagen61, no el hardware). El usuario igualó las dos máquinas:
+imagen61 e imagen63 con la versión del Mac (la anotada) e imagen48 e imagen81 con la de Windows (su
+anotación sigue valiendo, salvo el nombre del protagonista de imagen48, «chica con vestido», que no
+interviene en ninguna métrica). Se volvió a medir, se revisó la segmentación de 61 y 63 y se volvió a
+aplicar la regla (§3.3).
 
 Hecho en la fase 3: `manifiesto_calibracion.py` y su CSV (88 fotos idénticas a su descarga de
 Unsplash, imagen54 derivada a B/N, 11 sin original localizado) y `calibracion.py --conjunto prueba`
@@ -95,7 +91,10 @@ estricto y `plantilla --conservar --revisar`).
   con `fuente = yolo` sin comprobar si la caja es el protagonista: en el 2.4 se cuentan como falsos
   positivos de composición y se usan en el barrido de `CONF_YOLO_THRESHOLD`.
 
-### 3.2 Qué salió del análisis de huecos (paso 2.4, 2026-11-07)
+### 3.2 Qué salió del análisis de huecos (paso 2.4, 2026-11-07) — SUPERADO por el §3.3
+
+Primera versión, con 4 filas que cruzaban medidas de una foto con la anotación de otra (ver §3.3).
+Se conserva como historia; los valores finales están en el §3.3.
 
 Script `analisis_calibracion.py` (sin GPU; lee los tres CSV). Salidas en `resultados/calibracion/`:
 `propuesta_umbrales.csv`, `barrido_yolo.csv`, `escalas_composicion.csv` y `huecos_*.png`.
@@ -132,6 +131,24 @@ Script `analisis_calibracion.py` (sin GPU; lee los tres CSV). Salidas en `result
   el P95); `d_equilibrio` (las 100) P10 = 0.019, P90 = 0.142 (0.03 / 0.12 actuales son P27 / P82). El
   plan no fija qué percentiles usar: lo decide el usuario.
 - **`BLOB_*`:** no se activan (ratio entre 0.010 y 0.405; ninguna foto sin sujeto).
+
+### 3.3 Calibración final (pasos 2.10–2.11, 2026-11-07)
+
+Medición de Windows `410abbe` (código `6febec1`), con las fotos igualadas entre máquinas y la
+segmentación de imagen61 e imagen63 revisada (61 fotos yolo: 60 `bien`, 1 `parcial`). Solo
+cambiaron esas 2 filas. Regla del §4.1 aplicada **sin ninguna desviación** (plan §4.2):
+
+| Umbral | Valor final | VP/FP/FN/VN | Tasa FP | Sensibilidad |
+|---|---|---|---|---|
+| `RATIO_CROMATICO_MIN` | 0.17 | 76/2/0/21 | 9 % | 100 % |
+| `LONGITUD_MIN_HORIZONTE`, `ANGULO_MAX_HORIZONTE` | 0.1517; **14°** | 19/6/13/60 | 9 % | 59 % (débil) |
+| `APERTURA_MIN_GRADOS` | 89 | 4/3/10/32 | 9 % | 29 % (débil) |
+| SAM | 0.90; 0.20–0.95 (regla 3) | 61/0/0/0 | — | 100 % |
+| `VAR_LAPLACIANO_MIN` | 2594 | 10/1/39/11 | 8 % | 20 % (débil) |
+| Escalas (P10/P90) | margen 0.01/**0.14**; `d_equilibrio` 0.02/0.14 | | | |
+
+El ángulo pasa de 10° (desviación provisional) a 14° (lo que da la regla con los datos correctos);
+el usuario lo aceptó el 2026-11-07. Aplicado en el código, prompts, esquema y test.
 
 ### Decisiones tomadas con el usuario
 
@@ -183,6 +200,9 @@ Script `analisis_calibracion.py` (sin GPU; lee los tres CSV). Salidas en `result
 | 2.8 | Asistente | ~~Comprobar las decisiones~~ HECHO: variables idénticas a la medición anterior; las 6 condiciones coinciden foto a foto con la propuesta (color 78, horizonte 22, convergencia 7, espacio 60, nitidez 11, composición 60) |
 
 | 2.9 | Usuario (Windows) | ~~Re-medir por el mensaje de cierre corregido~~ HECHO (`e55d0dc`): solo cambian los 44 textos de `motivo_convergencia` que cierran por apertura; variables y decisiones idénticas |
+| 2.10 | Usuario (Windows) | ~~Igualar las fotos, re-medir y revisar imagen61 e imagen63~~ HECHO (`410abbe`) |
+| 2.11 | Asistente | ~~Volver a aplicar la regla y aplicar los valores~~ HECHO (§3.3): el ángulo pasa a 14° y la escala de margen a 0.14 |
+| **2.12** | **Usuario (Windows)** | **SIGUIENTE.** `medir` para dejar el CSV con las decisiones finales; commit y push de `resultados/calibracion/` |
 
 **Ficheros de la primera campaña:** el commit `fa5afc3` subió además 67 ficheros de la primera
 campaña (notebooks, `comun.py`, `config_experimentos.yaml`, `ejecutar_lote.py`, `congelacion.json`,
@@ -195,10 +215,11 @@ un abanico menor no se distingue una perspectiva de paralelas o de diagonales qu
 azar. También se ajustaron el comentario de `APERTURA_MIN_GRADOS`, el docstring del gate, la
 descripción de `apertura_haz` en el esquema y el prompt de `agents.yaml`.
 
-**Valores aceptados (2.5, 2026-11-07):** `RATIO_CROMATICO_MIN` 0.17; horizonte con la alternativa A
-(`LONGITUD_MIN_HORIZONTE` 0.1517, `ANGULO_MAX_HORIZONTE` 10, desviación declarada); `APERTURA_MIN_GRADOS`
-89; `VAR_LAPLACIANO_MIN` 2594; SAM sin cambios; escalas de composición P10/P90 (margen 0.01/0.13,
-`d_equilibrio` 0.02/0.14); `CONF_YOLO_THRESHOLD` y `BLOB_*` sin cambios. Resumen en el §4.2 del plan.
+**Valores finales (2.11, 2026-11-07, sustituyen a los aceptados en el 2.5):** `RATIO_CROMATICO_MIN`
+0.17; `LONGITUD_MIN_HORIZONTE` 0.1517 y `ANGULO_MAX_HORIZONTE` 14 (regla literal, sin desviación);
+`APERTURA_MIN_GRADOS` 89; `VAR_LAPLACIANO_MIN` 2594; SAM sin cambios; escalas de composición P10/P90
+(margen 0.01/0.14, `d_equilibrio` 0.02/0.14); `CONF_YOLO_THRESHOLD` y `BLOB_*` sin cambios. Resumen en
+el §4.2 del plan.
 
 **Cómo hacer el 2.4:**
 

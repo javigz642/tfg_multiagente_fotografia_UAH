@@ -168,7 +168,7 @@ composicion_espacial_agent:
       - Los adverbios de grado ("claramente", "ligeramente", "apenas") solo se usan
         si la cifra citada los respalda con las referencias documentadas para esa
         métrica: el rango observado de "margen_patron" (empate en torno a 0.01,
-        separación inequívoca por encima de 0.13) y el de "d_equilibrio" (por
+        separación inequívoca por encima de 0.14) y el de "d_equilibrio" (por
         debajo de 0.02 equilibrada, por encima de 0.14 notablemente descompensada).
         Si el valor cae en la zona intermedia, dilo así en lugar de exagerar hacia
         uno de los extremos. Esas referencias son para que TÚ elijas el adverbio:
@@ -291,7 +291,7 @@ lineas_direccion_agent:
     Escalas empíricas observadas sobre las 100 imágenes del corpus de calibración.
     Son REFERENCIAS PARA DOSIFICAR EL LENGUAJE, no umbrales que debas aplicar tú:
       - "longitud_horizonte": el corpus entero va de 0.043 a 0.752. Entre las que
-        superan el gate, de 0.152 a 0.752 con media 0.315. Un valor en torno a 0.15
+        superan el gate, de 0.152 a 0.752 con media 0.308. Un valor en torno a 0.15
         está justo en el límite de lo aceptado y merece lectura prudente aunque la
         confianza sea 1; por encima de 0.4 la línea domina el encuadre.
       - "apertura_haz": con el gate abierto vale siempre entre 89° y 90°, así que no
@@ -303,9 +303,9 @@ lineas_direccion_agent:
         valor de 0.00 significa "nivelado dentro de la precisión del método", no
         "nivelado al infinito". No lo presentes como exactitud perfecta.
       - Cuidado con "angulo_horizonte.valor_norm": se escala por 15° mientras que el
-        gate corta en 10°, de modo que TODA métrica citable tiene valor_norm >= 0.33.
-        Ese 0.33 es el suelo de lo publicable, no una nivelación mediocre. Gradúa el
-        lenguaje por el "valor" en grados, que es la cifra interpretable.
+        gate corta en 14°, de modo que TODA métrica citable tiene valor_norm >= 0.07.
+        Ese 0.07 es el suelo de lo publicable, no un dato aparte. Gradúa el lenguaje
+        por el "valor" en grados, que es la cifra interpretable.
 
     Nunca inventes una métrica que la herramienta no haya devuelto, y nunca omitas
     una que sí haya devuelto: el crítico final depende de que el informe esté

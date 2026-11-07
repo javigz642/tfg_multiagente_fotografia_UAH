@@ -128,27 +128,29 @@ MIN_LINEAS_FUGA = 2
 #
 # Un horizonte real cruza buena parte del encuadre. Si la línea casi horizontal más
 # larga de la escena no llega al 15% de la diagonal, lo que hay es un fragmento (el
-# borde de un objeto, un trozo de sombra) y no una línea de horizonte. Calibrado sobre
-# las 100 fotos de data/ con la definición AMPLIA del horizonte (natural o horizontal
-# estructural) y la regla del §4.1 de experimentos.md, con el ángulo fijo en 10°
-# (ver ANGULO_MAX_HORIZONTE). No hay banda vacía (regla 2): el corte queda justo por
-# encima de dos negativas (imagen95, 0.1509; imagen77, 0.1512) y en la positiva más
-# corta que conserva (imagen26, 0.1518). Abre 5 de 66 negativas y 17 de 32 positivas:
-# sensibilidad 53 %, PUNTO DÉBIL declarado (experimentos.md §8). Las clases se
-# solapan mucho en longitud; las 4 cifras son las que pide la banda, no precisión real.
+# borde de un objeto, un trozo de sombra) y no una línea de horizonte.
+# Y aunque sea larga, una línea muy inclinada no es un horizonte mal nivelado sino
+# estructura de la escena (una ladera, un patrón, una línea de fuga).
+#
+# Los dos cortes se calibran JUNTOS (regla 4 del §4.1 de experimentos.md) sobre las
+# 100 fotos de data/, con la definición AMPLIA del horizonte (natural o horizontal
+# estructural). No hay banda vacía (regla 2): de las parejas que abren como mucho el
+# 10 % de las negativas, (0.1517, 14°) es la de mayor sensibilidad. Abre 6 de 66
+# negativas y 19 de 32 positivas: sensibilidad 59 %, PUNTO DÉBIL declarado
+# (experimentos.md §8). La longitud queda justo por encima de dos negativas
+# (imagen95, 0.1509; imagen77, 0.1512) y en la positiva más corta que conserva
+# (imagen26, 0.1518): las clases se solapan mucho y las 4 cifras son las que pide la
+# banda, no precisión real. El ángulo queda en la positiva más inclinada que conserva
+# (imagen85, horizontal estructural a -13.94°), por debajo de imagen96 (12.93°, que
+# abre como negativa) y antes de la siguiente candidata (14.88°).
+# Antes valía 10°, fijado a ojo con los 4 candidatos más inclinados de un corpus de 40
+# fotos; con 14° el gate deja pasar horizontes bastante torcidos, que es justo lo que
+# la métrica tiene que poder señalar.
 LONGITUD_MIN_HORIZONTE = 0.1517
-# Y aunque sea larga, una línea muy inclinada no es un horizonte mal nivelado: es
-# estructura de la escena. Verificado a ojo sobre los 4 candidatos más inclinados
-# del corpus, que resultaron ser un patrón de muro (-12.26°), el borde de una colina
-# (-11.17°), una línea de fuga (-10.66°) y una ladera (+10.65°). Por debajo del corte
-# el corpus no pasa de 8.25°, así que 10 cae en banda vacía.
-# En la calibración sobre las 100 fotos (§4.1) NO se recalibra, y es una desviación
-# declarada de la regla: la pareja (longitud, ángulo) que da la regla tiene ángulo 0°,
-# porque 28 de 86 candidatos miden exactamente 0°. Con ese corte angulo_horizonte
-# valdría siempre 0 al abrir y la métrica no podría señalar un horizonte torcido.
-# NO se implementa estrechando el cono de la partición a 10°: se probó y rompe el
-# gate de convergencia sin arreglar esto (ver el comentario de UMBRAL_HORIZONTE_GRADOS).
-ANGULO_MAX_HORIZONTE = 10.0
+# NO se implementa estrechando el cono de la partición: se probó y rompe el gate de
+# convergencia (ver el comentario de UMBRAL_HORIZONTE_GRADOS). Tiene que ser menor que
+# UMBRAL_HORIZONTE_GRADOS (15°), que es el cono del que salen los candidatos.
+ANGULO_MAX_HORIZONTE = 14.0
 
 # --- Nota sobre las variantes descartadas ---
 # Este módulo NO lleva interruptores de ablación: hace una sola cosa y la hace

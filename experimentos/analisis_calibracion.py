@@ -65,7 +65,9 @@ MAX_TASA_FP = 0.10          # se descartan los cortes que abren más de 1 de cad
 MIN_SENSIBILIDAD = 0.60     # por debajo, el corte se declara punto débil (pero no se cambia)
 MIN_CASOS = 3               # menos positivas o negativas que esto: «comprobado, no calibrado»
 
-# Valores con los que se midió (entorno_calibracion.json).
+# Valores de PARTIDA, anteriores a la calibración (los de la primera medición, commit 38845ad).
+# La propuesta se compara con ellos; las variables de decisión no dependen de los umbrales con
+# los que se mida, así que la regla da lo mismo con cualquier medición del mismo código.
 ACTUAL = {
     "RATIO_CROMATICO_MIN": 0.09,
     "LONGITUD_MIN_HORIZONTE": 0.13,
