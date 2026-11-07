@@ -171,7 +171,8 @@ class InformeLineasDireccion(BaseModel):
         le=90.0,
         description=(
             "Mayor diferencia angular entre los inliers del haz ganador, en grados [0,90]; "
-            "distingue convergencia de paralelismo."
+            "mide cuánto se abre el abanico de líneas que concurren (un haz de paralelas da "
+            "casi 0)."
         ),
     )
     score_convergencia_nulo: float = Field(

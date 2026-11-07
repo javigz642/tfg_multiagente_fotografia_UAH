@@ -210,8 +210,12 @@ valores de partida.
   (10°) y se calibra solo la longitud. El criterio para desviarse es que el corte deje la métrica sin
   sentido, no que dé cifras malas.
 - **Convergencia y nitidez se aplican tal cual** aunque su sensibilidad quede por debajo del 60 %: son
-  puntos débiles declarados (§8). En la convergencia, muchas escenas sin perspectiva dan 80–90° de
-  apertura (rejillas frontales). En la nitidez, 7 de las 12 negativas lo son porque la caja de YOLO no es
+  puntos débiles declarados (§8). En la convergencia, la apertura separa mal las clases (AUC 0.64): una
+  perspectiva cuyas líneas salen de un solo lado del punto de fuga da un abanico estrecho (imagen4,
+  callejón: 47 de 48 líneas concurren y 48.9°), y unas pocas diagonales de una fachada frontal que se
+  cruzan por azar dan 80–90° (imagen8, escalera de incendios; imagen6, forjados). La razón
+  `score / score_nulo` separa mejor (AUC 0.91), pero no se rediseña el gate después de ver los datos; se
+  deja como trabajo futuro. En la nitidez, 7 de las 12 negativas lo son porque la caja de YOLO no es
   el protagonista, y solo un corte muy alto las cierra.
 - **No calibrados por huecos:** `CONF_YOLO_THRESHOLD` se queda en 0.75 (con 0.90 se pierden 5 cajas
   buenas para quitar 5 malas, `barrido_yolo.csv`); `BLOB_*` no se activan; la composición abre en las 11

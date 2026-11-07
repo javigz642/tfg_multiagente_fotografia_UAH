@@ -99,13 +99,20 @@ UMBRAL_PAR_MIN_GRADOS = 3.0
 # Un punto de fuga fuera del encuadre es legítimo, pero pasado cierto punto es
 # indistinguible de líneas paralelas. Ninguna perspectiva real de data/ pasa de 0.83.
 MAX_DIAGONALES_FUGA = 2.0
-# Tercera condición del gate: separa CONVERGENCIA de PARALELISMO. Calibrado sobre las
-# 100 fotos de data/ con la regla del §4.1 de experimentos.md (regla 2), entre las 49
-# que superan el modelo nulo. La apertura NO separa bien las clases: además del
-# paralelismo (< 35°), muchas escenas sin perspectiva dan 80-90° porque sus líneas
-# verticales y horizontales se cruzan en ángulo recto (rejillas frontales). Con 35°
-# abría el 40 % de las negativas; con 89° abre 3 de 35 (imagen8, 29, 51) y conserva 4
-# de 14 perspectivas. Sensibilidad 29 %: PUNTO DÉBIL declarado (experimentos.md §8).
+# Tercera condición del gate: el haz que concurre tiene que abrirse en abanico. Se ideó
+# para separar CONVERGENCIA de PARALELISMO (un manojo de paralelas tiene apertura ~0).
+# Calibrado sobre las 100 fotos de data/ con la regla del §4.1 de experimentos.md
+# (regla 2), entre las 49 que superan el modelo nulo. La apertura separa mal las clases
+# (AUC 0.64), por dos motivos que se ven en las imágenes de verificación:
+#   - una perspectiva real puede dar un abanico estrecho si las líneas salen de un solo
+#     lado del punto de fuga: imagen4 (callejón, 47 de 48 líneas concurren) da 48.9°;
+#   - una escena sin perspectiva puede dar un abanico amplio cuando unas pocas diagonales
+#     de la propia escena se cruzan por azar: la escalera de incendios de imagen8 (90°) o
+#     los cantos de los forjados de imagen6 (88.1°) en fachadas frontales.
+# Con 35° abría el 40 % de las negativas; con 89° abre 3 de 35 (imagen8, 29, 51) y
+# conserva 4 de 14 perspectivas. Sensibilidad 29 %: PUNTO DÉBIL declarado
+# (experimentos.md §8). La razón score / score_nulo separa mejor (AUC 0.91), pero el gate
+# no se rediseña después de ver los datos de calibración.
 APERTURA_MIN_GRADOS = 89.0
 # Techo de MEMORIA, no de diseño (la matriz de votación es pares x líneas). Sobre
 # data/ nunca llega a actuar: el máximo observado son 201 candidatas.
@@ -460,10 +467,14 @@ def gate_convergencia(resultado, nulo):
       2. NO ES AZAR — converge más que el azar con esa misma cantidad de líneas.
          Comparación ESTRICTA a propósito: con 2 líneas score y nulo valen ambos
          1.0, y ese caso debe cerrarse (es aritmética, no convergencia);
-      3. NO ES PARALELISMO — el haz se abre en abanico y no es un manojo de
-         paralelas. Sin esta condición abrían el gate un muro de textura, una masa
-         de vegetación y una escena de fauna: el modelo nulo no las caza porque un
-         haz paralelo es MÁS ordenado que el azar, no menos.
+      3. ABANICO — el haz se abre casi en ángulo recto (APERTURA_MIN_GRADOS). Nació
+         para descartar el paralelismo: sin esta condición abrían el gate un muro de
+         textura, una masa de vegetación y una escena de fauna, que el modelo nulo
+         no caza porque un haz paralelo es MÁS ordenado que el azar, no menos. Con
+         el corte calibrado (89°) es mucho más exigente: también cierra
+         perspectivas reales de abanico estrecho, y no cierra todas las diagonales
+         que se cruzan por azar (ver el comentario de APERTURA_MIN_GRADOS). Por eso
+         su mensaje de cierre no afirma que las líneas sean paralelas.
     """
     if resultado["n_lineas"] < MIN_LINEAS_FUGA:
         return 0.0, (
@@ -478,7 +489,8 @@ def gate_convergencia(resultado, nulo):
     if resultado["apertura"] < APERTURA_MIN_GRADOS:
         return 0.0, (
             f"haz de apertura {resultado['apertura']:.1f}° (mínimo {APERTURA_MIN_GRADOS:.0f}°): "
-            "líneas casi paralelas, no convergencia en profundidad"
+            "con un abanico menor no se distingue una perspectiva de líneas paralelas o de "
+            "diagonales de la escena que se cruzan por azar, así que no se afirma convergencia"
         )
     return 1.0, (
         f"{resultado['n_inliers']} de {resultado['n_lineas']} líneas concurren "

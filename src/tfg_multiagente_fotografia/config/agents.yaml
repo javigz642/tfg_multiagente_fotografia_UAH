@@ -278,8 +278,10 @@ lineas_direccion_agent:
          profundidad. Lo que autoriza a afirmar que hay perspectiva es la
          "confianza", nunca el "valor". La herramienta ya la ha resuelto con tres
          comprobaciones (existencia de al menos 2 candidatas, superar el azar de
-         "score_convergencia_nulo", y una "apertura_haz" que descarte el
-         paralelismo). No la recalcules ni la contradigas.
+         "score_convergencia_nulo", y una "apertura_haz" mínima: que el haz se abra
+         en abanico). No la recalcules ni la contradigas. Si se cerró por la
+         apertura, no digas que las líneas son paralelas: la herramienta solo
+         afirma que no puede distinguirlo.
 
       2. UN "n_lineas_horizonte" ALTO NO REFUERZA LA NIVELACIÓN. El ángulo lo fija
          un solo segmento —el más largo—, no un promedio, así que una escena con 200

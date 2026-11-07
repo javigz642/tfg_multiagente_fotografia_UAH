@@ -12,16 +12,15 @@ tomaron y qué toca después. El plan completo y las justificaciones están en
 
 ```
 Fase 1  Anotar el conjunto de prueba ........... HECHO
-Fase 2  Calibrar umbrales sobre data/ .......... CASI HECHA (valores aplicados; falta re-medir en Windows, 2.7)
+Fase 2  Calibrar umbrales sobre data/ .......... CASI HECHA (falta re-medir en Windows por el mensaje corregido, 2.9)
 Fase 3  Instrumentos + congelación ............. pendiente  → aquí queda el sistema final
 Fase 4  Ejecutar E1–E4 y escribir resultados ... pendiente
 ```
 
-**Siguiente acción concreta (la hace el usuario, en Windows): paso 2.7.** `git pull` y
-`uv run python experimentos/calibracion.py medir --rehacer`, para que `medidas_calibracion.csv`
-refleje el sistema final. Después, commit y push de los ficheros que cambien en
-`resultados/calibracion/`. El asistente comprueba luego que las decisiones medidas coinciden con
-`propuesta_umbrales.csv` (2.8).
+**Siguiente acción concreta (la hace el usuario, en Windows): paso 2.9.** `git pull` y
+`uv run python experimentos/calibracion.py medir --rehacer`; commit y push **solo** de
+`experimentos/resultados/calibracion/` (no `git add .`). Solo cambia la columna
+`motivo_convergencia`; el asistente lo comprueba y se pasa a la fase 3.
 
 ---
 
@@ -98,9 +97,12 @@ Script `analisis_calibracion.py` (sin GPU; lee los tres CSV). Salidas en `result
 - **Horizonte:** la regla elige ángulo máximo 0° (28 de 86 candidatos miden exactamente 0°). Con eso
   `angulo_horizonte` valdría siempre 0 al abrir: la métrica ya no podría decir que una foto está
   torcida. Las alternativas A y B no son la regla y habría que declararlas.
-- **Convergencia:** la apertura no separa perspectiva de no perspectiva; muchas negativas están en
-  80–90° (rejillas frontales: líneas verticales y horizontales que se cruzan). Con 89° la condición
-  casi no abre (precisión 4/7 en calibración).
+- **Convergencia:** la apertura no separa perspectiva de no perspectiva (AUC 0.64). Una perspectiva
+  con líneas de un solo lado da un abanico estrecho (imagen4: 48.9°) y unas pocas diagonales de una
+  fachada frontal que se cruzan por azar dan 80–90° (imagen8, imagen6). Con 89° la condición casi
+  no abre (precisión 4/7 en calibración). `score / score_nulo` separaría mejor (AUC 0.91): queda
+  como trabajo futuro, no se rediseña tras ver los datos. El mensaje de cierre por apertura ya no
+  dice «líneas casi paralelas» (corregido antes de congelar).
 - **Nitidez:** 7 de las 12 negativas lo son porque la caja de YOLO no es el protagonista
   (imagen6, 8, 15, 77, 85, 86, 99); este umbral no puede cerrarlas sin cerrar casi todo.
 - **SAM:** confirmado «comprobado, no calibrado» (0 segmentaciones `mal`).
@@ -158,8 +160,21 @@ Script `analisis_calibracion.py` (sin GPU; lee los tres CSV). Salidas en `result
 | 2.4 | Asistente | ~~Análisis de huecos con la regla del §4.1 del plan~~ HECHO (§3.2) |
 | 2.5 | Usuario | ~~Aceptar o ajustar los valores propuestos~~ HECHO: acepta la recomendación (abajo) |
 | 2.6 | Asistente | ~~Aplicarlos y ejecutar `tests/`~~ HECHO |
-| **2.7** | **Usuario (Windows)** | **SIGUIENTE.** `git pull` + `calibracion.py medir --rehacer`; commit y push de `resultados/calibracion/` |
-| 2.8 | Asistente | Comprobar que las decisiones medidas coinciden con la propuesta |
+| 2.7 | Usuario (Windows) | ~~`calibracion.py medir --rehacer`~~ HECHO (`fa5afc3`, medido con `8678fa4`) |
+| 2.8 | Asistente | ~~Comprobar las decisiones~~ HECHO: variables idénticas a la medición anterior; las 6 condiciones coinciden foto a foto con la propuesta (color 78, horizonte 22, convergencia 7, espacio 60, nitidez 11, composición 60) |
+
+| **2.9** | **Usuario (Windows)** | **SIGUIENTE.** Re-medir por el mensaje de cierre corregido de la convergencia |
+
+**Ficheros de la primera campaña:** el commit `fa5afc3` subió además 67 ficheros de la primera
+campaña (notebooks, `comun.py`, `config_experimentos.yaml`, `ejecutar_lote.py`, `congelacion.json`,
+`resultados/E1`–`E5`, anotaciones `A1`/`A2`…). Se movieron con `git mv` a
+`experimentos/primera_campana/` (ver su `LEEME.md`), sin borrarlos.
+
+**Mensaje de cierre de la convergencia corregido:** decía «líneas casi paralelas», que es falso con
+el corte en 89° (imagen4, una perspectiva real de 48.9°, cerraba con ese texto). Ahora dice que con
+un abanico menor no se distingue una perspectiva de paralelas o de diagonales que se cruzan por
+azar. También se ajustaron el comentario de `APERTURA_MIN_GRADOS`, el docstring del gate, la
+descripción de `apertura_haz` en el esquema y el prompt de `agents.yaml`.
 
 **Valores aceptados (2.5, 2026-11-07):** `RATIO_CROMATICO_MIN` 0.17; horizonte con la alternativa A
 (`LONGITUD_MIN_HORIZONTE` 0.1517, `ANGULO_MAX_HORIZONTE` 10, desviación declarada); `APERTURA_MIN_GRADOS`
