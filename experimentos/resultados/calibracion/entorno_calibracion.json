@@ -1,0 +1,40 @@
+{
+ "fecha": "2026-11-07T14:45:04+00:00",
+ "commit": "38845add20434f09f3a40be2e516f406c7cb740f",
+ "maquina": "ASUS-JAVIER",
+ "sistema": "Windows-11-10.0.26300-SP0",
+ "procesador": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD",
+ "python": "3.12.10",
+ "torch": "2.6.0+cu124",
+ "cuda": "12.4",
+ "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+ "ultralytics": "8.4.102",
+ "constantes_al_medir": {
+  "percepcion": {
+   "CONF_YOLO_THRESHOLD": 0.75,
+   "BLOB_AREA_MIN_RATIO": 0.005,
+   "BLOB_AREA_MAX_RATIO": 0.6
+  },
+  "luz_tono": {
+   "RATIO_CROMATICO_MIN": 0.09,
+   "PESO_MIN_MATIZ": 0.05,
+   "UMBRAL_FUSION_MATIZ": 15.0,
+   "SAT_MIN": 0.15,
+   "VAL_MIN": 0.15
+  },
+  "lineas": {
+   "LONGITUD_MIN_HORIZONTE": 0.13,
+   "ANGULO_MAX_HORIZONTE": 10.0,
+   "APERTURA_MIN_GRADOS": 35.0,
+   "MIN_LINEAS_FUGA": 2
+  },
+  "espacio": {
+   "SAM_SCORE_MIN": 0.9,
+   "RELLENO_MIN": 0.2,
+   "RELLENO_MAX": 0.95,
+   "VAR_LAPLACIANO_MIN": 50.0,
+   "MARGEN_FRONTERA_RATIO": 0.01,
+   "DEVICE_SAM": "cpu"
+  }
+ }
+}
