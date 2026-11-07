@@ -12,13 +12,16 @@ tomaron y qué toca después. El plan completo y las justificaciones están en
 
 ```
 Fase 1  Anotar el conjunto de prueba ........... HECHO
-Fase 2  Calibrar umbrales sobre data/ .......... EN CURSO (script listo, falta ejecutarlo en Windows)
+Fase 2  Calibrar umbrales sobre data/ .......... CASI HECHA (valores aplicados; falta re-medir en Windows, 2.7)
 Fase 3  Instrumentos + congelación ............. pendiente  → aquí queda el sistema final
 Fase 4  Ejecutar E1–E4 y escribir resultados ... pendiente
 ```
 
-**Siguiente acción concreta:** en el equipo Windows, ejecutar `experimentos/calibracion.py`
-(`medir` → `plantilla` → revisar → `exportar`) y subir los tres CSV/JSON resultantes (§4).
+**Siguiente acción concreta (la hace el usuario, en Windows): paso 2.7.** `git pull` y
+`uv run python experimentos/calibracion.py medir --rehacer`, para que `medidas_calibracion.csv`
+refleje el sistema final. Después, commit y push de los ficheros que cambien en
+`resultados/calibracion/`. El asistente comprueba luego que las decisiones medidas coinciden con
+`propuesta_umbrales.csv` (2.8).
 
 ---
 
@@ -48,7 +51,66 @@ Fase 4  Ejecutar E1–E4 y escribir resultados ... pendiente
 | Selección y descarga del conjunto de prueba (40 fotos de Unsplash, P2 girada 15° a propósito) | `descargar_prueba.py`, `manifiesto_prueba.csv`, `seleccion_prueba.json` | `4d39696` |
 | Revisión del plan: criterios de éxito con tolerancias, horizonte amplio como principal, nombres descriptivos | `experimentos.md` §6.0 y §6.2 | `06c6a60` |
 | Anotación ciega de contexto y aplicabilidad del conjunto de prueba | `anotaciones/anotacion_prueba.csv` (generada con `plantilla_anotacion_prueba.py`) | `a9f65ec` |
-| Script de calibración (medir + revisión ciega de la segmentación) | `calibracion.py` | «Script de calibración…» (2026-11-06) |
+| Script de calibración (medir + revisión ciega de la segmentación) | `calibracion.py` | `e6d8d06` |
+| Regla para elegir cada umbral, fijada antes de medir | `experimentos.md` §4.1 | `25998ad` |
+| Medición en Windows y revisión de la segmentación (pasos 2.1–2.3) | `resultados/calibracion/`, `anotaciones/segmentacion_calibracion.csv` | `575306d` |
+
+### 3.1 Qué salió de la medición (2026-11-07, Windows)
+
+- **Entorno:** ASUS-JAVIER, Windows 11, RTX 4060 Laptop, Python 3.12.10, torch 2.6.0+cu124, CUDA
+  12.4, ultralytics 8.4.102. Se midió con el commit `38845ad`, sin cambios en `src/`
+  (`entorno_calibracion.json`).
+- **Percepción:** 100 fotos medidas; **60 con `fuente = yolo`** y 40 con saliencia (coincide con lo
+  ya visto en Windows, §2.3 del plan).
+- **Revisión de la segmentación (60 fotos `yolo`):** **59 `bien`, 1 `parcial` (imagen95, coche) y
+  0 `mal`.**
+  - Score de SAM entre 0,921 y 0,998; relleno entre 0,240 y 0,895. Ninguna foto queda fuera de los
+    valores provisionales (0,90 y [0,20; 0,95]), así que la condición de segmentación fiable
+    **nunca cierra** en el conjunto de calibración.
+  - Consecuencia prevista: con 0 negativas, a `SAM_SCORE_MIN`, `RELLENO_MIN` y `RELLENO_MAX` les toca
+    la **regla 3 del §4.1** («comprobado, no calibrado»): se mantienen los valores actuales y se
+    declara que el conjunto de calibración no tiene segmentaciones `mal` con las que ajustarlos. Hay
+    que confirmarlo en el 2.4 y decirlo así en el cap. 6 y en los límites (§8 del plan).
+- **¿Caja = protagonista?:** 49 `si` y **11 `no`**. Las 11 son casos en los que YOLO elige un objeto
+  que no es el protagonista (imagen77 libro, imagen90 jarrón, imagen93 persona con caballo, imagen99
+  vela con humo…; ver los comentarios del CSV). Importa para la condición de composición, que abre
+  con `fuente = yolo` sin comprobar si la caja es el protagonista: en el 2.4 se cuentan como falsos
+  positivos de composición y se usan en el barrido de `CONF_YOLO_THRESHOLD`.
+
+### 3.2 Qué salió del análisis de huecos (paso 2.4, 2026-11-07)
+
+Script `analisis_calibracion.py` (sin GPU; lee los tres CSV). Salidas en `resultados/calibracion/`:
+`propuesta_umbrales.csv`, `barrido_yolo.csv`, `escalas_composicion.csv` y `huecos_*.png`.
+
+| Umbral | Actual | Regla §4.1 | VP/FP/FN/VN | Tasa FP (actual) | Sensib. (actual) |
+|---|---|---|---|---|---|
+| `RATIO_CROMATICO_MIN` | 0.09 | **0.17** (regla 2) | 76/2/0/21 | 9 % (13 %) | 100 % (100 %) |
+| Horizonte (L, A) | 0.13, 10° | **0.09, 0°** (4→2) **degenerado** | 18/4/14/62 | 6 % (12 %) | 56 % (53 %) |
+| ↳ alternativa A (A fijo en 10°) | | 0.1517, 10° | 17/5/15/61 | 8 % | 53 % |
+| ↳ alternativa B (A ≥ 10°) | | 0.1517, 14° | 18/6/14/60 | 9 % | 56 % |
+| `APERTURA_MIN_GRADOS` | 35 | **89** (regla 2) | 4/3/10/32 | 9 % (40 %) | 29 % (64 %) |
+| `SAM_SCORE_MIN`, `RELLENO_MIN/MAX` | 0.90; 0.20–0.95 | sin cambios (regla 3) | 60/0/0/0 | — | 100 % |
+| `VAR_LAPLACIANO_MIN` | 50 | **2594** (regla 2) | 10/1/38/11 | 8 % (92 %) | 21 % (94 %) |
+| ↳ alternativa (solo caja = protagonista) | | 1100 | 18/0/26/5 | 0 % (80 %) | 41 % |
+
+- Con los valores actuales, cromático, horizonte, convergencia y nitidez **superan el 10 % de FP**
+  de la regla, así que ninguno se puede mantener tal cual sin apartarse de ella.
+- **Horizonte:** la regla elige ángulo máximo 0° (28 de 86 candidatos miden exactamente 0°). Con eso
+  `angulo_horizonte` valdría siempre 0 al abrir: la métrica ya no podría decir que una foto está
+  torcida. Las alternativas A y B no son la regla y habría que declararlas.
+- **Convergencia:** la apertura no separa perspectiva de no perspectiva; muchas negativas están en
+  80–90° (rejillas frontales: líneas verticales y horizontales que se cruzan). Con 89° la condición
+  casi no abre (precisión 4/7 en calibración).
+- **Nitidez:** 7 de las 12 negativas lo son porque la caja de YOLO no es el protagonista
+  (imagen6, 8, 15, 77, 85, 86, 99); este umbral no puede cerrarlas sin cerrar casi todo.
+- **SAM:** confirmado «comprobado, no calibrado» (0 segmentaciones `mal`).
+- **YOLO (solo documentar):** subir el umbral no separa las cajas equivocadas: con 0.90 quedan
+  44 si / 6 no (pierde 5 buenas para quitar 5 malas). Por debajo de 0.75 entrarían 14 fotos sin revisar.
+- **Composición:** las 11 fotos con caja ≠ protagonista abren la condición → 11 FP en calibración.
+- **Escalas de composición:** `margen_patron` (fotos yolo) P10 = 0.012, P90 = 0.133 (0.15 actual es
+  el P95); `d_equilibrio` (las 100) P10 = 0.019, P90 = 0.142 (0.03 / 0.12 actuales son P27 / P82). El
+  plan no fija qué percentiles usar: lo decide el usuario.
+- **`BLOB_*`:** no se activan (ratio entre 0.010 y 0.405; ninguna foto sin sujeto).
 
 ### Decisiones tomadas con el usuario
 
@@ -67,6 +129,9 @@ Fase 4  Ejecutar E1–E4 y escribir resultados ... pendiente
    vacía, el corte va en su extremo más exigente. Sin banda vacía, el corte de mayor sensibilidad entre
    los que dejan abrir como mucho el 10 % de las negativas. Con menos de 3 positivas o negativas,
    «comprobado, no calibrado».
+7. **La segmentación del conjunto de prueba se anota igual que la de calibración** (mismo script,
+   imágenes sin cifras) y **antes de mirar las decisiones del sistema** (§5.3 y §6.2 del plan). La
+   convergencia sin veredicto propio y la segmentación no calibrada se declaran en los límites (§8).
 
 ### Estado de la anotación del conjunto de prueba
 
@@ -87,13 +152,56 @@ Fase 4  Ejecutar E1–E4 y escribir resultados ... pendiente
 
 | # | Quién | Qué |
 |---|---|---|
-| 2.1 | Usuario (Windows) | `git pull`, `uv sync`, `uv run python experimentos/calibracion.py medir` (~4 s/foto) |
-| 2.2 | Usuario | `... calibracion.py plantilla`; revisar en `anotaciones/segmentacion_calibracion.xlsx` la segmentación (`bien`/`parcial`/`mal`) y si la caja es el protagonista (`si`/`no`) de las ~60 fotos `yolo`; `... calibracion.py exportar` |
-| 2.3 | Usuario | Commit y push de `resultados/calibracion/medidas_calibracion.csv`, `resultados/calibracion/entorno_calibracion.json` y `anotaciones/segmentacion_calibracion.csv` |
-| 2.4 | Asistente | Análisis de huecos por umbral, con gráficas: cruzar `medidas_calibracion.csv` con `resultados/aplicabilidad_vlm/anotacion_humana_A2.csv` (aplicabilidad de las 100 fotos, ya anotada) y con la revisión de la segmentación. Umbrales: `SAM_SCORE_MIN`, `RELLENO_MIN/MAX`, `VAR_LAPLACIANO_MIN`, `RATIO_CROMATICO_MIN`, `LONGITUD_MIN_HORIZONTE`/`ANGULO_MAX_HORIZONTE` (con el horizonte amplio), `APERTURA_MIN_GRADOS`, barrido de `CONF_YOLO_THRESHOLD`, percentiles de `margen_patron` y `d_equilibrio` para `agents.yaml` |
-| 2.5 | Usuario | Aceptar o ajustar los valores propuestos |
-| 2.6 | Asistente | Aplicarlos: quitar «PROVISIONAL» del código y actualizar los comentarios, `agents.yaml` y la Figura 28 (`docs/diagramas/espacio_aislamiento_pipeline.html`); ejecutar `tests/` |
+| 2.1 | Usuario (Windows) | ~~Medir~~ HECHO (2026-11-07) |
+| 2.2 | Usuario | ~~Revisar la segmentación y el protagonista de las 60 fotos `yolo` y exportar~~ HECHO |
+| 2.3 | Usuario | ~~Commit y push de los tres ficheros~~ HECHO (`575306d`) |
+| 2.4 | Asistente | ~~Análisis de huecos con la regla del §4.1 del plan~~ HECHO (§3.2) |
+| 2.5 | Usuario | ~~Aceptar o ajustar los valores propuestos~~ HECHO: acepta la recomendación (abajo) |
+| 2.6 | Asistente | ~~Aplicarlos y ejecutar `tests/`~~ HECHO |
+| **2.7** | **Usuario (Windows)** | **SIGUIENTE.** `git pull` + `calibracion.py medir --rehacer`; commit y push de `resultados/calibracion/` |
+| 2.8 | Asistente | Comprobar que las decisiones medidas coinciden con la propuesta |
 
+**Valores aceptados (2.5, 2026-11-07):** `RATIO_CROMATICO_MIN` 0.17; horizonte con la alternativa A
+(`LONGITUD_MIN_HORIZONTE` 0.1517, `ANGULO_MAX_HORIZONTE` 10, desviación declarada); `APERTURA_MIN_GRADOS`
+89; `VAR_LAPLACIANO_MIN` 2594; SAM sin cambios; escalas de composición P10/P90 (margen 0.01/0.13,
+`d_equilibrio` 0.02/0.14); `CONF_YOLO_THRESHOLD` y `BLOB_*` sin cambios. Resumen en el §4.2 del plan.
+
+**Cómo hacer el 2.4:**
+
+- **Entradas (todas en el repo):**
+  - `resultados/calibracion/medidas_calibracion.csv`: una fila por foto con todas las variables de
+    decisión y si cada condición abre (`gate_*`);
+  - `anotaciones/segmentacion_calibracion.csv`: `segmentacion` y `caja_protagonista` de las 60
+    fotos `yolo`;
+  - `resultados/aplicabilidad_vlm/anotacion_humana_A2.csv`: aplicabilidad de las 100 fotos
+    (`color`, `horizonte_natural`, `horizontal_estructural`, `perspectiva`, `protagonista`,
+    `espacio`, `nitidez`, `anclaje`). Mezcla codificación y separador: leerla con `leer_csv()` de
+    `calibracion.py`. El horizonte amplio es `si` si lo es el natural **o** el estructural.
+- **Qué producir:** un script `experimentos/analisis_calibracion.py` (versionado), que escriba en
+  `resultados/calibracion/`:
+  - una gráfica por umbral (fotos ordenadas por su variable, positivas y negativas en colores
+    distintos, el corte actual y el propuesto);
+  - `propuesta_umbrales.csv`: umbral, valor actual, valor propuesto, regla del §4.1 aplicada
+    (1, 2, 3 o 4), VP/FP/FN/VN en calibración y las fotos que fallan.
+- **Umbrales por huecos:** los de la tabla del §4.1 del plan (`RATIO_CROMATICO_MIN`, horizonte con la
+  definición amplia, `APERTURA_MIN_GRADOS`, `SAM_SCORE_MIN` + `RELLENO_MIN/MAX`,
+  `VAR_LAPLACIANO_MIN`).
+- **Otros (no por huecos):** barrido de `CONF_YOLO_THRESHOLD` (usar `conf_yolo_max` y
+  `caja_protagonista`; ojo, YOLO no da cajas por debajo de 0,25), percentiles de `margen_patron` y
+  `d_equilibrio` para las escalas de `agents.yaml`, y `BLOB_*` (comprobar que no se activan).
+- **Además, informar** de la condición de composición: cuántas de las 11 fotos con
+  `caja_protagonista = no` abren composición (son falsos positivos de esa condición).
+- **No tocar todavía el código:** primero se presentan los valores al usuario (2.5).
+
+**Cómo hacer el 2.6:** quitar «PROVISIONAL» del código y actualizar los comentarios que citan cifras
+(`espacio_aislamiento_tool.py` líneas ~55–85, y las demás herramientas si cambia algún valor),
+`agents.yaml` y la Figura 28 (`docs/diagramas/espacio_aislamiento_pipeline.html`); ejecutar
+`tests/`. Si algún umbral cambia, volver a medir en Windows (`calibracion.py medir --rehacer`) para
+que `medidas_calibracion.csv` refleje el sistema final.
+
+Mejoras menores de `calibracion.py`, solo si se vuelve a usar: `exportar` debería comprobar que
+están todas las fotos `yolo` de `medidas_calibracion.csv` y no fallar con la hoja vacía; la caché no
+guarda el commit (tras cambiar código hay que usar `--rehacer`).
 **Alcance: todos los agentes, no solo SAM.** (a) Nuevos por SAM: `SAM_SCORE_MIN`,
 `RELLENO_MIN/MAX` y `VAR_LAPLACIANO_MIN` (depende de la máscara); son los únicos que necesitan la
 revisión manual de la segmentación. (b) Ya calibrados antes, pero sobre un `data/` más pequeño o
@@ -113,14 +221,20 @@ falso negativo solo hace callar. **El conjunto de prueba no se usa para calibrar
 - `manifiesto_calibracion.csv` (nombre, MD5, dimensiones, URL, autor de las 100 fotos de `data/`).
 - `config_experimentos.yaml`, `comun.py` (verificador de citas, IC de Wilson…), `ejecutar_lote.py`
   (lanzador reanudable con tokens, tiempos, VRAM/RAM y copia por tanda). Detalle en el §7 del plan.
+- Añadir a `calibracion.py` la opción `--conjunto prueba`: leer `data_prueba/` y escribir en
+  `resultados/prueba/`, `outputs/prueba/` y `anotaciones/segmentacion_prueba.{xlsx,csv}`, sin pisar
+  los ficheros de calibración. Solo cambian las rutas; el resto del script es igual (§5.3 y §7 del
+  plan). Se aprovecha para hacer las mejoras menores de la fase 2.
 - El usuario consulta y apunta las tarifas vigentes de Gemini.
 - `congelacion.json` (checklist del §9 del plan) y commit con el árbol limpio. **A partir de ese
   commit no se toca el código.**
 
 ### Fase 4 · Experimentos (Windows)
 
-1. Sin API: E1, E2 y el determinismo de la capa Python. Después, anotación de segmentación y
-   protagonista de las fotos `yolo` del conjunto de prueba (no puede ser ciega).
+1. Sin API. **Primero**, el usuario anota la segmentación y el protagonista de las fotos `yolo` del
+   conjunto de prueba con `calibracion.py --conjunto prueba` (`medir` → `plantilla` → `exportar`),
+   **sin abrir** `resultados/prueba/medidas_*.csv`: así la anotación no se contamina con las
+   decisiones del sistema. **Después**, E1, E2 y el determinismo de la capa Python.
 2. Con API: tanda de prueba (40) y repeticiones (5 × 3), unos 7,4 USD.
 3. E3, E4, casos ilustrativos, tabla resumen (§9.6) y cambios en la memoria (§11 del plan).
 
@@ -144,7 +258,7 @@ Sirve para anticipar resultados; **no son resultados de esta campaña**.
 | Fichero | Para qué |
 |---|---|
 | `../experimentos.md` | Plan completo (qué se mide, criterios, guía de anotación, congelación) |
-| `../TFG-EdisonJavierTayanGualoto_Aux.docx` | Memoria auxiliar (sin versionar); el cap. 9 tiene los resultados de la primera campaña |
+| `../TFG-EdisonJavierTayanGualoto_Aux.docx` | Memoria auxiliar (versionada desde `38845ad`); el cap. 9 tiene los resultados de la primera campaña |
 | `calibracion.py` | Fase 2 |
 | `plantilla_anotacion_prueba.py` | Plantilla y exportación de la anotación del conjunto de prueba |
 | `anotaciones/anotacion_prueba.csv` | Verdad de referencia para E1 (contexto) y E2 (aplicabilidad) |

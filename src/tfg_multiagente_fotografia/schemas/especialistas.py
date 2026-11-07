@@ -132,7 +132,7 @@ class InformeLineasDireccion(BaseModel):
         description=(
             "Ángulo firmado del candidato a horizonte en grados: positivo si cae hacia la "
             "derecha; |valor| <= 15. valor_norm = 1 - |valor|/15, o None sin candidato. "
-            "Confianza 1 si hay candidato, longitud_horizonte >= 0.13 y |valor| <= 10."
+            "Confianza 1 si hay candidato, longitud_horizonte >= 0.1517 y |valor| <= 10."
         ),
     )
     longitud_horizonte: float = Field(
@@ -155,7 +155,7 @@ class InformeLineasDireccion(BaseModel):
         description=(
             "Fracción de líneas candidatas que votan el punto de fuga ganador, en [0,1]; "
             "valor_norm = valor. Confianza 1 si n_lineas_fuga >= 2, valor supera "
-            "score_convergencia_nulo y apertura_haz >= 35°."
+            "score_convergencia_nulo y apertura_haz >= 89°."
         ),
     )
     coord_punto_fuga: Optional[tuple[float, float]] = Field(
@@ -266,7 +266,7 @@ class InformeLuzTono(BaseModel):
             "Esquema 'monocromático' (<30°), 'análogo' (<60°), 'complementario' "
             "(par a 180°±30°), 'otro' o 'sin_color' con gate cerrado. 'Monocromático' se refiere "
             "solo a los píxeles cromáticos. valor_norm es None; confianza 1 si "
-            "ratio_pixeles_cromaticos >= 0.09."
+            "ratio_pixeles_cromaticos >= 0.17."
         ),
     )
     spread_cromatico: float = Field(
@@ -296,7 +296,7 @@ class InformeLuzTono(BaseModel):
         le=1.0,
         description=(
             "Fracción de píxeles con saturación y valor suficientes, en [0,1]. Abre el gate "
-            "cromático desde 0.09; 1 - valor es la fracción acromática."
+            "cromático desde 0.17; 1 - valor es la fracción acromática."
         ),
     )
 

@@ -1,0 +1,3 @@
+variable,n,minimo,maximo,p5,p10,p25,p50,p75,p90,p95,ref_baja_actual,percentil_de_ref_baja,ref_alta_actual,percentil_de_ref_alta
+margen_patron,60,0.0014,0.1666,0.0056,0.0118,0.0374,0.0701,0.113,0.133,0.1494,0.01,10.0,0.15,95.0
+d_equilibrio,100,0.0072,0.2438,0.0111,0.0189,0.0277,0.0581,0.1042,0.1418,0.158,0.03,27.0,0.12,82.0

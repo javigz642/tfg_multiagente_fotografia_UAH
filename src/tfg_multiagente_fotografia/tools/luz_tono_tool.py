@@ -84,10 +84,13 @@ COMPLEMENTARIO_TOLERANCIA = 30.0  # ...con esta holgura
 # Fracción mínima del encuadre con color analizable. Por debajo, lo que hay es un
 # blanco y negro, una escena nocturna o una alta clave desaturada, y la etiqueta se
 # estaría decidiendo sobre ruido.
-# El umbral es SÓLIDO, a diferencia del LONGITUD_MIN_HORIZONTE del Agente 2 (que
-# separa por 0.023): sobre data/ hay 4 imágenes en 0.000 y la siguiente en 0.287, así
-# que cualquier corte intermedio da exactamente el mismo resultado.
-RATIO_CROMATICO_MIN = 0.09
+# Calibrado sobre las 100 fotos de data/ con la regla del §4.1 de experimentos.md
+# (regla 2: no hay banda vacía). Las fotos con color empiezan en 0.171 (imagen5); por
+# debajo, la negativa más alta es imagen28 (0.093), que con el corte anterior (0.09)
+# abría. Dos negativas quedan por encima de cualquier corte posible (imagen99, 0.205, y
+# imagen3, 0.543): tasa de FP 2/23, dentro del 10 % que admite la regla.
+# Detalle en experimentos/resultados/calibracion/propuesta_umbrales.csv.
+RATIO_CROMATICO_MIN = 0.17
 
 # Etiqueta reservada al gate cerrado. NO es una quinta categoría de la taxonomía: es
 # la marca de que no había nada que clasificar, y solo aparece con confianza 0.

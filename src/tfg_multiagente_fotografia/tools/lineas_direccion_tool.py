@@ -99,9 +99,14 @@ UMBRAL_PAR_MIN_GRADOS = 3.0
 # Un punto de fuga fuera del encuadre es legítimo, pero pasado cierto punto es
 # indistinguible de líneas paralelas. Ninguna perspectiva real de data/ pasa de 0.83.
 MAX_DIAGONALES_FUGA = 2.0
-# Tercera condición del gate: separa CONVERGENCIA de PARALELISMO. Calibrado sobre
-# data/: perspectivas reales 42-90°, falsos positivos por paralelismo 9-30°.
-APERTURA_MIN_GRADOS = 35.0
+# Tercera condición del gate: separa CONVERGENCIA de PARALELISMO. Calibrado sobre las
+# 100 fotos de data/ con la regla del §4.1 de experimentos.md (regla 2), entre las 49
+# que superan el modelo nulo. La apertura NO separa bien las clases: además del
+# paralelismo (< 35°), muchas escenas sin perspectiva dan 80-90° porque sus líneas
+# verticales y horizontales se cruzan en ángulo recto (rejillas frontales). Con 35°
+# abría el 40 % de las negativas; con 89° abre 3 de 35 (imagen8, 29, 51) y conserva 4
+# de 14 perspectivas. Sensibilidad 29 %: PUNTO DÉBIL declarado (experimentos.md §8).
+APERTURA_MIN_GRADOS = 89.0
 # Techo de MEMORIA, no de diseño (la matriz de votación es pares x líneas). Sobre
 # data/ nunca llega a actuar: el máximo observado son 201 candidatas.
 MAX_LINEAS_HIPOTESIS = 250
@@ -115,21 +120,25 @@ MIN_LINEAS_FUGA = 2
 # aplicabilidad del horizonte se pueda calibrar sin tocar la Fase 2.
 #
 # Un horizonte real cruza buena parte del encuadre. Si la línea casi horizontal más
-# larga de la escena no llega al 13% de la diagonal, lo que hay es un fragmento (el
-# borde de un objeto, un trozo de sombra) y no una línea de horizonte. Calibrado
-# sobre data/ con revisión visual: cierra el retrato (0.045), el producto (0.061),
-# la fachada (0.074) y la masa de vegetación (0.117), donde no hay horizonte que
-# medir. El corte se subió de 0.10 a 0.13 tras comprobar a ojo ese último caso, y
-# de paso ensancha la banda de separación: 0.117 (cerrada) frente a 0.140 (la más
-# corta de las que abren). Sigue siendo el umbral más frágil de los dos y el
-# candidato natural a re-calibrar cuando crezca el dataset.
-LONGITUD_MIN_HORIZONTE = 0.13
+# larga de la escena no llega al 15% de la diagonal, lo que hay es un fragmento (el
+# borde de un objeto, un trozo de sombra) y no una línea de horizonte. Calibrado sobre
+# las 100 fotos de data/ con la definición AMPLIA del horizonte (natural o horizontal
+# estructural) y la regla del §4.1 de experimentos.md, con el ángulo fijo en 10°
+# (ver ANGULO_MAX_HORIZONTE). No hay banda vacía (regla 2): el corte queda justo por
+# encima de dos negativas (imagen95, 0.1509; imagen77, 0.1512) y en la positiva más
+# corta que conserva (imagen26, 0.1518). Abre 5 de 66 negativas y 17 de 32 positivas:
+# sensibilidad 53 %, PUNTO DÉBIL declarado (experimentos.md §8). Las clases se
+# solapan mucho en longitud; las 4 cifras son las que pide la banda, no precisión real.
+LONGITUD_MIN_HORIZONTE = 0.1517
 # Y aunque sea larga, una línea muy inclinada no es un horizonte mal nivelado: es
 # estructura de la escena. Verificado a ojo sobre los 4 candidatos más inclinados
 # del corpus, que resultaron ser un patrón de muro (-12.26°), el borde de una colina
 # (-11.17°), una línea de fuga (-10.66°) y una ladera (+10.65°). Por debajo del corte
-# el corpus no pasa de 8.25°, así que 10 cae en banda vacía — mismo criterio con el
-# que se fijó APERTURA_MIN_GRADOS entre 30 y 42.
+# el corpus no pasa de 8.25°, así que 10 cae en banda vacía.
+# En la calibración sobre las 100 fotos (§4.1) NO se recalibra, y es una desviación
+# declarada de la regla: la pareja (longitud, ángulo) que da la regla tiene ángulo 0°,
+# porque 28 de 86 candidatos miden exactamente 0°. Con ese corte angulo_horizonte
+# valdría siempre 0 al abrir y la métrica no podría señalar un horizonte torcido.
 # NO se implementa estrechando el cono de la partición a 10°: se probó y rompe el
 # gate de convergencia sin arreglar esto (ver el comentario de UMBRAL_HORIZONTE_GRADOS).
 ANGULO_MAX_HORIZONTE = 10.0
@@ -572,8 +581,8 @@ def gate_horizonte(horizonte):
         )
     if horizonte["longitud"] < LONGITUD_MIN_HORIZONTE:
         return 0.0, (
-            f"la línea casi horizontal más larga cubre solo {horizonte['longitud']:.3f} de la "
-            f"diagonal (mínimo {LONGITUD_MIN_HORIZONTE:.2f}): es un fragmento suelto y no una "
+            f"la línea casi horizontal más larga cubre solo {horizonte['longitud']:.4f} de la "
+            f"diagonal (mínimo {LONGITUD_MIN_HORIZONTE:.4f}): es un fragmento suelto y no una "
             "línea de horizonte que cruce el encuadre"
         )
     if abs(horizonte["angulo"]) > ANGULO_MAX_HORIZONTE:

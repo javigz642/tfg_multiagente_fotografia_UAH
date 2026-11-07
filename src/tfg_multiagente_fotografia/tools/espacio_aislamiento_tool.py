@@ -52,17 +52,19 @@ FUENTE_MASCARA_SAM = MODELO_SAM.stem
 DEVICE_SAM = "cpu"
 
 # --- Gate de calidad de la segmentación (solo vía SAM) ---
-# PROVISIONALES: todavía no hay anotación de la segmentación con la que calibrarlos con el
-# criterio de huecos de VAR_LAPLACIANO_MIN. Orientación de una prueba previa sobre este mismo
-# corpus: las segmentaciones buenas puntúan >= 0.97 y las fallidas revisadas a ojo <= 0.81
-# (imagen5, imagen86, imagen87).
+# COMPROBADOS, NO CALIBRADOS (regla 3 del §4.1 de experimentos.md). La revisión ciega de
+# las 60 fotos yolo de data/ dio 59 `bien`, 1 `parcial` y 0 `mal`: sin segmentaciones
+# fallidas no hay hueco que medir. Se mantienen los valores de partida porque no dejan
+# abrir ninguna negativa. Observado: score entre 0.921 y 0.998 y relleno entre 0.240 y
+# 0.895, así que en data/ esta condición nunca cierra. El valor de partida venía de una
+# prueba previa con otra versión: buenas >= 0.97, fallidas revisadas a ojo <= 0.81.
 SAM_SCORE_MIN = 0.90
 
 # Relleno = área de la máscara / área del rect. Muy bajo: SAM se quedó con un fragmento (o
 # con nada, que era el fallo de GrabCut en imagen51). Casi 1: rellenó la caja entera en vez
-# de recortar una figura. Es el "gate de relleno" que proponía el notebook 02. Igual de
-# PROVISIONALES que el score; un objeto rectangular que llena su caja (un libro, un cuadro)
-# puede rozar el techo legítimamente.
+# de recortar una figura. Es el "gate de relleno" que proponía el notebook 02. Comprobados,
+# no calibrados, igual que el score; un objeto rectangular que llena su caja (un libro, un
+# cuadro) puede rozar el techo legítimamente (imagen77, libro: 0.889).
 RELLENO_MIN = 0.20
 RELLENO_MAX = 0.95
 
@@ -73,17 +75,15 @@ RELLENO_MAX = 0.95
 MARGEN_FRONTERA_RATIO = 0.01
 
 # --- Gate de `ratio_nitidez`: hay textura que comparar ---
-# Calibrado sobre las 33 imágenes de data/. En escala LINEAL la magnitud es un continuo sin
-# bandas vacías, pero en logarítmica hay dos huecos limpios:
-#   5.1 (imagen18) --x5.4--> 27.6 (imagen14) --x4.2--> 116.3 (imagen24) --> resto
-# Se elige el SEGUNDO (corte en 50) y no el primero (15) porque además cierra `imagen14`, que
-# la revisión visual confirmó como segmentación fallida: un producto blanco sobre fondo blanco
-# es una escena casi sin detalle, que es literalmente lo que esta condición describe. Ante dos
-# huecos igual de limpios se toma el más estricto, mismo criterio que el percentil 99 del
-# Agente 2: un falso positivo rompe la verificabilidad, un falso negativo solo hace callar.
-# PENDIENTE DE RECALIBRAR sobre el conjunto de calibración (data/) con las máscaras de SAM (experimentos.md, §4); las cifras de
-# este comentario están desactualizadas (imagen14 es ahora un tren). Valor provisional: 50.
-VAR_LAPLACIANO_MIN = 50.0
+# Calibrado sobre las 60 fotos yolo de data/ con segmentación fiable y máscaras de SAM, con la
+# regla del §4.1 de experimentos.md (regla 2: no hay banda vacía, ni en escala log). Con el
+# corte anterior (50) abrían 11 de las 12 negativas. Con 2594 abre 1 (imagen8) y conserva 10
+# de 48 positivas: sensibilidad 21 %, PUNTO DÉBIL declarado (experimentos.md §8). Motivo: 7 de
+# las 12 negativas no lo son por falta de textura, sino porque la caja de YOLO no es el
+# protagonista (imagen6, 8, 15, 77, 85, 86, 99), y solo un corte muy alto las cierra.
+# Ante la duda se prima el falso negativo: un falso positivo rompe la verificabilidad, un
+# falso negativo solo hace callar.
+VAR_LAPLACIANO_MIN = 2594.0
 
 # Valor de `fuente` (percepción compartida) que abre el gate. Ver el bloque de por qué.
 FUENTE_CON_IDENTIDAD = "yolo"

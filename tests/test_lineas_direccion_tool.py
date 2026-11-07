@@ -184,8 +184,11 @@ def casos_analiticos():
         # --- Caso 1: punto de fuga conocido ---
         # Cuatro rayos que salen del mismo punto con ángulos repartidos dentro de la
         # banda de fuga. El consenso tiene que recuperar el punto del que salieron.
+        # ±45° da dos orientaciones a 90° (apertura 90°), por encima de APERTURA_MIN_GRADOS
+        # (89° desde la calibración del §4.2 de experimentos.md). Con ±55° la apertura era
+        # 80° y el gate ya no abría.
         img = lienzo()
-        for grados in (25.0, 55.0, -25.0, -55.0):
+        for grados in (25.0, 45.0, -25.0, -45.0):
             p1, p2 = rayo_desde(pf, grados, 70, 430)
             trazar(img, p1, p2)
         casos_fuga = correr("analitico_fuga", img)
@@ -200,7 +203,7 @@ def casos_analiticos():
             assert isclose(x, pf_norm[0], abs_tol=TOL_PF_NORM) and isclose(
                 y, pf_norm[1], abs_tol=TOL_PF_NORM
             ), f"punto de fuga recuperado ({x:.4f}, {y:.4f}), se dibujó en ({pf_norm[0]:.4f}, {pf_norm[1]:.4f})"
-            # Los rayos abarcan 110° de abanico, pero la distancia entre
+            # Los rayos abarcan 90° de abanico, y la distancia entre
             # ORIENTACIONES está acotada en 90 por ser rectas sin sentido.
             assert casos_fuga.apertura_haz >= APERTURA_MIN_GRADOS, (
                 f"apertura={casos_fuga.apertura_haz:.1f}°, se esperaba un abanico amplio"

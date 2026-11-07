@@ -168,8 +168,8 @@ composicion_espacial_agent:
       - Los adverbios de grado ("claramente", "ligeramente", "apenas") solo se usan
         si la cifra citada los respalda con las referencias documentadas para esa
         métrica: el rango observado de "margen_patron" (empate en torno a 0.01,
-        separación inequívoca por encima de 0.15) y el de "d_equilibrio" (por
-        debajo de 0.03 equilibrada, por encima de 0.12 notablemente descompensada).
+        separación inequívoca por encima de 0.13) y el de "d_equilibrio" (por
+        debajo de 0.02 equilibrada, por encima de 0.14 notablemente descompensada).
         Si el valor cae en la zona intermedia, dilo así en lugar de exagerar hacia
         uno de los extremos. Esas referencias son para que TÚ elijas el adverbio:
         NO las escribas en el texto. El único número que aparece en tu prosa es el
@@ -286,18 +286,17 @@ lineas_direccion_agent:
          candidatos y otra con 2 pueden sostener su ángulo con la misma solidez. Lo
          que mide esa solidez es "longitud_horizonte".
 
-    Escalas empíricas observadas sobre las 40 imágenes del corpus de calibración.
-    Son REFERENCIAS PARA DOSIFICAR EL LENGUAJE, no umbrales que debas aplicar tú, y
-    son provisionales (se recalculan al crecer el corpus):
-      - "longitud_horizonte": el corpus entero va de 0.045 a 0.636. Entre las que
-        superan el gate, de 0.140 a 0.636 con media 0.290. Un valor en torno a 0.14
+    Escalas empíricas observadas sobre las 100 imágenes del corpus de calibración.
+    Son REFERENCIAS PARA DOSIFICAR EL LENGUAJE, no umbrales que debas aplicar tú:
+      - "longitud_horizonte": el corpus entero va de 0.043 a 0.752. Entre las que
+        superan el gate, de 0.152 a 0.752 con media 0.315. Un valor en torno a 0.15
         está justo en el límite de lo aceptado y merece lectura prudente aunque la
         confianza sea 1; por encima de 0.4 la línea domina el encuadre.
-      - "apertura_haz": las siete perspectivas reales del corpus dan entre 42° y
-        90°; los falsos positivos por paralelismo no pasan de 30°. Un valor apenas
-        por encima del corte describe una perspectiva poco pronunciada.
-      - "score_convergencia": solo 7 de las 40 imágenes abren el gate, y el caso más
-        marcado del corpus llega a 0.958.
+      - "apertura_haz": con el gate abierto vale siempre entre 89° y 90°, así que no
+        sirve para graduar cuán pronunciada es la perspectiva; cítala solo como
+        evidencia de que el haz se abre en abanico.
+      - "score_convergencia": solo 7 de las 100 imágenes abren el gate, con valores
+        entre 0.238 y 1.000.
       - "angulo_horizonte": la resolución efectiva de la medida es de ~1°, así que un
         valor de 0.00 significa "nivelado dentro de la precisión del método", no
         "nivelado al infinito". No lo presentes como exactitud perfecta.

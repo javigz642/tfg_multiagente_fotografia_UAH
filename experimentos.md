@@ -54,11 +54,11 @@ ejecutando las herramientas, no leyendo los JSON. Las copias del LLM se evalúan
 
 | Condición | Métricas | Abre (`confianza = 1`) si… | Constantes |
 |---|---|---|---|
-| Cromática | `esquema_cromatico` | `ratio_pixeles_cromaticos ≥ RATIO_CROMATICO_MIN` | `RATIO_CROMATICO_MIN = 0.09` |
-| Horizonte | `angulo_horizonte` | Hay candidato, `longitud ≥ 0.13` y `\|ángulo\| ≤ 10°` | `LONGITUD_MIN_HORIZONTE`, `ANGULO_MAX_HORIZONTE` |
-| Convergencia | `score_convergencia` | `n ≥ 2`, `score > score_nulo(n)` y `apertura ≥ 35°` | `MIN_LINEAS_FUGA`, `modelo_nulo_fuga.json`, `APERTURA_MIN_GRADOS` |
+| Cromática | `esquema_cromatico` | `ratio_pixeles_cromaticos ≥ RATIO_CROMATICO_MIN` | `RATIO_CROMATICO_MIN = 0.17` |
+| Horizonte | `angulo_horizonte` | Hay candidato, `longitud ≥ 0.1517` y `\|ángulo\| ≤ 10°` | `LONGITUD_MIN_HORIZONTE`, `ANGULO_MAX_HORIZONTE` |
+| Convergencia | `score_convergencia` | `n ≥ 2`, `score > score_nulo(n)` y `apertura ≥ 89°` | `MIN_LINEAS_FUGA`, `modelo_nulo_fuga.json`, `APERTURA_MIN_GRADOS` |
 | Espacio | `ratio_espacio_negativo` | `fuente == "yolo"` **y** segmentación fiable | `FUENTE_CON_IDENTIDAD`, `SAM_SCORE_MIN`, `RELLENO_MIN`, `RELLENO_MAX` |
-| Nitidez | `ratio_nitidez` | Lo mismo que espacio **y** `max(var_fig, var_fondo) ≥ VAR_LAPLACIANO_MIN` | Las anteriores + `VAR_LAPLACIANO_MIN` |
+| Nitidez | `ratio_nitidez` | Lo mismo que espacio **y** `max(var_fig, var_fondo) ≥ VAR_LAPLACIANO_MIN` (2594) | Las anteriores + `VAR_LAPLACIANO_MIN` |
 | Composición | `d_tercios`, `d_centro`, `patron_dominante` | `fuente == "yolo"` (una sola condición para las tres) | `FUENTE_CON_IDENTIDAD` |
 | — | `media_L`, `d_equilibrio` | Siempre abiertas | — |
 
@@ -188,6 +188,35 @@ Después de calibrar:
 3. ejecutar todos los scripts de `tests/`;
 4. hacer commit y congelar (§9).
 
+### 4.2 Resultado de la calibración (2026-11-07)
+
+Script `experimentos/analisis_calibracion.py`; detalle por umbral (VP/FP/FN/VN y fotos que fallan) en
+`resultados/calibracion/propuesta_umbrales.csv` y gráficas `huecos_*.png`. La tabla del §4 conserva los
+valores de partida.
+
+| Umbral | Antes | Ahora | Regla | Tasa FP | Sensibilidad |
+|---|---|---|---|---|---|
+| `RATIO_CROMATICO_MIN` | 0.09 | **0.17** | 2 | 2/23 | 76/76 |
+| `LONGITUD_MIN_HORIZONTE` | 0.13 | **0.1517** | 2, con el ángulo fijo (desviación) | 5/66 | 17/32 (53 %) |
+| `ANGULO_MAX_HORIZONTE` | 10 | 10 | sin recalibrar (desviación) | — | — |
+| `APERTURA_MIN_GRADOS` | 35 | **89** | 2 | 3/35 | 4/14 (29 %) |
+| `SAM_SCORE_MIN`, `RELLENO_MIN/MAX` | 0.90; 0.20–0.95 | sin cambios | 3 | — | 60/60 |
+| `VAR_LAPLACIANO_MIN` | 50 | **2594** | 2 | 1/12 | 10/48 (21 %) |
+| Escalas de composición | margen 0.01/0.15; `d_equilibrio` 0.03/0.12 | margen 0.01/0.13; `d_equilibrio` 0.02/0.14 | P10 / P90 | — | — |
+
+- **Única desviación de la regla: el horizonte.** La pareja que da la regla es (0.09; 0°), porque 28 de
+  86 candidatos miden exactamente 0°. Con un ángulo máximo de 0°, `angulo_horizonte` valdría siempre 0
+  al abrir y la métrica no podría señalar un horizonte torcido. Se deja el ángulo en su valor de diseño
+  (10°) y se calibra solo la longitud. El criterio para desviarse es que el corte deje la métrica sin
+  sentido, no que dé cifras malas.
+- **Convergencia y nitidez se aplican tal cual** aunque su sensibilidad quede por debajo del 60 %: son
+  puntos débiles declarados (§8). En la convergencia, muchas escenas sin perspectiva dan 80–90° de
+  apertura (rejillas frontales). En la nitidez, 7 de las 12 negativas lo son porque la caja de YOLO no es
+  el protagonista, y solo un corte muy alto las cierra.
+- **No calibrados por huecos:** `CONF_YOLO_THRESHOLD` se queda en 0.75 (con 0.90 se pierden 5 cajas
+  buenas para quitar 5 malas, `barrido_yolo.csv`); `BLOB_*` no se activan; la composición abre en las 11
+  fotos con caja ≠ protagonista.
+
 ---
 
 ## 5. El conjunto de prueba
@@ -316,12 +345,14 @@ terminar la anotación de contexto y de aplicabilidad.**
 El autor es el único anotador y sigue la guía del §6.2.
 
 1. **Anotación de contexto y anotación de aplicabilidad, a ciegas**, antes de ejecutar nada.
-2. **Anotación de segmentación y protagonista**, solo en las fotos con `fuente = yolo`, después de la de
-   aplicabilidad.
+2. **Anotación de segmentación y protagonista**, solo en las fotos con `fuente = yolo`, después de
+   congelar y **antes de mirar ninguna decisión del sistema** (§6.2).
    - Segmentación: `bien` / `parcial` / `mal`.
    - Protagonista: `si` / `no`.
-   - Se revisan sobre las imágenes de verificación del Agente 3. Esta anotación no puede ser ciega a la
-     máscara; la de aplicabilidad sí lo es.
+   - **Mismo procedimiento que en la calibración:** `calibracion.py` (`medir` → `plantilla` →
+     `exportar`) sobre `data_prueba/`. Las imágenes muestran la foto, la caja y la máscara, pero
+     **ni cifras ni decisiones**. Esta anotación no puede ser ciega a la máscara, pero sí lo es a lo
+     que decidió el sistema. La de aplicabilidad es ciega del todo.
 3. **Opcional: segundo anotador.** Si otra persona anota la aplicabilidad de 15 fotos, se informa el
    acuerdo (κ de Cohen) por condición. Reduce el peso de la limitación del anotador único.
 
@@ -438,6 +469,9 @@ el §8.5 de la memoria.
   - **Sensibilidad** = VP / (VP + FN): de las veces que la regla aplica, cuántas se abre. Global.
   - Tasa de FP = FP / (FP + VN) y tasa de FN, por condición, con IC de Wilson.
 - **Procedimiento:**
+  0. **Primero, la anotación de segmentación y protagonista (§5.3)**, sin abrir el CSV de medidas.
+     Motivo: esa anotación es parte de la verdad de referencia de espacio, nitidez y composición. Si
+     se hiciera después de ver qué abrió el sistema, dejaría de ser independiente.
   1. Ejecutar los 4 engines sobre las 40 fotos. Extraer por imagen la `confianza`, el motivo de cierre
      y la variable de decisión de cada métrica.
   2. Replicar cada decisión a partir de los campos del informe y comprobar con `assert` que coincide
@@ -539,7 +573,7 @@ Tabla final: pregunta → criterio → resultado (sí / en parte / no) → cifra
 | `experimentos/ejecutar_lote.py` | Lanzador por lotes (abajo) | [pendiente] |
 | Plantilla de contexto + aplicabilidad | `experimentos/plantilla_anotacion_prueba.py`: `plantilla` genera `anotaciones/anotacion_prueba.xlsx` (ciega, sobre `data_prueba/`); `exportar` la valida y escribe `anotaciones/anotacion_prueba.csv` | [verificado] |
 | `experimentos/calibracion.py` | `medir`: variables de decisión de las 100 fotos de `data/` (`resultados/calibracion/medidas_calibracion.csv`, `entorno_calibracion.json`) e imágenes de revisión sin cifras; `plantilla` / `exportar`: revisión de la segmentación y del protagonista de las fotos `yolo` (`anotaciones/segmentacion_calibracion.csv`) | [verificado en 3 fotos; falta ejecutarlo en Windows] |
-| Plantilla de segmentación/protagonista del conjunto de prueba | Solo fotos con `fuente = yolo`; se genera después de ejecutar E2 | [pendiente] |
+| Revisión de segmentación/protagonista del conjunto de prueba | La misma `calibracion.py` con una opción `--conjunto prueba` que lea `data_prueba/` y escriba en ficheros propios (`resultados/prueba/`, `anotaciones/segmentacion_prueba.csv`) sin pisar los de calibración. Se añade antes de congelar y se ejecuta después | [pendiente] |
 
 **Lanzador por lotes.** Para cada imagen de una lista:
 
@@ -588,6 +622,20 @@ experimentos/
   opcional del §5.3).
 - **Tamaño del conjunto de prueba.** Con 40 imágenes, los intervalos de confianza son anchos; por eso los
   criterios son tolerancias y no «cero errores».
+- **La convergencia no tiene veredicto propio.** Solo hay 4 fotos con perspectiva en el conjunto de
+  prueba, por debajo del mínimo de 5 aperturas para juzgar una condición por separado (§6.0). Cuenta en
+  el resultado global y sus cifras se informan, pero es la condición más débil (48 % de precisión de
+  apertura en la primera campaña) y su evidencia es escasa.
+- **La segmentación fiable no se pudo calibrar.** En el conjunto de calibración no hubo ninguna
+  segmentación `mal` (59 `bien`, 1 `parcial`), así que `SAM_SCORE_MIN` y `RELLENO_MIN/MAX` quedan como
+  «comprobados, no calibrados» (regla 3 del §4.1). Su eficacia solo se observa en el conjunto de prueba.
+- **Tres umbrales con sensibilidad baja en calibración (§4.2).** Horizonte 53 %, convergencia 29 % y
+  nitidez 21 %: sus variables no separan bien las fotos en las que la regla aplica de las que no, y la
+  regla del §4.1 prima los falsos negativos. Esas condiciones callan a menudo cuando podrían hablar.
+- **Desviación declarada en el horizonte (§4.2).** El ángulo máximo se dejó en 10° porque el corte que
+  daba la regla (0°) anulaba la métrica.
+- **La caja de YOLO no siempre es el protagonista.** 11 de las 60 fotos `yolo` de calibración; ningún
+  umbral de los calibrados lo corrige, y abre composición (y a veces espacio y nitidez) en esas fotos.
 - **Selección intencional.** Los dos conjuntos de Unsplash contienen ejemplos claros de cada categoría y
   no representan las fotos de un usuario cualquiera.
 - **EVA-other es solo una aproximación** a un conjunto fuera de distribución.
@@ -629,8 +677,8 @@ Se guarda en `experimentos/congelacion.json`:
 3. Calibrar sobre el conjunto de calibración (§4): actualizar el código, los comentarios, `agents.yaml` y
    la Figura 28, y ejecutar `tests/`.
 4. Preparar los instrumentos (§7) y congelar (§9).
-5. Sin API: E1, E2 y el determinismo de E4. Anotar la segmentación y el protagonista de las fotos `yolo`
-   del conjunto de prueba.
+5. Sin API: primero anotar la segmentación y el protagonista de las fotos `yolo` del conjunto de prueba
+   (`calibracion.py --conjunto prueba`, sin abrir las medidas); después E1, E2 y el determinismo de E4.
 6. Con API, en la máquina Windows: tanda de prueba y después las repeticiones.
 7. E3, E4, casos ilustrativos y resumen. Actualizar la memoria (§11).
 

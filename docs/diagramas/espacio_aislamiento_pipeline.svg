@@ -108,7 +108,7 @@
       <text x="664" y="732" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Nitidez figura-fondo</text>
       <text x="664" y="754" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">erosión de frontera · var. Laplaciano</text>
       <text x="664" y="772" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">índice = (fig − fondo)/(fig + fondo)</text>
-      <text x="664" y="790" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">gate: identidad ∧ seg. ∧ textura ≥ 50</text>
+      <text x="664" y="790" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">gate: identidad ∧ seg. ∧ textura ≥ 2594</text>
 
       <!-- 8. Informe (FOCO: el contrato citable, 10 campos) -->
       <rect x="320" y="856" width="320" height="144" rx="6" fill="#f5f5f5"/>
