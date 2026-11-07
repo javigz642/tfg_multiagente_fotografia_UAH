@@ -12,16 +12,31 @@ tomaron y qué toca después. El plan completo y las justificaciones están en
 
 ```
 Fase 1  Anotar el conjunto de prueba ........... HECHO
-Fase 2  Calibrar umbrales sobre data/ .......... CASI HECHA (valores finales aplicados, §3.3; falta la medida final, 2.12)
+Fase 2  Calibrar umbrales sobre data/ .......... HECHA (medición final cb6fa8d con el código de 3289924)
 Fase 3  Instrumentos + congelación ............. EN CURSO  → aquí queda el sistema final
 Fase 4  Ejecutar E1–E4 y escribir resultados ... pendiente
 ```
 
-**Siguiente acción (usuario, Windows): paso 2.12.** `git pull` y
-`uv run python experimentos/calibracion.py medir`: deja `medidas_calibracion.csv` con las
-decisiones del sistema final (cambia el horizonte, ahora a 14°; las variables no cambian). Commit y
-push solo de `experimentos/resultados/calibracion/`. Después, la fase 3 sigue con
-`config_experimentos.yaml`, `comun.py` y `ejecutar_lote.py`.
+**Fase 3, hecho (2026-11-07):** manifiesto de calibración, `calibracion.py --conjunto prueba`,
+`config_experimentos.yaml`, `comun.py`, `verificador.py` y `ejecutar_lote.py` (§7 del plan). Para
+el lanzador hubo que tocar `src/` (antes de congelar): `crew.TRACING` (las trazas se desactivan en
+las tandas) y la lectura visual guarda sus tokens en `{foto}_lectura_uso.json`.
+
+**Siguiente acción (usuario):**
+1. Consultar las tarifas vigentes de Gemini 2.5 Flash y Pro y apuntarlas, con la fecha, en
+   `config_experimentos.yaml` (`precios:`).
+2. Responder si llegó a ver las salidas de test7 y test12 (ver incidencia abajo).
+3. En Windows: `git pull`, `ejecutar_lote.py piloto` (2 fotos de calibración, ~0,3 USD) para
+   comprobar el lanzador y el coste real; después, commit con el árbol limpio y
+   `comun.py congelar`.
+
+**Incidencia por declarar (2026-11-07): test7 y test12 se analizaron con el sistema completo** el
+2026-11-06 a las 14:13–14:26 (subidas a la app; `outputs/subidas/`, `outputs/ejecucion/test*`).
+Fue después de la anotación ciega (2026-11-05 23:24) y antes de calibrar, con el código de
+entonces: la anotación de aplicabilidad sigue siendo ciega y la calibración no los usó. Lo que
+podría no ser ciego es la futura revisión de segmentación de esas 2 fotos si se vieron sus
+imágenes de verificación (muestran cifras). Pendiente: confirmar con el usuario, declararlo en el
+§8 y borrar esas salidas de `outputs/` (regenerables) para que no se confundan con resultados.
 
 **Incidencia resuelta (2026-11-07): 4 fotos de `data/` eran ficheros distintos en el Mac y en
 Windows** (imagen48, 61, 63 y 81). La anotación de aplicabilidad se había hecho sobre las versiones
@@ -202,7 +217,7 @@ el usuario lo aceptó el 2026-11-07. Aplicado en el código, prompts, esquema y 
 | 2.9 | Usuario (Windows) | ~~Re-medir por el mensaje de cierre corregido~~ HECHO (`e55d0dc`): solo cambian los 44 textos de `motivo_convergencia` que cierran por apertura; variables y decisiones idénticas |
 | 2.10 | Usuario (Windows) | ~~Igualar las fotos, re-medir y revisar imagen61 e imagen63~~ HECHO (`410abbe`) |
 | 2.11 | Asistente | ~~Volver a aplicar la regla y aplicar los valores~~ HECHO (§3.3): el ángulo pasa a 14° y la escala de margen a 0.14 |
-| **2.12** | **Usuario (Windows)** | **SIGUIENTE.** `medir` para dejar el CSV con las decisiones finales; commit y push de `resultados/calibracion/` |
+| 2.12 | Usuario (Windows) | ~~Medición final~~ HECHO (`cb6fa8d`): solo cambian 2 decisiones de horizonte; las 6 condiciones coinciden foto a foto con los umbrales finales (color 78, horizonte 25, convergencia 7, espacio 61, nitidez 11, composición 61) |
 
 **Ficheros de la primera campaña:** el commit `fa5afc3` subió además 67 ficheros de la primera
 campaña (notebooks, `comun.py`, `config_experimentos.yaml`, `ejecutar_lote.py`, `congelacion.json`,

@@ -511,7 +511,7 @@ el §8.5 de la memoria.
 
 - **Tanda de prueba:** las 40 fotos del conjunto de prueba, una vez cada una, con lectura visual. Las
   ejecuciones las hace el lanzador (§7) y el análisis un notebook.
-- **Verificador** (`experimentos/comun.py`):
+- **Verificador** (`experimentos/verificador.py`, el de la primera campaña sin cambios de lógica):
   - **Extracción:** cada cita `[campo = valor]` de los diagnósticos y de la crítica, incluidos los
     valores tupla de los campos `coord_*`.
   - **Resolución:** en los especialistas, `metrica.campo` o `campo`. En el crítico,
@@ -591,12 +591,14 @@ Tabla final: pregunta → criterio → resultado (sí / en parte / no) → cifra
 
 | Instrumento | Qué hace | Estado |
 |---|---|---|
-| `experimentos/config_experimentos.yaml` | Rutas (EVA externo, `data/`, `data_prueba/`), fotos de repetición, criterios de éxito y tarifas | [pendiente] |
-| `experimentos/comun.py` | Utilidades: localizar la raíz, leer CSV con codificación y separador robustos, medir las condiciones, verificador de citas, IC de Wilson, comprobar la congelación | [pendiente] |
-| `experimentos/ejecutar_lote.py` | Lanzador por lotes (abajo) | [pendiente] |
+| `experimentos/config_experimentos.yaml` | Rutas (EVA externo), conjuntos con su manifiesto, fotos de repetición, tandas (`piloto`, `prueba`, `repeticiones`), criterios de éxito del §6.0 y tarifas | [hecho 2026-11-07; faltan las tarifas] |
+| `experimentos/comun.py` | Raíz y configuración, CSV robustos, fotos de un conjunto **comprobadas contra su manifiesto**, anotaciones validadas, réplica de las 6 decisiones desde las variables (E2, paso 2), IC de Wilson, coste, constantes leídas con `ast`, procedencia y congelación (`comun.py congelar` / `comprobar`) | [verificado: la réplica coincide con el código en las 100 fotos de calibración] |
+| `experimentos/verificador.py` | Verificador de citas y controles del crítico de E3, y fidelidad de las transcripciones de E4 | [verificado sobre una ejecución antigua] |
+| `experimentos/ejecutar_lote.py` | Lanzador por lotes (abajo) | [verificado sin API: `--estado` y salvaguardas] |
 | Plantilla de contexto + aplicabilidad | `experimentos/plantilla_anotacion_prueba.py`: `plantilla` genera `anotaciones/anotacion_prueba.xlsx` (ciega, sobre `data_prueba/`); `exportar` la valida y escribe `anotaciones/anotacion_prueba.csv` | [verificado] |
-| `experimentos/calibracion.py` | `medir`: variables de decisión de las 100 fotos de `data/` (`resultados/calibracion/medidas_calibracion.csv`, `entorno_calibracion.json`) e imágenes de revisión sin cifras; `plantilla` / `exportar`: revisión de la segmentación y del protagonista de las fotos `yolo` (`anotaciones/segmentacion_calibracion.csv`) | [verificado en 3 fotos; falta ejecutarlo en Windows] |
-| Revisión de segmentación/protagonista del conjunto de prueba | La misma `calibracion.py` con una opción `--conjunto prueba` que lea `data_prueba/` y escriba en ficheros propios (`resultados/prueba/`, `anotaciones/segmentacion_prueba.csv`) sin pisar los de calibración. Se añade antes de congelar y se ejecuta después | [pendiente] |
+| `experimentos/calibracion.py` | `medir`: variables de decisión de las 100 fotos de `data/` (`resultados/calibracion/medidas_calibracion.csv`, `entorno_calibracion.json`) e imágenes de revisión sin cifras; `plantilla` / `exportar`: revisión de la segmentación y del protagonista de las fotos `yolo` (`anotaciones/segmentacion_calibracion.csv`) | [ejecutado en Windows] |
+| Revisión de segmentación/protagonista del conjunto de prueba | `calibracion.py --conjunto prueba`: lee `data_prueba/` y escribe en `resultados/prueba/`, `outputs/prueba/` y `anotaciones/segmentacion_prueba.csv`. Se ejecuta después de congelar | [hecho; probado con un conjunto temporal] |
+| `experimentos/manifiesto_calibracion.py` | Genera `manifiesto_calibracion.csv` (§3) | [hecho] |
 
 **Lanzador por lotes.** Para cada imagen de una lista:
 
@@ -615,7 +617,10 @@ Este paso de copia hace falta porque cada ejecución se escribe en `outputs/ejec
 las repeticiones se pisan entre sí.
 
 `tracing=True` envía trazas y puede añadir latencia. Hay que desactivarlo durante las tandas y
-declararlo.
+declararlo. Para eso `crew.py` tiene la constante `TRACING`, que el lanzador pone a `False`.
+La lectura visual guarda sus tokens en `outputs/lectura_visual/{foto}_lectura_uso.json`
+(entrada, salida y razonamiento), y el lanzador los copia al registro. Además, el lanzador
+comprueba el MD5 de cada foto contra su manifiesto y mide la RAM máxima del proceso con `psutil`.
 
 **Estructura:**
 
@@ -675,7 +680,10 @@ experimentos/
 
 ## 9. Congelación antes de ejecutar
 
-Se guarda en `experimentos/congelacion.json`:
+Se guarda en `experimentos/congelacion.json` con `uv run python experimentos/comun.py congelar`, en
+la máquina Windows. La orden no congela si el árbol no está limpio, si faltan las tarifas, si alguna
+foto no coincide con su manifiesto o si la anotación del conjunto de prueba está incompleta. Las
+tandas que cuentan (`prueba`, `repeticiones`) no se lanzan si el sistema difiere de la congelación.
 
 - [ ] Commit con el árbol limpio, con los umbrales ya calibrados y sin la etiqueta «PROVISIONAL».
 - [ ] MD5 de:

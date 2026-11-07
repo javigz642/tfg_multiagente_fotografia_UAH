@@ -199,6 +199,21 @@ class LecturaVisualEngine:
         destino.write_text(
             json.dumps(lectura, ensure_ascii=False, indent=2), encoding="utf-8"
         )
+        # Los tokens de esta llamada no pasan por CrewAI, así que se guardan aquí para medir
+        # el coste (experimentos.md §6.4). Van en un fichero aparte para no cambiar lo que
+        # recibe el crítico.
+        uso = respuesta.usage_metadata
+        uso_tokens = {
+            "modelo": self.modelo,
+            "generado": lectura["generado"],
+            "prompt_tokens": getattr(uso, "prompt_token_count", None) or 0,
+            "candidates_tokens": getattr(uso, "candidates_token_count", None) or 0,
+            "thoughts_tokens": getattr(uso, "thoughts_token_count", None) or 0,
+            "total_tokens": getattr(uso, "total_token_count", None) or 0,
+        }
+        destino.with_name(f"{Path(ruta_imagen).stem}_lectura_uso.json").write_text(
+            json.dumps(uso_tokens, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
 
         lectura["desde_cache"] = False
         return lectura

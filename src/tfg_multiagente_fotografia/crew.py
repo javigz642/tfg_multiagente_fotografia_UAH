@@ -29,6 +29,10 @@ FLAG_CRITICO_VE_IMAGEN = True
 # `PrioridadTool` y, opcionalmente, `LecturaVisualTool`.
 MODELO_CRITICO = "gemini/gemini-2.5-pro"
 
+# Trazas de CrewAI. Envían datos a un servicio externo y pueden añadir latencia, así que el
+# lanzador de experimentos (experimentos/ejecutar_lote.py) las desactiva durante las tandas.
+TRACING = True
+
 # Los informes se escriben en el directorio independiente calculado por `main.py`.
 
 @CrewBase
@@ -172,6 +176,6 @@ class TfgMultiagenteFotografia():
             tasks=self.tasks,
             process=Process.sequential,
             verbose = True,
-            tracing=True,
+            tracing=TRACING,
             task_callback=task_callback,
         )

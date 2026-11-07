@@ -1,0 +1,99 @@
+# Configuración de la validación experimental (capítulos 8 y 9). Ver experimentos.md.
+#
+# Regla: los criterios de éxito (§6.0) se fijaron el 2026-11-05, ANTES de abrir el conjunto de
+# prueba, y se copian aquí tal cual. No se cambian después de ver resultados. Un valor a `null`
+# está pendiente y el análisis lo informa como «pendiente», nunca como cumplido.
+#
+# Este fichero entra en la congelación (§9): cambiarlo después de congelar invalida la tanda.
+
+# Rutas relativas a la raíz del repositorio (o absolutas).
+rutas:
+  eva_proyecto: ../Curso_CNN_FineTunning/clasificador_contexto   # splits/{test,val,otro}.csv
+  eva_imagenes: ../Curso_CNN_FineTunning/EVA_together            # {image_id}.jpg
+  anotaciones: experimentos/anotaciones
+  resultados: experimentos/resultados
+  tandas: outputs/experimentos                                   # {tanda}/rep{r}/{foto}/
+
+# Conjuntos de fotos (§3). El manifiesto fija el MD5 de cada foto: si no coincide, no se ejecuta.
+conjuntos:
+  calibracion:
+    carpeta: data
+    manifiesto: experimentos/manifiesto_calibracion.csv
+  prueba:
+    carpeta: data_prueba
+    manifiesto: experimentos/manifiesto_prueba.csv
+
+# Fotos de repetición para E4 (§3): una por contexto, del conjunto de calibración.
+fotos_repeticion: [imagen62, imagen9, imagen35, imagen86, imagen50]
+
+# Tandas con API que lanza experimentos/ejecutar_lote.py (§6.3, §6.4 y §7).
+#   conjunto: de qué carpeta salen las fotos.
+#   imagenes: "todas" (las del manifiesto del conjunto) o una lista de nombres sin extensión.
+#   lectura_visual: "nueva" borra la lectura guardada antes de ejecutar (se genera y se miden sus
+#     tokens); "nueva_en_primera" la genera en la repetición 1 y la reutiliza en las demás (§6.4:
+#     así la variabilidad medida es la de los especialistas y el crítico); "cache" reutiliza la
+#     que haya.
+#   requiere_congelacion: si es true, no se lanza sin una congelación vigente.
+tandas:
+  # Medir coste y tiempo antes de las tandas reales. Fotos de CALIBRACIÓN a propósito: el conjunto
+  # de prueba no se ejecuta hasta la tanda que cuenta (una con sujeto de YOLO y otra sin él).
+  piloto: {conjunto: calibracion, imagenes: [imagen62, imagen9], repeticiones: 1,
+           lectura_visual: nueva, requiere_congelacion: false}
+  # Tanda de prueba: las 40 fotos, una vez cada una (E3 y fidelidad de E4).
+  prueba: {conjunto: prueba, imagenes: todas, repeticiones: 1,
+           lectura_visual: nueva, requiere_congelacion: true}
+  # Repeticiones del sistema completo (E4, descriptivo): 5 fotos x 3.
+  repeticiones: {conjunto: calibracion, imagenes: fotos_repeticion, repeticiones: 3,
+                 lectura_visual: nueva_en_primera, requiere_congelacion: true}
+
+# Tarifas de la API en USD por millón de tokens (nivel de pago, modo estándar), para el coste de
+# E4 y el tope de gasto del lanzador. Los tokens de razonamiento se cobran como salida. En Pro se
+# usa el tramo de instrucciones <= 200.000 tokens.
+# PENDIENTE (usuario): consultar las tarifas vigentes, apuntar la fecha y rellenar. Los valores
+# de la primera campaña (2026-09-28) eran flash 0.30/2.50 y pro 1.25/10.00.
+precios:
+  fecha_consulta: null
+  fuente: https://ai.google.dev/gemini-api/docs/pricing
+  usd_por_eur: 1.0          # cota conservadora: 1 USD = 1 EUR sobreestima el gasto en euros
+  modelos:
+    gemini-2.5-flash: {entrada: null, salida: null}
+    gemini-2.5-pro: {entrada: null, salida: null}
+
+E1:
+  # Valores de la fase 5 del proyecto externo. Comprobación de integridad: si EVA-test no los
+  # reproduce, algo ha cambiado (pesos, transform o particiones).
+  referencia:
+    md5_pesos: 20ce2c480390ccf0a06f3e67bb1225ca
+    n_eva_test: 725
+    n_eva_other: 273
+    n_eva_val: 725
+    exactitud_eva_test: 0.8510
+  umbral_otro: 0.85
+  curva_umbrales: {inicio: 0.50, fin: 0.99, paso: 0.01}
+  gradcam_par: {verdadera: producto-still_life, confundida: arquitectura}
+  criterios:
+    f1_min_por_clase_eva_test: 0.75          # (a)
+    exactitud_aceptadas_min_prueba: 0.85     # (b) fracción, sobre las aceptadas
+    pct_otro_max_prueba: 20                  # (c) % de las 35 fotos de las cinco clases
+
+E2:
+  # Definición principal del horizonte: amplia (natural o estructural); la estrecha es secundaria.
+  horizonte_principal: amplio
+  # Una condición con menos aperturas se informa, pero no se juzga por separado (§6.0).
+  min_aperturas_para_juzgar: 5
+  criterios:
+    precision_apertura_global_min: 0.90      # (a)
+    precision_apertura_por_condicion_min: 0.80   # (b)
+    sensibilidad_global_min: 0.60            # (c)
+
+E3:
+  criterios:
+    pct_citas_exactas_min: 95                # (a)
+    pct_citas_a_cerradas_max: 1              # (b) en especialistas y en el crítico por separado
+    pct_criticas_en_orden_min: 95            # (c)
+
+E4:
+  criterios:
+    pct_capa_python_identica_min: 100        # (a) determinismo bit a bit en las 3 ejecuciones
+    pct_informes_fieles_min: 95              # (b) 160 informes de la tanda de prueba
+    pct_arbitraje_igual_min: 95              # (c) 40 críticas de la tanda de prueba
