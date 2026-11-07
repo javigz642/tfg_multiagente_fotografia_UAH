@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1000 548" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="importancia-aspecto-title importancia-aspecto-desc">
+      <title id="importancia-aspecto-title">Importancia promedio normalizada por categoría y aspecto</title>
+      <desc id="importancia-aspecto-desc">Matriz de importancia promedio normalizada de cuatro aspectos compositivos en cinco categorías fotográficas; cada fila suma 1, los valores van de 0.22 a 0.29 y el máximo es luz y tono en paisaje natural (0.29).</desc>
+      <defs>
+        <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap');</style>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- Rejilla 5×4: columnas x=270..762 (paso 164), filas y=108..380 (paso 68), celda 160×64.
+           Rampa de tinta no focal lineal: opacidad = 0.07 + (v−0.22)/(0.28−0.22)·0.60.
+           Celda focal (Paisaje Natural · Luz y tono) con acento y data-focal="true". -->
+
+      <text x="596" y="56" fill="#4f5d75" font-size="11" font-family="'Geist Mono', monospace" letter-spacing="0.16em" text-anchor="middle">ASPECTO COMPOSITIVO</text>
+      <text transform="rotate(-90 22 276)" x="22" y="276" fill="#4f5d75" font-size="11" font-family="'Geist Mono', monospace" letter-spacing="0.16em" text-anchor="middle">CATEGORÍA FOTOGRÁFICA</text>
+      <text data-axis="0" data-col="Composición espacial" x="350" y="90" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">Composición espacial</text>
+      <text data-axis="1" data-col="Líneas y dirección" x="514" y="90" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">Líneas y dirección</text>
+      <text data-axis="2" data-col="Espacio y profundidad" x="678" y="90" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">Espacio y profundidad</text>
+      <text data-axis="3" data-col="Luz y tono" x="842" y="90" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">Luz y tono</text>
+      <text data-row-label="Arquitectura / Escenas Urbanas" x="258" y="145" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="end">Arquitectura / Escenas Urbanas</text>
+      <text data-row-label="Paisaje Natural" x="258" y="213" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="end">Paisaje Natural</text>
+      <text data-row-label="Retrato / Humano" x="258" y="281" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="end">Retrato / Humano</text>
+      <text data-row-label="Producto / Naturaleza Muerta" x="258" y="349" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="end">Producto / Naturaleza Muerta</text>
+      <text data-row-label="Fotografía de Animal" x="258" y="417" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="end">Fotografía de Animal</text>
+      
+      <!-- Fila: Arquitectura / Escenas Urbanas (y=108) — 0.24, 0.28, 0.23, 0.25 -->
+      <rect x="270" y="108" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Arquitectura / Escenas Urbanas" data-col="Composición espacial" data-value="0.24" x="270" y="108" width="160" height="64" fill="#2d3142" fill-opacity="0.27"/>
+      <text x="350" y="146" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.24</text>
+      <rect x="434" y="108" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Arquitectura / Escenas Urbanas" data-col="Líneas y dirección" data-value="0.28" x="434" y="108" width="160" height="64" fill="#2d3142" fill-opacity="0.67"/>
+      <text x="514" y="146" fill="#f5f5f5" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.28</text>
+      <rect x="598" y="108" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Arquitectura / Escenas Urbanas" data-col="Espacio y profundidad" data-value="0.23" x="598" y="108" width="160" height="64" fill="#2d3142" fill-opacity="0.17"/>
+      <text x="678" y="146" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.23</text>
+      <rect x="762" y="108" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Arquitectura / Escenas Urbanas" data-col="Luz y tono" data-value="0.25" x="762" y="108" width="160" height="64" fill="#2d3142" fill-opacity="0.37"/>
+      <text x="842" y="146" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.25</text>
+      
+      <!-- Fila: Paisaje Natural (y=176) — 0.22, 0.22, 0.27, 0.29 -->
+      <rect x="270" y="176" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Paisaje Natural" data-col="Composición espacial" data-value="0.22" x="270" y="176" width="160" height="64" fill="#2d3142" fill-opacity="0.07"/>
+      <text x="350" y="214" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.22</text>
+      <rect x="434" y="176" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Paisaje Natural" data-col="Líneas y dirección" data-value="0.22" x="434" y="176" width="160" height="64" fill="#2d3142" fill-opacity="0.07"/>
+      <text x="514" y="214" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.22</text>
+      <rect x="598" y="176" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Paisaje Natural" data-col="Espacio y profundidad" data-value="0.27" x="598" y="176" width="160" height="64" fill="#2d3142" fill-opacity="0.57"/>
+      <text x="678" y="214" fill="#f5f5f5" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.27</text>
+      <rect x="762" y="176" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Paisaje Natural" data-col="Luz y tono" data-value="0.29" data-focal="true" x="762" y="176" width="160" height="64" fill="#eb6c36" fill-opacity="0.85" stroke="#eb6c36" stroke-width="1.2"/>
+      <text x="842" y="208" fill="#111111" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">0.29</text>
+      <text x="842" y="226" fill="#111111" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">MÁXIMA IMPORTANCIA</text>
+      
+      <!-- Fila: Retrato / Humano (y=244) — 0.26, 0.24, 0.24, 0.26 -->
+      <rect x="270" y="244" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Retrato / Humano" data-col="Composición espacial" data-value="0.26" x="270" y="244" width="160" height="64" fill="#2d3142" fill-opacity="0.47"/>
+      <text x="350" y="282" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.26</text>
+      <rect x="434" y="244" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Retrato / Humano" data-col="Líneas y dirección" data-value="0.24" x="434" y="244" width="160" height="64" fill="#2d3142" fill-opacity="0.27"/>
+      <text x="514" y="282" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.24</text>
+      <rect x="598" y="244" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Retrato / Humano" data-col="Espacio y profundidad" data-value="0.24" x="598" y="244" width="160" height="64" fill="#2d3142" fill-opacity="0.27"/>
+      <text x="678" y="282" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.24</text>
+      <rect x="762" y="244" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Retrato / Humano" data-col="Luz y tono" data-value="0.26" x="762" y="244" width="160" height="64" fill="#2d3142" fill-opacity="0.47"/>
+      <text x="842" y="282" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.26</text>
+      
+      <!-- Fila: Producto / Naturaleza Muerta (y=312) — 0.26, 0.24, 0.27, 0.23 -->
+      <rect x="270" y="312" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Producto / Naturaleza Muerta" data-col="Composición espacial" data-value="0.26" x="270" y="312" width="160" height="64" fill="#2d3142" fill-opacity="0.47"/>
+      <text x="350" y="350" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.26</text>
+      <rect x="434" y="312" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Producto / Naturaleza Muerta" data-col="Líneas y dirección" data-value="0.24" x="434" y="312" width="160" height="64" fill="#2d3142" fill-opacity="0.27"/>
+      <text x="514" y="350" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.24</text>
+      <rect x="598" y="312" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Producto / Naturaleza Muerta" data-col="Espacio y profundidad" data-value="0.27" x="598" y="312" width="160" height="64" fill="#2d3142" fill-opacity="0.57"/>
+      <text x="678" y="350" fill="#f5f5f5" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.27</text>
+      <rect x="762" y="312" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Producto / Naturaleza Muerta" data-col="Luz y tono" data-value="0.23" x="762" y="312" width="160" height="64" fill="#2d3142" fill-opacity="0.17"/>
+      <text x="842" y="350" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.23</text>
+      
+      <!-- Fila: Fotografía de Animal (y=380) — 0.25, 0.23, 0.26, 0.26 -->
+      <rect x="270" y="380" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Fotografía de Animal" data-col="Composición espacial" data-value="0.25" x="270" y="380" width="160" height="64" fill="#2d3142" fill-opacity="0.37"/>
+      <text x="350" y="418" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.25</text>
+      <rect x="434" y="380" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Fotografía de Animal" data-col="Líneas y dirección" data-value="0.23" x="434" y="380" width="160" height="64" fill="#2d3142" fill-opacity="0.17"/>
+      <text x="514" y="418" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.23</text>
+      <rect x="598" y="380" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Fotografía de Animal" data-col="Espacio y profundidad" data-value="0.26" x="598" y="380" width="160" height="64" fill="#2d3142" fill-opacity="0.47"/>
+      <text x="678" y="418" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.26</text>
+      <rect x="762" y="380" width="160" height="64" fill="#f5f5f5"/>
+      <rect data-row="Fotografía de Animal" data-col="Luz y tono" data-value="0.26" x="762" y="380" width="160" height="64" fill="#2d3142" fill-opacity="0.47"/>
+      <text x="842" y="418" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0.26</text>
+      
+      <!-- Leyenda -->
+      <line x1="40" y1="478" x2="960" y2="478" stroke="#2d3142" stroke-opacity="0.10" stroke-width="0.8"/>
+      <text x="40" y="500" fill="#4f5d75" font-size="10" font-family="'Geist Mono', monospace" letter-spacing="0.18em">LEYENDA</text>
+      <rect x="180" y="488" width="24" height="16" fill="#f5f5f5"/><rect x="180" y="488" width="24" height="16" fill="#2d3142" fill-opacity="0.07"/>
+      <rect x="206" y="488" width="24" height="16" fill="#f5f5f5"/><rect x="206" y="488" width="24" height="16" fill="#2d3142" fill-opacity="0.17"/>
+      <rect x="232" y="488" width="24" height="16" fill="#f5f5f5"/><rect x="232" y="488" width="24" height="16" fill="#2d3142" fill-opacity="0.27"/>
+      <rect x="258" y="488" width="24" height="16" fill="#f5f5f5"/><rect x="258" y="488" width="24" height="16" fill="#2d3142" fill-opacity="0.37"/>
+      <rect x="284" y="488" width="24" height="16" fill="#f5f5f5"/><rect x="284" y="488" width="24" height="16" fill="#2d3142" fill-opacity="0.47"/>
+      <rect x="310" y="488" width="24" height="16" fill="#f5f5f5"/><rect x="310" y="488" width="24" height="16" fill="#2d3142" fill-opacity="0.57"/>
+      <rect x="336" y="488" width="24" height="16" fill="#f5f5f5"/><rect x="336" y="488" width="24" height="16" fill="#2d3142" fill-opacity="0.67"/>
+      <text x="172" y="500" fill="#4f5d75" font-size="10" font-family="'Geist Mono', monospace" text-anchor="end">0.22</text>
+      <text x="366" y="500" fill="#4f5d75" font-size="10" font-family="'Geist Mono', monospace">0.28</text>
+      <rect x="430" y="488" width="24" height="16" fill="#f5f5f5"/><rect x="430" y="488" width="24" height="16" fill="#eb6c36" fill-opacity="0.85" stroke="#eb6c36" stroke-width="1"/>
+      <text x="462" y="500" fill="#4f5d75" font-size="12" font-family="'Geist', sans-serif">Paisaje Natural · Luz y tono · 0.29 (máximo de la matriz)</text>
+      <text x="40" y="526" fill="#4f5d75" font-size="10" font-family="'Geist Mono', monospace" letter-spacing="0.06em">IMPORTANCIA PROMEDIO NORMALIZADA · CADA FILA SUMA 1.00 · ESCALA NO FOCAL 0.22–0.28</text>
+    </svg>

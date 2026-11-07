@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="matriz-confusion-title matriz-confusion-desc">
+      <title id="matriz-confusion-title">Matriz de confusión del clasificador de fotografía</title>
+      <desc id="matriz-confusion-desc">Matriz de confusión de 5 clases sobre 725 imágenes con 85.1% de accuracy; la confusión más frecuente es producto-still_life clasificado como arquitectura (18 casos), y producto-still_life tiene el recall más bajo (74.1%).</desc>
+      <defs>
+        <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap');</style>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- Rejilla 5×5: columnas x=200..760 (paso 140), filas y=108..380 (paso 68), celda 136×64.
+           Rampa de tinta no focal: opacidad = 0.06 + 0.64·sqrt(v/135), monótona.
+           Celda focal (producto-still_life → arquitectura) con acento y data-focal="true". -->
+
+      <text x="548" y="56" fill="#4f5d75" font-size="11" font-family="'Geist Mono', monospace" letter-spacing="0.16em" text-anchor="middle">PREDICCIÓN</text>
+      <text transform="rotate(-90 26 276)" x="26" y="276" fill="#4f5d75" font-size="11" font-family="'Geist Mono', monospace" letter-spacing="0.16em" text-anchor="middle">VERDADERO</text>
+      <text data-axis="0" data-col="animal" x="268" y="90" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">animal</text>
+      <text data-axis="1" data-col="arquitectura" x="408" y="90" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">arquitectura</text>
+      <text data-axis="2" data-col="paisaje" x="548" y="90" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">paisaje</text>
+      <text data-axis="3" data-col="producto-still_life" x="688" y="90" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">producto-still_life</text>
+      <text data-axis="4" data-col="retrato-humano" x="828" y="90" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">retrato-humano</text>
+      <text x="940" y="90" fill="#4f5d75" font-size="10" font-family="'Geist Mono', monospace" letter-spacing="0.14em" text-anchor="middle">RECALL</text>
+      <text data-row-label="animal" x="188" y="145" fill="#2d3142" font-size="13" font-family="'Geist Mono', monospace" text-anchor="end">animal</text>
+      <text data-row-label="arquitectura" x="188" y="213" fill="#2d3142" font-size="13" font-family="'Geist Mono', monospace" text-anchor="end">arquitectura</text>
+      <text data-row-label="paisaje" x="188" y="281" fill="#2d3142" font-size="13" font-family="'Geist Mono', monospace" text-anchor="end">paisaje</text>
+      <text data-row-label="producto-still_life" x="188" y="349" fill="#2d3142" font-size="13" font-family="'Geist Mono', monospace" text-anchor="end">producto-still_life</text>
+      <text data-row-label="retrato-humano" x="188" y="417" fill="#2d3142" font-size="13" font-family="'Geist Mono', monospace" text-anchor="end">retrato-humano</text>
+      
+      <!-- Fila: animal (y=108) — 125, 0, 5, 5, 1 -->
+      <rect x="200" y="108" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="animal" data-col="animal" data-value="125" x="200" y="108" width="136" height="64" fill="#2d3142" fill-opacity="0.68"/>
+      <text x="268" y="146" fill="#f5f5f5" font-size="18" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">125</text>
+      <rect x="340" y="108" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="animal" data-col="arquitectura" data-value="0" x="340" y="108" width="136" height="64" fill="#2d3142" fill-opacity="0.06"/>
+      <text x="408" y="146" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0</text>
+      <rect x="480" y="108" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="animal" data-col="paisaje" data-value="5" x="480" y="108" width="136" height="64" fill="#2d3142" fill-opacity="0.18"/>
+      <text x="548" y="146" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">5</text>
+      <rect x="620" y="108" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="animal" data-col="producto-still_life" data-value="5" x="620" y="108" width="136" height="64" fill="#2d3142" fill-opacity="0.18"/>
+      <text x="688" y="146" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">5</text>
+      <rect x="760" y="108" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="animal" data-col="retrato-humano" data-value="1" x="760" y="108" width="136" height="64" fill="#2d3142" fill-opacity="0.12"/>
+      <text x="828" y="146" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">1</text>
+      <text x="940" y="145" fill="#2d3142" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">91.9%</text>
+      
+      <!-- Fila: arquitectura (y=176) — 0, 122, 15, 6, 0 -->
+      <rect x="200" y="176" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="arquitectura" data-col="animal" data-value="0" x="200" y="176" width="136" height="64" fill="#2d3142" fill-opacity="0.06"/>
+      <text x="268" y="214" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0</text>
+      <rect x="340" y="176" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="arquitectura" data-col="arquitectura" data-value="122" x="340" y="176" width="136" height="64" fill="#2d3142" fill-opacity="0.67"/>
+      <text x="408" y="214" fill="#f5f5f5" font-size="18" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">122</text>
+      <rect x="480" y="176" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="arquitectura" data-col="paisaje" data-value="15" x="480" y="176" width="136" height="64" fill="#2d3142" fill-opacity="0.27"/>
+      <text x="548" y="214" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">15</text>
+      <rect x="620" y="176" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="arquitectura" data-col="producto-still_life" data-value="6" x="620" y="176" width="136" height="64" fill="#2d3142" fill-opacity="0.19"/>
+      <text x="688" y="214" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">6</text>
+      <rect x="760" y="176" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="arquitectura" data-col="retrato-humano" data-value="0" x="760" y="176" width="136" height="64" fill="#2d3142" fill-opacity="0.06"/>
+      <text x="828" y="214" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">0</text>
+      <text x="940" y="213" fill="#2d3142" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">85.3%</text>
+      
+      <!-- Fila: paisaje (y=244) — 1, 11, 132, 5, 3 -->
+      <rect x="200" y="244" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="paisaje" data-col="animal" data-value="1" x="200" y="244" width="136" height="64" fill="#2d3142" fill-opacity="0.12"/>
+      <text x="268" y="282" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">1</text>
+      <rect x="340" y="244" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="paisaje" data-col="arquitectura" data-value="11" x="340" y="244" width="136" height="64" fill="#2d3142" fill-opacity="0.24"/>
+      <text x="408" y="282" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">11</text>
+      <rect x="480" y="244" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="paisaje" data-col="paisaje" data-value="132" x="480" y="244" width="136" height="64" fill="#2d3142" fill-opacity="0.69"/>
+      <text x="548" y="282" fill="#f5f5f5" font-size="18" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">132</text>
+      <rect x="620" y="244" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="paisaje" data-col="producto-still_life" data-value="5" x="620" y="244" width="136" height="64" fill="#2d3142" fill-opacity="0.18"/>
+      <text x="688" y="282" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">5</text>
+      <rect x="760" y="244" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="paisaje" data-col="retrato-humano" data-value="3" x="760" y="244" width="136" height="64" fill="#2d3142" fill-opacity="0.16"/>
+      <text x="828" y="282" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">3</text>
+      <text x="940" y="281" fill="#2d3142" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">86.8%</text>
+      
+      <!-- Fila: producto-still_life (y=312) — 7, 18, 8, 103, 3 -->
+      <rect x="200" y="312" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="producto-still_life" data-col="animal" data-value="7" x="200" y="312" width="136" height="64" fill="#2d3142" fill-opacity="0.21"/>
+      <text x="268" y="350" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">7</text>
+      <rect x="340" y="312" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="producto-still_life" data-col="arquitectura" data-value="18" data-focal="true" x="340" y="312" width="136" height="64" fill="#eb6c36" fill-opacity="0.85" stroke="#eb6c36" stroke-width="1.2"/>
+      <text x="408" y="344" fill="#111111" font-size="20" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">18</text>
+      <text x="408" y="362" fill="#111111" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">MAYOR CONFUSIÓN</text>
+      <rect x="480" y="312" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="producto-still_life" data-col="paisaje" data-value="8" x="480" y="312" width="136" height="64" fill="#2d3142" fill-opacity="0.22"/>
+      <text x="548" y="350" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">8</text>
+      <rect x="620" y="312" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="producto-still_life" data-col="producto-still_life" data-value="103" x="620" y="312" width="136" height="64" fill="#2d3142" fill-opacity="0.62"/>
+      <text x="688" y="350" fill="#f5f5f5" font-size="18" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">103</text>
+      <rect x="760" y="312" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="producto-still_life" data-col="retrato-humano" data-value="3" x="760" y="312" width="136" height="64" fill="#2d3142" fill-opacity="0.16"/>
+      <text x="828" y="350" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">3</text>
+      <text x="940" y="349" fill="#2d3142" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">74.1%</text>
+      
+      <!-- Fila: retrato-humano (y=380) — 3, 3, 4, 10, 135 -->
+      <rect x="200" y="380" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="retrato-humano" data-col="animal" data-value="3" x="200" y="380" width="136" height="64" fill="#2d3142" fill-opacity="0.16"/>
+      <text x="268" y="418" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">3</text>
+      <rect x="340" y="380" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="retrato-humano" data-col="arquitectura" data-value="3" x="340" y="380" width="136" height="64" fill="#2d3142" fill-opacity="0.16"/>
+      <text x="408" y="418" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">3</text>
+      <rect x="480" y="380" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="retrato-humano" data-col="paisaje" data-value="4" x="480" y="380" width="136" height="64" fill="#2d3142" fill-opacity="0.17"/>
+      <text x="548" y="418" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">4</text>
+      <rect x="620" y="380" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="retrato-humano" data-col="producto-still_life" data-value="10" x="620" y="380" width="136" height="64" fill="#2d3142" fill-opacity="0.23"/>
+      <text x="688" y="418" fill="#2d3142" font-size="18" font-family="'Geist Mono', monospace" text-anchor="middle">10</text>
+      <rect x="760" y="380" width="136" height="64" fill="#f5f5f5"/>
+      <rect data-row="retrato-humano" data-col="retrato-humano" data-value="135" x="760" y="380" width="136" height="64" fill="#2d3142" fill-opacity="0.7"/>
+      <text x="828" y="418" fill="#f5f5f5" font-size="18" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">135</text>
+      <text x="940" y="417" fill="#2d3142" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">87.1%</text>
+      
+      <!-- Precisión por columna -->
+      <text x="188" y="473" fill="#4f5d75" font-size="10" font-family="'Geist Mono', monospace" letter-spacing="0.14em" text-anchor="end">PRECISIÓN</text>
+      <text x="268" y="473" fill="#2d3142" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">91.9%</text>
+      <text x="408" y="473" fill="#2d3142" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">79.2%</text>
+      <text x="548" y="473" fill="#2d3142" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">80.5%</text>
+      <text x="688" y="473" fill="#2d3142" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">79.8%</text>
+      <text x="828" y="473" fill="#2d3142" font-size="14" font-family="'Geist Mono', monospace" text-anchor="middle">95.1%</text>
+      <text x="940" y="473" fill="#2d3142" font-size="14" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">85.1%</text>
+      <text x="940" y="490" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.12em" text-anchor="middle">ACCURACY</text>
+      
+      <!-- Leyenda -->
+      <line x1="40" y1="532" x2="960" y2="532" stroke="#2d3142" stroke-opacity="0.10" stroke-width="0.8"/>
+      <text x="40" y="548" fill="#4f5d75" font-size="10" font-family="'Geist Mono', monospace" letter-spacing="0.18em">LEYENDA</text>
+      <rect x="150" y="536" width="24" height="16" fill="#f5f5f5"/><rect x="150" y="536" width="24" height="16" fill="#2d3142" fill-opacity="0.06"/>
+      <rect x="176" y="536" width="24" height="16" fill="#f5f5f5"/><rect x="176" y="536" width="24" height="16" fill="#2d3142" fill-opacity="0.18"/>
+      <rect x="202" y="536" width="24" height="16" fill="#f5f5f5"/><rect x="202" y="536" width="24" height="16" fill="#2d3142" fill-opacity="0.27"/>
+      <rect x="228" y="536" width="24" height="16" fill="#f5f5f5"/><rect x="228" y="536" width="24" height="16" fill="#2d3142" fill-opacity="0.36"/>
+      <rect x="254" y="536" width="24" height="16" fill="#f5f5f5"/><rect x="254" y="536" width="24" height="16" fill="#2d3142" fill-opacity="0.45"/>
+      <rect x="280" y="536" width="24" height="16" fill="#f5f5f5"/><rect x="280" y="536" width="24" height="16" fill="#2d3142" fill-opacity="0.54"/>
+      <rect x="306" y="536" width="24" height="16" fill="#f5f5f5"/><rect x="306" y="536" width="24" height="16" fill="#2d3142" fill-opacity="0.62"/>
+      <rect x="332" y="536" width="24" height="16" fill="#f5f5f5"/><rect x="332" y="536" width="24" height="16" fill="#2d3142" fill-opacity="0.7"/>
+      <text x="142" y="548" fill="#4f5d75" font-size="10" font-family="'Geist Mono', monospace" text-anchor="end">0</text>
+      <text x="362" y="548" fill="#4f5d75" font-size="10" font-family="'Geist Mono', monospace">135</text>
+      <rect x="420" y="536" width="24" height="16" fill="#f5f5f5"/><rect x="420" y="536" width="24" height="16" fill="#eb6c36" fill-opacity="0.85" stroke="#eb6c36" stroke-width="1"/>
+      <text x="452" y="548" fill="#4f5d75" font-size="12" font-family="'Geist', sans-serif">producto-still_life → arquitectura · 18 imágenes (13% de su clase)</text>
+      <text x="40" y="574" fill="#4f5d75" font-size="10" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ESCALA NO FOCAL: 0–135 IMÁGENES · RAMPA DE TINTA (RAÍZ CUADRADA) · N = 725 · ACIERTOS = 617</text>
+    </svg>
