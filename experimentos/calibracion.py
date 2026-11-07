@@ -1,17 +1,28 @@
-"""Calibración de umbrales sobre el conjunto de calibración `data/` (experimentos.md, §4).
+"""Medida de las variables de decisión y revisión de la segmentación (experimentos.md, §4 y §5.3).
 
-Tres subcomandos, en este orden:
+Sirve para los dos conjuntos con `--conjunto` (por defecto, `calibracion`):
 
-    medir       Ejecuta las herramientas deterministas (sin LLM ni API) sobre cada foto de
-                `data/` y guarda, por foto, TODAS las variables de decisión de las condiciones
-                de aplicabilidad: ratio cromático, longitud y ángulo del horizonte, score,
-                score nulo y apertura de la convergencia, confianza de YOLO, score y relleno
-                de SAM, varianzas del Laplaciano, y las métricas de composición. También
-                genera la imagen de revisión de la segmentación de cada foto con fuente = yolo.
-                Es reanudable: una foto ya medida con el mismo fichero no se repite.
+    calibracion   data/        → resultados/calibracion/, anotaciones/segmentacion_calibracion.*
+    prueba        data_prueba/ → resultados/prueba/,      anotaciones/segmentacion_prueba.*
+
+Solo cambian las rutas; el procedimiento es el mismo. Tres subcomandos, en este orden:
+
+    medir       Ejecuta las herramientas deterministas (sin LLM ni API) sobre cada foto y
+                guarda, por foto, TODAS las variables de decisión de las condiciones de
+                aplicabilidad: ratio cromático, longitud y ángulo del horizonte, score, score
+                nulo y apertura de la convergencia, confianza de YOLO, score y relleno de SAM,
+                varianzas del Laplaciano, y las métricas de composición. También genera la
+                imagen de revisión de la segmentación de cada foto con fuente = yolo.
+                Antes de medir comprueba que cada foto tiene el MD5 de su manifiesto: así no
+                se mide un fichero distinto del anotado.
+                Es reanudable: una foto ya medida con el mismo fichero y el mismo código de
+                `src/` no se repite.
     plantilla   Genera el Excel de revisión de la segmentación (bien / parcial / mal) y del
                 protagonista, solo para las fotos con fuente = yolo.
-    exportar    Valida el Excel rellenado y escribe `anotaciones/segmentacion_calibracion.csv`.
+    exportar    Valida el Excel rellenado y escribe `anotaciones/segmentacion_{conjunto}.csv`.
+
+CONJUNTO DE PRUEBA: la revisión de la segmentación se hace ANTES de mirar ninguna decisión del
+sistema (§5.3 y §6.2). No abras `resultados/prueba/medidas_prueba.csv` hasta exportar.
 
 Después, el análisis de huecos (propuesta de umbrales) cruza `medidas_calibracion.csv`
 con esta revisión y con la anotación de aplicabilidad que ya existe para `data/`
@@ -28,9 +39,10 @@ Se ejecuta en la MISMA máquina que la validación (el equipo Windows, experimen
 
 Uso (desde la raíz del proyecto):
     uv run python experimentos/calibracion.py medir            # ~5-10 min la primera vez
-    uv run python experimentos/calibracion.py medir --rehacer  # tras cambiar el código
+    uv run python experimentos/calibracion.py medir --rehacer  # volver a medir todo
     uv run python experimentos/calibracion.py plantilla
     uv run python experimentos/calibracion.py exportar
+    uv run python experimentos/calibracion.py medir --conjunto prueba   # y así con los otros
 """
 from __future__ import annotations
 
@@ -44,6 +56,7 @@ import platform
 import subprocess
 import sys
 import time
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -56,18 +69,71 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from tfg_multiagente_fotografia.rutas import OUTPUTS_PATH  # noqa: E402
 
-DIR_CALIBRACION = RAIZ / "data"
-DIR_RESULTADOS = RAIZ / "experimentos" / "resultados" / "calibracion"
-DIR_ANOTACIONES = RAIZ / "experimentos" / "anotaciones"
-DIR_SALIDAS = OUTPUTS_PATH / "calibracion"              # regenerable, no versionado
-DIR_REVISION = DIR_SALIDAS / "segmentacion"
-CACHE = DIR_SALIDAS / "medidas.json"
-MEDIDAS_CSV = DIR_RESULTADOS / "medidas_calibracion.csv"
-ENTORNO_JSON = DIR_RESULTADOS / "entorno_calibracion.json"
-PLANTILLA = DIR_ANOTACIONES / "segmentacion_calibracion.xlsx"
-SEGMENTACION_CSV = DIR_ANOTACIONES / "segmentacion_calibracion.csv"
-ANOTACION_APLICABILIDAD = (RAIZ / "experimentos" / "resultados" / "aplicabilidad_vlm"
-                           / "anotacion_humana_A2.csv")
+DIR_EXPERIMENTOS = RAIZ / "experimentos"
+DIR_ANOTACIONES = DIR_EXPERIMENTOS / "anotaciones"
+
+
+@dataclass(frozen=True)
+class Conjunto:
+    """Rutas de un conjunto de fotos. Es lo único que cambia entre calibración y prueba."""
+    nombre: str
+    titulo: str                   # para los textos de la plantilla
+    carpeta: Path                 # fotos
+    manifiesto: Path              # MD5 de cada foto (`nombre`, `md5`)
+    anotacion_aplicabilidad: Path  # de aquí sale el nombre del protagonista anotado
+    dir_resultados: Path          # versionado
+    dir_salidas: Path             # regenerable, no versionado
+
+    @property
+    def dir_revision(self) -> Path:
+        return self.dir_salidas / "segmentacion"
+
+    @property
+    def cache(self) -> Path:
+        return self.dir_salidas / "medidas.json"
+
+    @property
+    def medidas_csv(self) -> Path:
+        return self.dir_resultados / f"medidas_{self.nombre}.csv"
+
+    @property
+    def entorno_json(self) -> Path:
+        return self.dir_resultados / f"entorno_{self.nombre}.json"
+
+    @property
+    def plantilla(self) -> Path:
+        return DIR_ANOTACIONES / f"segmentacion_{self.nombre}.xlsx"
+
+    @property
+    def segmentacion_csv(self) -> Path:
+        return DIR_ANOTACIONES / f"segmentacion_{self.nombre}.csv"
+
+
+CONJUNTOS = {
+    "calibracion": Conjunto(
+        nombre="calibracion", titulo="conjunto de calibración",
+        carpeta=RAIZ / "data",
+        manifiesto=DIR_EXPERIMENTOS / "manifiesto_calibracion.csv",
+        anotacion_aplicabilidad=(DIR_EXPERIMENTOS / "resultados" / "aplicabilidad_vlm"
+                                 / "anotacion_humana_A2.csv"),
+        dir_resultados=DIR_EXPERIMENTOS / "resultados" / "calibracion",
+        dir_salidas=OUTPUTS_PATH / "calibracion"),
+    "prueba": Conjunto(
+        nombre="prueba", titulo="conjunto de prueba",
+        carpeta=RAIZ / "data_prueba",
+        manifiesto=DIR_EXPERIMENTOS / "manifiesto_prueba.csv",
+        anotacion_aplicabilidad=DIR_ANOTACIONES / "anotacion_prueba.csv",
+        dir_resultados=DIR_EXPERIMENTOS / "resultados" / "prueba",
+        dir_salidas=OUTPUTS_PATH / "prueba"),
+}
+
+# Nombres del conjunto de calibración que importa analisis_calibracion.py.
+_CALIBRACION = CONJUNTOS["calibracion"]
+DIR_CALIBRACION = _CALIBRACION.carpeta
+DIR_RESULTADOS = _CALIBRACION.dir_resultados
+MEDIDAS_CSV = _CALIBRACION.medidas_csv
+SEGMENTACION_CSV = _CALIBRACION.segmentacion_csv
+ANOTACION_APLICABILIDAD = _CALIBRACION.anotacion_aplicabilidad
 
 # Imagen de revisión: lado mayor del fichero (para abrirlo) y de la miniatura del Excel.
 LADO_REVISION = 1024
@@ -131,6 +197,38 @@ def num(x, decimales=6):
 
 def abre(metrica) -> int:
     return int(metrica.confianza >= 1.0)
+
+
+def version_codigo() -> str:
+    """Identifica el código de `src/` con el que se mide: el árbol de git de `src/` en HEAD
+    y, si hay cambios sin commit, un resumen de esos cambios. Cambia solo si cambia `src/`,
+    no con cualquier commit (de documentación, de resultados…)."""
+    try:
+        arbol = subprocess.run(["git", "rev-parse", "HEAD:src"], cwd=RAIZ, capture_output=True,
+                               text=True, check=True).stdout.strip()
+        cambios = subprocess.run(["git", "diff", "HEAD", "--", "src"], cwd=RAIZ,
+                                 capture_output=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return "desconocida"
+    return arbol + (f"+{hashlib.md5(cambios).hexdigest()[:12]}" if cambios else "")
+
+
+def comprobar_manifiesto(conjunto: Conjunto, rutas: list[Path]) -> None:
+    """Para si alguna foto no es la del manifiesto (otro fichero con el mismo nombre)."""
+    if not conjunto.manifiesto.exists():
+        raise SystemExit(f"Falta {conjunto.manifiesto}: sin él no se puede comprobar que se "
+                         "miden las fotos anotadas.")
+    esperado = {Path(f["nombre"]).stem: f["md5"] for f in leer_csv(conjunto.manifiesto)}
+    presentes = {r.stem for r in rutas}
+    problemas = [f"{n}: falta en {conjunto.carpeta}" for n in sorted(esperado.keys() - presentes)]
+    problemas += [f"{n}: no está en el manifiesto" for n in sorted(presentes - esperado.keys())]
+    problemas += [f"{r.name}: MD5 {md5(r)} distinto del manifiesto ({esperado[r.stem]})"
+                  for r in rutas if r.stem in esperado and md5(r) != esperado[r.stem]]
+    if problemas:
+        print(f"Las fotos de {conjunto.carpeta} no coinciden con {conjunto.manifiesto.name}:")
+        for p in problemas:
+            print(f"  - {p}")
+        raise SystemExit("No se mide: se estaría midiendo un fichero distinto del anotado.")
 
 
 def commit_actual() -> str:
@@ -283,13 +381,19 @@ def medir_una(ruta: Path, percepcion, luz, lineas) -> dict:
 
 
 def medir(args) -> None:
-    rutas = fotos(args.carpeta)
+    conjunto = CONJUNTOS[args.conjunto]
+    rutas = fotos(conjunto.carpeta)
+    comprobar_manifiesto(conjunto, rutas)
+    version = version_codigo()
     guardadas = {}
-    if CACHE.exists() and not args.rehacer:
-        guardadas = json.loads(CACHE.read_text(encoding="utf-8"))
+    if conjunto.cache.exists() and not args.rehacer:
+        guardadas = json.loads(conjunto.cache.read_text(encoding="utf-8"))
+    # Se repite una foto si cambió el fichero o el código de src/ con el que se midió.
     pendientes = [r for r in rutas
-                  if r.stem not in guardadas or guardadas[r.stem]["md5"] != md5(r)]
-    print(f"{len(rutas)} fotos en {args.carpeta} · {len(pendientes)} por medir")
+                  if r.stem not in guardadas or guardadas[r.stem]["md5"] != md5(r)
+                  or guardadas[r.stem].get("_version_codigo") != version]
+    print(f"{len(rutas)} fotos en {conjunto.carpeta} · {len(pendientes)} por medir "
+          f"(código de src/: {version})")
 
     if pendientes:
         # Importación diferida: YOLO, SAM y torch solo se cargan si hay algo que medir.
@@ -302,36 +406,42 @@ def medir(args) -> None:
         )
 
         percepcion, luz, lineas = SharedPerceptionEngine(), LuzTonoEngine(), LineasDireccionEngine()
-        DIR_REVISION.mkdir(parents=True, exist_ok=True)
+        conjunto.dir_revision.mkdir(parents=True, exist_ok=True)
         inicio = time.perf_counter()
         for i, ruta in enumerate(pendientes, 1):
             fila = medir_una(ruta, percepcion, luz, lineas)
+            fila["_version_codigo"] = version
+            revision = conjunto.dir_revision / f"{ruta.stem}.jpg"
             if fila["fuente"] == "yolo":
-                cv2.imwrite(str(DIR_REVISION / f"{ruta.stem}.jpg"),
-                            imagen_revision(ruta, fila["_bbox"]),
+                cv2.imwrite(str(revision), imagen_revision(ruta, fila["_bbox"]),
                             [cv2.IMWRITE_JPEG_QUALITY, 90])
+            else:
+                # Si antes era yolo y ya no, su imagen de revisión no debe quedar.
+                revision.unlink(missing_ok=True)
             guardadas[ruta.stem] = fila
             # Se guarda tras cada foto: una interrupción no obliga a repetir lo hecho.
-            DIR_SALIDAS.mkdir(parents=True, exist_ok=True)
-            CACHE.write_text(json.dumps(guardadas, ensure_ascii=False, indent=1), "utf-8")
+            conjunto.cache.write_text(json.dumps(guardadas, ensure_ascii=False, indent=1),
+                                      "utf-8")
             transcurrido = time.perf_counter() - inicio
             print(f"  {i}/{len(pendientes)} {ruta.name:<14} fuente={fila['fuente']:<9} "
                   f"({transcurrido / i:.1f} s/foto)", flush=True)
 
-    DIR_RESULTADOS.mkdir(parents=True, exist_ok=True)
-    with MEDIDAS_CSV.open("w", encoding="utf-8", newline="") as f:
+    conjunto.dir_resultados.mkdir(parents=True, exist_ok=True)
+    with conjunto.medidas_csv.open("w", encoding="utf-8", newline="") as f:
         escritor = csv.DictWriter(f, fieldnames=CAMPOS, extrasaction="ignore",
                                   lineterminator="\n")
         escritor.writeheader()
         escritor.writerows(guardadas[r.stem] for r in rutas)
-    if pendientes or not ENTORNO_JSON.exists():
-        ENTORNO_JSON.write_text(json.dumps(entorno(), ensure_ascii=False, indent=1,
-                                           default=str), "utf-8")
+    if pendientes or not conjunto.entorno_json.exists():
+        conjunto.entorno_json.write_text(json.dumps(entorno(), ensure_ascii=False, indent=1,
+                                                    default=str), "utf-8")
 
     n_yolo = sum(guardadas[r.stem]["fuente"] == "yolo" for r in rutas)
-    print(f"Medidas: {MEDIDAS_CSV}")
-    print(f"Entorno: {ENTORNO_JSON}")
-    print(f"{n_yolo} fotos con fuente = yolo · imágenes de revisión en {DIR_REVISION}")
+    print(f"Medidas: {conjunto.medidas_csv}")
+    print(f"Entorno: {conjunto.entorno_json}")
+    print(f"{n_yolo} fotos con fuente = yolo · imágenes de revisión en {conjunto.dir_revision}")
+    if conjunto.nombre == "prueba":
+        print("Recuerda: no abras el CSV de medidas hasta exportar la revisión de la segmentación.")
 
 
 # =============================================================================
@@ -361,19 +471,31 @@ def plantilla(args) -> None:
 
     from plantilla_revision import AMBAR, AZUL, BLANCA, BORDE, ROJO, VACIO, VERDE
 
-    destino = args.salida.resolve()
+    conjunto = CONJUNTOS[args.conjunto]
+    destino = (args.salida or conjunto.plantilla).resolve()
     if destino.exists() and not args.sobrescribir:
         raise SystemExit(f"{destino} ya existe y podría tener anotaciones. Usa --sobrescribir "
                          "(perderías lo anotado) o --salida para otra ruta.")
-    if not MEDIDAS_CSV.exists():
-        raise SystemExit("Falta medidas_calibracion.csv: ejecuta antes `medir`.")
+    if not conjunto.medidas_csv.exists():
+        raise SystemExit(f"Falta {conjunto.medidas_csv.name}: ejecuta antes `medir`.")
 
-    medidas = leer_csv(MEDIDAS_CSV)
+    # Del CSV de medidas solo se leen la fuente y la clase de YOLO, que la plantilla
+    # necesita; ninguna decisión del sistema pasa a la plantilla.
+    medidas = leer_csv(conjunto.medidas_csv)
     yolo = [m for m in medidas if m["fuente"] == "yolo"]
     protagonista = {}
-    if ANOTACION_APLICABILIDAD.exists():
+    if conjunto.anotacion_aplicabilidad.exists():
         protagonista = {Path(f["imagen"]).stem: f.get("protagonista_nombre", "")
-                        for f in leer_csv(ANOTACION_APLICABILIDAD)}
+                        for f in leer_csv(conjunto.anotacion_aplicabilidad)}
+
+    # --conservar: se rellenan los juicios ya exportados, salvo los de --revisar (fotos cuyo
+    # fichero cambió) y los de fotos que antes no eran yolo, que quedan en blanco.
+    previos = {}
+    if args.conservar:
+        if not conjunto.segmentacion_csv.exists():
+            raise SystemExit(f"--conservar necesita {conjunto.segmentacion_csv}")
+        previos = {f["imagen"]: f for f in leer_csv(conjunto.segmentacion_csv)
+                   if f["imagen"] not in set(args.revisar)}
 
     columnas = [
         ("imagen", "Imagen", 10), ("revision", "Foto | caja y máscara", 62),
@@ -423,7 +545,7 @@ def plantilla(args) -> None:
 
     faltan_imagenes = []
     for i, m in enumerate(yolo, 3):
-        ruta = DIR_REVISION / f"{m['imagen']}.jpg"
+        ruta = conjunto.dir_revision / f"{m['imagen']}.jpg"
         if not ruta.exists():
             faltan_imagenes.append(m["imagen"])
             continue
@@ -450,6 +572,11 @@ def plantilla(args) -> None:
             celda.alignment = Alignment(vertical="center", wrap_text=True)
         dv_seg.add(ws[seg])
         dv_caja.add(ws[caja])
+        if m["imagen"] in previos:
+            previo = previos[m["imagen"]]
+            ws[seg] = previo["segmentacion"]
+            ws[caja] = previo["caja_protagonista"]
+            ws[f"{letra['comentario']}{i}"] = previo.get("comentario") or None
 
     ultima = len(yolo) + 2
     zona_seg = f"{letra['segmentacion']}3:{letra['segmentacion']}{ultima}"
@@ -467,7 +594,7 @@ def plantilla(args) -> None:
     ws.freeze_panes = f"{letra['objeto_yolo']}3"
 
     guia = wb.create_sheet("Guía")
-    guia["A1"] = "Revisión de la segmentación (conjunto de calibración)"
+    guia["A1"] = f"Revisión de la segmentación ({conjunto.titulo})"
     guia["A1"].font = Font(bold=True, size=14)
     textos = [
         "Cada imagen tiene dos paneles: a la izquierda la foto limpia; a la derecha, la caja "
@@ -478,7 +605,8 @@ def plantilla(args) -> None:
         "La imagen no muestra a propósito ninguna cifra (score, relleno) ni si el sistema "
         "consideró la segmentación fiable: tu juicio es el que fija esos umbrales.",
         *[f"{c}: {t}" for c, t in ayuda.items()],
-        "Al terminar: uv run python experimentos/calibracion.py exportar",
+        "Al terminar: uv run python experimentos/calibracion.py exportar"
+        + ("" if conjunto.nombre == "calibracion" else f" --conjunto {conjunto.nombre}"),
     ]
     for k, texto in enumerate(textos, 3):
         celda = guia.cell(row=k, column=1, value=texto)
@@ -489,6 +617,10 @@ def plantilla(args) -> None:
     destino.parent.mkdir(parents=True, exist_ok=True)
     wb.save(destino)
     print(f"{len(yolo) - len(faltan_imagenes)} fotos con fuente = yolo · plantilla: {destino}")
+    if args.conservar:
+        en_blanco = [m["imagen"] for m in yolo if m["imagen"] not in previos]
+        print(f"Rellenadas con la revisión anterior: {len(yolo) - len(en_blanco)} · "
+              f"POR REVISAR: {', '.join(en_blanco) or 'ninguna'}")
     if faltan_imagenes:
         print(f"AVISO: sin imagen de revisión (vuelve a ejecutar `medir`): {faltan_imagenes}")
 
@@ -496,7 +628,8 @@ def plantilla(args) -> None:
 def exportar(args) -> None:
     from openpyxl import load_workbook
 
-    origen = args.plantilla.resolve()
+    conjunto = CONJUNTOS[args.conjunto]
+    origen = (args.plantilla or conjunto.plantilla).resolve()
     if not origen.exists():
         raise SystemExit(f"No existe {origen}. Genera antes la plantilla.")
     ws = load_workbook(origen)["Revisión"]
@@ -522,13 +655,25 @@ def exportar(args) -> None:
         filas.append({"imagen": imagen, "clase_yolo": celda(fila, "objeto_yolo"),
                       "segmentacion": seg, "caja_protagonista": caja,
                       "comentario": celda(fila, "comentario")})
+
+    # Tienen que estar revisadas exactamente las fotos yolo de la última medida: si se volvió
+    # a medir después de generar la plantilla, puede haber fotos de más o de menos.
+    if conjunto.medidas_csv.exists():
+        yolo = {m["imagen"] for m in leer_csv(conjunto.medidas_csv) if m["fuente"] == "yolo"}
+        revisadas = {f["imagen"] for f in filas} | {e.split(":")[0] for e in errores}
+        errores += [f"{n}: es yolo en {conjunto.medidas_csv.name} y no está en la plantilla"
+                    for n in sorted(yolo - revisadas)]
+        errores += [f"{n}: está en la plantilla pero ya no es yolo (regenera la plantilla)"
+                    for n in sorted(revisadas - yolo)]
+    if not filas and not errores:
+        errores.append("la hoja «Revisión» no tiene ninguna foto")
     if errores:
         print("La revisión no está lista para exportar:")
         for e in errores:
             print(f"  - {e}")
         raise SystemExit(1)
 
-    destino = args.salida.resolve()
+    destino = (args.salida or conjunto.segmentacion_csv).resolve()
     destino.parent.mkdir(parents=True, exist_ok=True)
     with destino.open("w", encoding="utf-8", newline="") as f:
         escritor = csv.DictWriter(f, fieldnames=list(filas[0]), lineterminator="\n")
@@ -541,21 +686,33 @@ def exportar(args) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = parser.add_subparsers(dest="orden", required=True)
+    # --conjunto se acepta en cada subcomando (`medir --conjunto prueba`).
+    comun = argparse.ArgumentParser(add_help=False)
+    comun.add_argument("--conjunto", choices=sorted(CONJUNTOS), default="calibracion",
+                       help="conjunto de fotos (por defecto, calibracion)")
 
-    m = sub.add_parser("medir", help="ejecuta las herramientas y guarda las variables de decisión")
-    m.add_argument("--carpeta", type=Path, default=DIR_CALIBRACION)
+    m = sub.add_parser("medir", parents=[comun],
+                       help="ejecuta las herramientas y guarda las variables de decisión")
     m.add_argument("--rehacer", action="store_true",
-                   help="volver a medir todas las fotos (tras cambiar el código)")
+                   help="volver a medir todas las fotos aunque estén en la caché")
     m.set_defaults(funcion=medir)
 
-    p = sub.add_parser("plantilla", help="genera el Excel de revisión de la segmentación")
-    p.add_argument("--salida", type=Path, default=PLANTILLA)
+    p = sub.add_parser("plantilla", parents=[comun],
+                       help="genera el Excel de revisión de la segmentación")
+    p.add_argument("--salida", type=Path, default=None,
+                   help="por defecto, anotaciones/segmentacion_{conjunto}.xlsx")
     p.add_argument("--sobrescribir", action="store_true")
+    p.add_argument("--conservar", action="store_true",
+                   help="rellenar con la revisión ya exportada (segmentacion_{conjunto}.csv)")
+    p.add_argument("--revisar", nargs="+", default=[], metavar="IMAGEN",
+                   help="con --conservar, fotos que se dejan en blanco para revisarlas de nuevo")
     p.set_defaults(funcion=plantilla)
 
-    e = sub.add_parser("exportar", help="valida la revisión y escribe el CSV")
-    e.add_argument("--plantilla", type=Path, default=PLANTILLA)
-    e.add_argument("--salida", type=Path, default=SEGMENTACION_CSV)
+    e = sub.add_parser("exportar", parents=[comun], help="valida la revisión y escribe el CSV")
+    e.add_argument("--plantilla", type=Path, default=None,
+                   help="por defecto, anotaciones/segmentacion_{conjunto}.xlsx")
+    e.add_argument("--salida", type=Path, default=None,
+                   help="por defecto, anotaciones/segmentacion_{conjunto}.csv")
     e.set_defaults(funcion=exportar)
 
     args = parser.parse_args()

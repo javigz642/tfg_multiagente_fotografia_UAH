@@ -12,15 +12,34 @@ tomaron y qué toca después. El plan completo y las justificaciones están en
 
 ```
 Fase 1  Anotar el conjunto de prueba ........... HECHO
-Fase 2  Calibrar umbrales sobre data/ .......... CASI HECHA (falta re-medir en Windows por el mensaje corregido, 2.9)
-Fase 3  Instrumentos + congelación ............. pendiente  → aquí queda el sistema final
+Fase 2  Calibrar umbrales sobre data/ .......... HECHA (medición final e55d0dc, con el código de e3d4bfe)
+Fase 3  Instrumentos + congelación ............. SIGUIENTE  → aquí queda el sistema final
 Fase 4  Ejecutar E1–E4 y escribir resultados ... pendiente
 ```
 
-**Siguiente acción concreta (la hace el usuario, en Windows): paso 2.9.** `git pull` y
-`uv run python experimentos/calibracion.py medir --rehacer`; commit y push **solo** de
-`experimentos/resultados/calibracion/` (no `git add .`). Solo cambia la columna
-`motivo_convergencia`; el asistente lo comprueba y se pasa a la fase 3.
+**BLOQUEO (2026-11-07): 4 fotos de `data/` son ficheros distintos en el Mac y en Windows**
+(imagen48, 61, 63 y 81: otras dimensiones y otro MD5). La anotación de aplicabilidad se hizo sobre
+las versiones del Mac (las miniaturas de `plantilla_revision_humana.xlsx` lo confirman), que son
+además las descargas originales de Unsplash; la calibración midió las de Windows. Por tanto, esas
+4 filas cruzan medidas de una foto con la anotación de otra. También explica la diferencia de YOLO
+61/60 entre máquinas del §2.3 del plan (es imagen61, no el hardware). Estimación con las versiones
+del Mac: color, convergencia y nitidez no cambian; la regla del horizonte pasaría a dar (0.1517; 14°).
+**Decisión del usuario:** igualar las dos máquinas combinando versiones: imagen61 e imagen63 con la
+versión del Mac (la anotada) e imagen48 e imagen81 con la de Windows (ya medidas así). El
+manifiesto recoge esa combinación. La anotación de 48 y 81 parece seguir valiendo para la versión
+de Windows (el nombre del protagonista de imagen48, «chica con vestido», ya no la describe); el
+usuario lo confirma.
+
+**Siguiente acción (usuario, Windows): paso 2.10.** `git pull`; `calibracion.py medir --rehacer`;
+`calibracion.py plantilla --sobrescribir --conservar --revisar imagen63` (imagen61 sale en blanco
+sola, porque antes no era yolo); revisar las filas en blanco; `calibracion.py exportar`; commit y
+push solo de `experimentos/resultados/calibracion/` y `experimentos/anotaciones/segmentacion_calibracion.csv`.
+Después el asistente vuelve a aplicar la regla (2.11): el horizonte probablemente cambie.
+
+Hecho en la fase 3: `manifiesto_calibracion.py` y su CSV (88 fotos idénticas a su descarga de
+Unsplash, imagen54 derivada a B/N, 11 sin original localizado) y `calibracion.py --conjunto prueba`
+(comprobación de MD5 contra el manifiesto, caché ligada al código de `src/`, `exportar` más
+estricto y `plantilla --conservar --revisar`).
 
 ---
 
@@ -163,7 +182,7 @@ Script `analisis_calibracion.py` (sin GPU; lee los tres CSV). Salidas en `result
 | 2.7 | Usuario (Windows) | ~~`calibracion.py medir --rehacer`~~ HECHO (`fa5afc3`, medido con `8678fa4`) |
 | 2.8 | Asistente | ~~Comprobar las decisiones~~ HECHO: variables idénticas a la medición anterior; las 6 condiciones coinciden foto a foto con la propuesta (color 78, horizonte 22, convergencia 7, espacio 60, nitidez 11, composición 60) |
 
-| **2.9** | **Usuario (Windows)** | **SIGUIENTE.** Re-medir por el mensaje de cierre corregido de la convergencia |
+| 2.9 | Usuario (Windows) | ~~Re-medir por el mensaje de cierre corregido~~ HECHO (`e55d0dc`): solo cambian los 44 textos de `motivo_convergencia` que cierran por apertura; variables y decisiones idénticas |
 
 **Ficheros de la primera campaña:** el commit `fa5afc3` subió además 67 ficheros de la primera
 campaña (notebooks, `comun.py`, `config_experimentos.yaml`, `ejecutar_lote.py`, `congelacion.json`,

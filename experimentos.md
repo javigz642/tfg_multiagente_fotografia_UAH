@@ -78,10 +78,15 @@ ejecutando las herramientas, no leyendo los JSON. Las copias del LLM se evalúan
   plataformas. El resto está congelado en `uv.lock`.
 - **SAM corre en CPU** (`DEVICE_SAM = "cpu"`). La máscara no tiene azar, pero varía en algún píxel suelto
   entre CPU y GPU [verificado].
-- **Por qué no basta con fijar versiones:** con las mismas versiones, dos máquinas no dan resultados
-  idénticos bit a bit. Con torch 2.6.0 en las dos, YOLO detecta sujeto en 61 fotos del conjunto de
-  calibración en un Mac y en 60 en el equipo Windows [verificado]. La versión única es una garantía
+- **Por qué no basta con fijar versiones:** con las mismas versiones y los mismos ficheros, dos
+  máquinas no dan resultados idénticos bit a bit: 6 fotos del conjunto de calibración (imagen26, 27,
+  31, 66, 71 y 72) dan variables de líneas distintas en un Mac y en el equipo Windows, y 2 de ellas
+  cambian la decisión del horizonte [verificado, 2026-11-07]. La versión única es una garantía
   adicional; la regla sigue siendo una sola máquina.
+  *Corrección:* la diferencia de YOLO que se citaba aquí (61 fotos con sujeto en el Mac, 60 en
+  Windows) no era del hardware: imagen61 era un fichero distinto en cada máquina (ver §3).
+- **Los ficheros se comprueban antes de medir:** `calibracion.py medir` compara el MD5 de cada foto
+  con su manifiesto y no mide si alguna no coincide.
 
 ---
 
@@ -103,8 +108,19 @@ la reproducibilidad no depende de la calibración.
 
 **Conjunto de calibración.** Son 100 fotos con selección intencional y estratificada: 18 por categoría y
 10 de «otro», con subtipos pensados para abrir y cerrar cada condición (Tabla 13 de la memoria). Tienen
-entre 2,07 y 25,96 MP. Falta **versionar el manifiesto** `experimentos/manifiesto_calibracion.csv`, con
-nombre, MD5, dimensiones, URL y autor [pendiente].
+entre 0,67 y 25,96 MP. El manifiesto `experimentos/manifiesto_calibracion.csv` (generado con
+`manifiesto_calibracion.py`) guarda nombre, MD5 y dimensiones, y el ID, la URL y el autor de Unsplash
+cuando se localizó la descarga original [verificado, 2026-11-07]:
+
+- 88 fotos son idénticas, byte a byte, a su descarga de Unsplash;
+- **imagen54 es una foto derivada:** la conversión a blanco y negro de una foto en color;
+- 11 fotos no tienen original localizado (URL y autor desconocidos).
+
+*Incidencia corregida (2026-11-07):* imagen48, 61, 63 y 81 eran ficheros distintos en el Mac y en
+Windows, y la anotación de aplicabilidad se había hecho sobre las versiones del Mac. Se igualaron las
+dos máquinas: imagen61 e imagen63 quedan con la versión anotada, e imagen48 e imagen81 con la de
+Windows, cuya anotación se comprobó de nuevo. Después se volvió a medir y a revisar la segmentación
+de las fotos afectadas.
 
 **EVA.** No se copian imágenes al repositorio: la ruta va en la configuración. Los pesos del sistema son
 idénticos al checkpoint `fase4_fine_tuning_ligero.pt` del proyecto externo (MD5
