@@ -1,0 +1,244 @@
+{
+  "experimento": "E3",
+  "procedencia": {
+    "fecha": "2026-09-28T19:44:52",
+    "commit": "a32adbf660ce89d5fbbd54ef7ad8e3f0269b64b8",
+    "arbol_limpio": false,
+    "python": "3.12.10",
+    "plataforma": "Windows-11-10.0.26200-SP0",
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "cuda": "12.4",
+    "versiones": {
+      "crewai": "1.15.13",
+      "ultralytics": "8.4.102",
+      "torch": "2.6.0+cu124",
+      "torchvision": "0.21.0+cu124",
+      "opencv-contrib-python": "5.0.0.93",
+      "scikit-learn": "1.9.0",
+      "numpy": "2.4.4",
+      "pandas": "3.0.5",
+      "grad-cam": "1.5.5",
+      "pillow": "12.2.0",
+      "matplotlib": "3.11.0"
+    },
+    "md5": {}
+  },
+  "congelado": true,
+  "commit_ejecuciones": "a32adbf660ce89d5fbbd54ef7ad8e3f0269b64b8",
+  "n_ejecuciones": 100,
+  "n_citas": 3580,
+  "tabla_por_autor": [
+    {
+      "autor": "composicion_espacial",
+      "citas": 511,
+      "citas por ejecución": 5.1,
+      "% campo existente": 100.0,
+      "% exactas": 99.80430528375734,
+      "% truncadas": 0.19569471624266144,
+      "% alteradas": 0.0,
+      "otras": 0,
+      "citas a cerradas": 1,
+      "forma no canónica": 4
+    },
+    {
+      "autor": "lineas_direccion",
+      "citas": 317,
+      "citas por ejecución": 3.2,
+      "% campo existente": 100.0,
+      "% exactas": 99.6845425867508,
+      "% truncadas": 0.31545741324921134,
+      "% alteradas": 0.0,
+      "otras": 0,
+      "citas a cerradas": 1,
+      "forma no canónica": 0
+    },
+    {
+      "autor": "espacio_aislamiento_sujeto",
+      "citas": 332,
+      "citas por ejecución": 3.3,
+      "% campo existente": 100.0,
+      "% exactas": 99.6987951807229,
+      "% truncadas": 0.0,
+      "% alteradas": 0.30120481927710846,
+      "otras": 0,
+      "citas a cerradas": 0,
+      "forma no canónica": 0
+    },
+    {
+      "autor": "luz_tono",
+      "citas": 914,
+      "citas por ejecución": 9.1,
+      "% campo existente": 100.0,
+      "% exactas": 100.0,
+      "% truncadas": 0.0,
+      "% alteradas": 0.0,
+      "otras": 0,
+      "citas a cerradas": 0,
+      "forma no canónica": 0
+    },
+    {
+      "autor": "critico",
+      "citas": 1506,
+      "citas por ejecución": 15.1,
+      "% campo existente": 100.0,
+      "% exactas": 100.0,
+      "% truncadas": 0.0,
+      "% alteradas": 0.0,
+      "otras": 0,
+      "citas a cerradas": 0,
+      "forma no canónica": 43
+    },
+    {
+      "autor": "total",
+      "citas": 3580,
+      "citas por ejecución": 35.8,
+      "% campo existente": 100.0,
+      "% exactas": 99.91620111731844,
+      "% truncadas": 0.055865921787709494,
+      "% alteradas": 0.027932960893854747,
+      "otras": 0,
+      "citas a cerradas": 2,
+      "forma no canónica": 47
+    }
+  ],
+  "tabla_critico": [
+    {
+      "index": "arbitraje_igual_recomputado",
+      "cumple": 97,
+      "n": 100,
+      "%": 97.0,
+      "imágenes que no cumplen": "imagen26, imagen48, imagen99"
+    },
+    {
+      "index": "etiqueta_igual_orquestador",
+      "cumple": 100,
+      "n": 100,
+      "%": 100.0,
+      "imágenes que no cumplen": ""
+    },
+    {
+      "index": "afirmaciones_en_orden",
+      "cumple": 100,
+      "n": 100,
+      "%": 100.0,
+      "imágenes que no cumplen": ""
+    },
+    {
+      "index": "salvedades_suficientes",
+      "cumple": 100,
+      "n": 100,
+      "%": 100.0,
+      "imágenes que no cumplen": ""
+    },
+    {
+      "index": "campos_citados_coherentes",
+      "cumple": 75,
+      "n": 100,
+      "%": 75.0,
+      "imágenes que no cumplen": "imagen1, imagen12, imagen14, imagen15, imagen21, imagen22, imagen24, imagen25, imagen27, imagen28, imagen29, imagen34, imagen39, imagen4, imagen41, imagen46, imagen47, imagen59, imagen72, imagen75, imagen76, imagen85, imagen93, imagen94, imagen96"
+    },
+    {
+      "index": "sintesis_sin_cifras_sueltas",
+      "cumple": 99,
+      "n": 100,
+      "%": 99.0,
+      "imágenes que no cumplen": "imagen85"
+    }
+  ],
+  "fidelidad": {
+    "informes_identicos": 398,
+    "informes": 400,
+    "campos_distintos": [
+      {
+        "tanda": "T100",
+        "rep": 1,
+        "imagen": "imagen15",
+        "dimension": "espacio_aislamiento_sujeto",
+        "campo": "ratio_nitidez.valor",
+        "estado": "distinto",
+        "transcrito": -0.0,
+        "herramienta": -0.6247958386125667
+      },
+      {
+        "tanda": "T100",
+        "rep": 1,
+        "imagen": "imagen43",
+        "dimension": "composicion_espacial",
+        "campo": "coord_p_cercano",
+        "estado": "distinto",
+        "transcrito": [
+          0.0,
+          0.6666666666666666
+        ],
+        "herramienta": [
+          0.6666666666666666,
+          0.6666666666666666
+        ]
+      }
+    ]
+  },
+  "fallos": [
+    {
+      "tanda": "T100",
+      "rep": 1,
+      "imagen": "imagen49",
+      "intento": 1,
+      "salidas_que_faltan": "salida_critica.json",
+      "motivo": "pydantic_core._pydantic_core.ValidationError: 1 validation error for CriticaCompositiva · tensiones.0.dimensiones · List should have at least 2 items after validation, not 1 [type=too_short, input_value=['composicion_espacial'], input_type=list]",
+      "coste_usd": 0.13324260000000002
+    },
+    {
+      "tanda": "T100",
+      "rep": 1,
+      "imagen": "imagen77",
+      "intento": 1,
+      "salidas_que_faltan": "salida_critica.json",
+      "motivo": "pydantic_core._pydantic_core.ValidationError: 1 validation error for CriticaCompositiva · tensiones.0.dimensiones · List should have at least 2 items after validation, not 1 [type=too_short, input_value=['composicion_espacial'], input_type=list]",
+      "coste_usd": 0.1382422
+    },
+    {
+      "tanda": "T100",
+      "rep": 1,
+      "imagen": "imagen9",
+      "intento": 1,
+      "salidas_que_faltan": "salida_critica.json",
+      "motivo": "pydantic_core._pydantic_core.ValidationError: 1 validation error for CriticaCompositiva · afirmaciones.2.campos_citados · List should have at least 1 item after validation, not 0 [type=too_short, input_value=[], input_type=list]",
+      "coste_usd": 0.11344649999999999
+    },
+    {
+      "tanda": "R",
+      "rep": 2,
+      "imagen": "imagen35",
+      "intento": 1,
+      "salidas_que_faltan": "salida_critica.json",
+      "motivo": "pydantic_core._pydantic_core.ValidationError: 1 validation error for CriticaCompositiva · tensiones.0.dimensiones · List should have at least 2 items after validation, not 1 [type=too_short, input_value=['composicion_espacial'], input_type=list]",
+      "coste_usd": 0.136624
+    }
+  ],
+  "criterio": {
+    "por_criterio": [
+      {
+        "criterio": "Citas a métricas cerradas",
+        "sentido": "<=",
+        "umbral": 0,
+        "valor": 2.0,
+        "resultado": "no"
+      },
+      {
+        "criterio": "% de citas exactas",
+        "sentido": ">=",
+        "umbral": 95,
+        "valor": 99.92,
+        "resultado": "sí"
+      },
+      {
+        "criterio": "% de críticas con afirmaciones en orden",
+        "sentido": ">=",
+        "umbral": 100,
+        "valor": 100.0,
+        "resultado": "sí"
+      }
+    ],
+    "global": "no"
+  }
+}

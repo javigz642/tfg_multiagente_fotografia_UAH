@@ -1,0 +1,100 @@
+# Configuración de los experimentos de los capítulos 8 y 9 (ver experimentos.md).
+#
+# Regla: los criterios de éxito se fijan AQUÍ antes de ejecutar y no se cambian después de
+# ver los resultados. Un criterio a `null` está pendiente de fijar y el notebook lo informa
+# como «pendiente», nunca como cumplido.
+
+# Rutas relativas a la raíz del repositorio (o absolutas).
+rutas:
+  eva_proyecto: ../Curso_CNN_FineTunning/clasificador_contexto   # splits y métricas de la fase 5
+  eva_imagenes: ../Curso_CNN_FineTunning/EVA_together            # {image_id}.jpg
+  corpus_C2: data                                                # imagen{1..100}.jpg
+  anotaciones: experimentos/anotaciones
+  resultados: experimentos/resultados
+  tandas: outputs/experimentos                                   # {tanda}/{rep}/{stem}/
+
+semilla: 42
+
+# Subconjunto fijo de C2 para la reproducibilidad (E4c). 00_preparacion propone una selección
+# estratificada por contexto (A1) y por fuente de la percepción; se pega aquí antes de congelar.
+# Versión acotada (experimentos.md §15): R = 5 imágenes y sin tanda V20.
+seleccion:
+  R_por_contexto: 1      # R: 1 x 5 contextos = 5 imágenes, 3 repeticiones cada una
+listas:
+  # Propuesta de 00_preparacion §6 (semilla 42), fijada el 2026-09-28: un contexto de A1 cada una.
+  R: [imagen62, imagen9, imagen35, imagen86, imagen50]
+
+# Tandas con API que lanza experimentos/ejecutar_lote.py. `imagenes`: "C2" (las 100), el nombre de
+# una lista de `listas:` o una lista explícita. `lectura_visual`: "nueva" borra la lectura guardada
+# antes de ejecutar (se genera y se miden sus tokens); "cache" reutiliza la que haya.
+tandas:
+  # piloto: medir el coste por imagen antes de las tandas (una con sujeto de YOLO y otra sin él).
+  piloto: {imagenes: [imagen1, imagen6], repeticiones: 1, lectura_visual: nueva, requiere_congelacion: false}
+  T100: {imagenes: C2, repeticiones: 1, lectura_visual: nueva, requiere_congelacion: true}
+  R: {imagenes: R, repeticiones: 3, lectura_visual: cache, requiere_congelacion: true}
+
+# Precios de la API en USD por millón de tokens (nivel de pago, modo estándar), para E4b y para el
+# tope de gasto del lanzador. Los tokens de razonamiento ("thinking") se cobran como salida. En Pro
+# se usa el tramo de instrucciones <= 200.000 tokens (ninguna llamada del sistema lo supera).
+precios:
+  fecha_consulta: "2026-09-28"
+  fuente: https://ai.google.dev/gemini-api/docs/pricing
+  # Tipo de cambio para pasar a euros. 1.0 es una cota conservadora (1 USD = 1 EUR sobreestima el
+  # gasto en euros); el coste real se contrasta con el panel de gasto de Google AI Studio.
+  usd_por_eur: 1.0
+  modelos:
+    gemini-2.5-flash: {entrada: 0.30, salida: 2.50}
+    gemini-2.5-pro: {entrada: 1.25, salida: 10.00}
+
+E1:
+  # Curva riesgo-cobertura: umbrales de inicio a fin (ambos incluidos).
+  curva_umbrales: {inicio: 0.50, fin: 0.99, paso: 0.01}
+  # Umbrales del análisis de ganancia marginal de la fase 5 (celdas 18 y 19).
+  umbrales_ganancia_marginal: [0.70, 0.75, 0.80, 0.85, 0.90, 0.95]
+
+  # Valores medidos en la fase 5 del proyecto externo. Sirven como comprobación de
+  # integridad: si E1a no los reproduce, algo ha cambiado (pesos, transform, splits).
+  referencia:
+    md5_pesos: 20ce2c480390ccf0a06f3e67bb1225ca
+    n_C1: 725
+    n_O: 273
+    n_val: 725
+    exactitud_C1: 0.8510
+    matriz_C1: [[125, 0, 5, 5, 1], [0, 122, 15, 6, 0], [1, 11, 132, 5, 3], [7, 18, 8, 103, 3], [3, 3, 4, 10, 135]]
+    C1_rechazado_pct: 27.4
+    O_rechazado_pct: 64.8
+
+  # Par de clases para Grad-CAM (el más confundido en C1: producto -> arquitectura).
+  gradcam_par: {verdadera: producto-still_life, confundida: arquitectura}
+
+  criterios:
+    # Criterio del índice. Es DESCRIPTIVO: la F1 mínima (0,7687) ya se conocía (experimentos.md §4.2-4).
+    f1_min_por_clase_C1: 0.75
+    # Criterios sobre C2, fijados el 2026-09-27 ANTES de anotar A1.
+    exactitud_aceptadas_min_C2: 0.85   # fracción
+    pct_otro_max_C2: 20                # porcentaje
+
+E2:
+  # Definición de «la regla aplica» con la que se evalúa el criterio (anotaciones/GUIA_ANOTACION.md).
+  # La otra definición se informa, pero no decide. Fijarla antes de anotar.
+  definicion_criterio: estricta
+  criterios:
+    # Criterio del índice: ningún falso positivo (métrica abierta cuando la regla no aplica) en
+    # ninguno de los 6 gates. Antes de ejecutar hay que decidir si se corrigen los falsos positivos
+    # conocidos (experimentos.md §4.2-7); no vale cambiarlo después de ver el resultado.
+    # Decisión del 2026-09-27: NO se corrigen (no se añade el gate de relleno); si hay falsos
+    # positivos, se informan tal cual y se discuten como limitación.
+    fp_max_por_gate: 0
+
+E3:
+  criterios:
+    # Criterios del índice (experimentos.md §6.3). «En orden» se comprueba sobre `afirmaciones`.
+    citas_a_cerradas_max: 0
+    pct_citas_exactas_min: 95
+    pct_criticas_en_orden_min: 100
+
+E4:
+  criterios:
+    # «Informes idénticos»: el informe transcrito por el LLM coincide con el de la herramienta, y el
+    # arbitraje coincide entre las 3 repeticiones de R (experimentos.md §6.4 y §15).
+    pct_informes_identicos_min: 100

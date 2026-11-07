@@ -1,0 +1,6 @@
+conjunto,descripción,n,experimentos
+C1,Prueba de EVA (test.csv),725,"E1a, E1b"
+O,"other de EVA (otro.csv, sort = 6), near-OOD",273,"E1b, E1c"
+val,Validación de EVA (val.csv),725,E1c (control del umbral)
+C2,Corpus de desarrollo (data/),100,"E1d, E2, E3, E4b"
+R,Subconjunto de C2 × 3 repeticiones,5,E4c

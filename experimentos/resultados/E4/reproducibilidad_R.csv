@@ -1,0 +1,6 @@
+imagen,contexto,informes idénticos a la herramienta,arbitraje idéntico en las 3,etiqueta idéntica en las 3,citas por ejecución,% exactas,Jaccard composicion_espacial,Jaccard lineas_direccion,Jaccard espacio_aislamiento_sujeto,Jaccard luz_tono,Jaccard critico
+imagen62,animal,11/12,True,True,37.7,100.0,0.324,1.0,0.556,0.926,0.295
+imagen9,arquitectura,12/12,True,True,30.0,98.9,1.0,1.0,1.0,0.558,0.159
+imagen35,paisaje,12/12,True,True,46.3,100.0,0.704,0.508,1.0,1.0,0.537
+imagen86,producto-still_life,12/12,True,True,48.0,100.0,0.704,0.706,1.0,0.939,0.274
+imagen50,retrato-humano,12/12,False,True,37.3,100.0,0.492,1.0,1.0,1.0,0.176

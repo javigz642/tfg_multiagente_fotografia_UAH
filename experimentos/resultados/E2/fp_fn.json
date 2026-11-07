@@ -1,0 +1,362 @@
+{
+  "esquema_cromatico/estricta": {
+    "imagenes_FP": [
+      "imagen3"
+    ],
+    "imagenes_FN": [],
+    "imagenes_dudosas": [
+      "imagen28",
+      "imagen99"
+    ]
+  },
+  "esquema_cromatico/amplia": {
+    "imagenes_FP": [
+      "imagen3"
+    ],
+    "imagenes_FN": [],
+    "imagenes_dudosas": [
+      "imagen28",
+      "imagen99"
+    ]
+  },
+  "angulo_horizonte/estricta": {
+    "imagenes_FP": [
+      "imagen5",
+      "imagen6",
+      "imagen7",
+      "imagen8",
+      "imagen9",
+      "imagen15",
+      "imagen29",
+      "imagen33",
+      "imagen40",
+      "imagen42",
+      "imagen45",
+      "imagen60",
+      "imagen63",
+      "imagen70",
+      "imagen71",
+      "imagen77",
+      "imagen95"
+    ],
+    "imagenes_FN": [
+      "imagen23",
+      "imagen27",
+      "imagen28",
+      "imagen36",
+      "imagen44",
+      "imagen50",
+      "imagen58",
+      "imagen62",
+      "imagen64",
+      "imagen97"
+    ],
+    "imagenes_dudosas": [
+      "imagen54"
+    ]
+  },
+  "angulo_horizonte/amplia": {
+    "imagenes_FP": [
+      "imagen5",
+      "imagen6",
+      "imagen7",
+      "imagen8",
+      "imagen9",
+      "imagen15",
+      "imagen29",
+      "imagen33",
+      "imagen40",
+      "imagen42",
+      "imagen45",
+      "imagen60",
+      "imagen63",
+      "imagen70",
+      "imagen71",
+      "imagen77",
+      "imagen95"
+    ],
+    "imagenes_FN": [
+      "imagen23",
+      "imagen27",
+      "imagen28",
+      "imagen36",
+      "imagen44",
+      "imagen50",
+      "imagen58",
+      "imagen62",
+      "imagen64",
+      "imagen97"
+    ],
+    "imagenes_dudosas": [
+      "imagen54"
+    ]
+  },
+  "score_convergencia/estricta": {
+    "imagenes_FP": [
+      "imagen6",
+      "imagen7",
+      "imagen8",
+      "imagen14",
+      "imagen35",
+      "imagen37",
+      "imagen42",
+      "imagen51",
+      "imagen59",
+      "imagen67",
+      "imagen85",
+      "imagen86",
+      "imagen94"
+    ],
+    "imagenes_FN": [
+      "imagen2",
+      "imagen10",
+      "imagen11",
+      "imagen18"
+    ],
+    "imagenes_dudosas": [
+      "imagen12"
+    ]
+  },
+  "score_convergencia/amplia": {
+    "imagenes_FP": [
+      "imagen6",
+      "imagen7",
+      "imagen8",
+      "imagen14",
+      "imagen35",
+      "imagen37",
+      "imagen42",
+      "imagen51",
+      "imagen59",
+      "imagen67",
+      "imagen85",
+      "imagen86",
+      "imagen94"
+    ],
+    "imagenes_FN": [
+      "imagen2",
+      "imagen10",
+      "imagen11",
+      "imagen18"
+    ],
+    "imagenes_dudosas": [
+      "imagen12"
+    ]
+  },
+  "espacio/estricta": {
+    "imagenes_FP": [
+      "imagen6",
+      "imagen8",
+      "imagen51",
+      "imagen85",
+      "imagen86"
+    ],
+    "imagenes_FN": [
+      "imagen16",
+      "imagen27",
+      "imagen33",
+      "imagen34",
+      "imagen61",
+      "imagen66",
+      "imagen72",
+      "imagen76",
+      "imagen87",
+      "imagen88",
+      "imagen96"
+    ],
+    "imagenes_dudosas": [
+      "imagen15"
+    ]
+  },
+  "espacio/amplia": {
+    "imagenes_FP": [
+      "imagen6",
+      "imagen8",
+      "imagen14",
+      "imagen37",
+      "imagen40",
+      "imagen42",
+      "imagen43",
+      "imagen45",
+      "imagen49",
+      "imagen50",
+      "imagen51",
+      "imagen56",
+      "imagen57",
+      "imagen58",
+      "imagen60",
+      "imagen62",
+      "imagen63",
+      "imagen65",
+      "imagen69",
+      "imagen71",
+      "imagen73",
+      "imagen77",
+      "imagen82",
+      "imagen83",
+      "imagen84",
+      "imagen85",
+      "imagen86",
+      "imagen89",
+      "imagen93",
+      "imagen95",
+      "imagen98"
+    ],
+    "imagenes_FN": [
+      "imagen16",
+      "imagen27",
+      "imagen33",
+      "imagen34",
+      "imagen61",
+      "imagen66",
+      "imagen72",
+      "imagen76",
+      "imagen87",
+      "imagen88",
+      "imagen96"
+    ],
+    "imagenes_dudosas": [
+      "imagen15"
+    ]
+  },
+  "nitidez/estricta": {
+    "imagenes_FP": [
+      "imagen6",
+      "imagen8",
+      "imagen51",
+      "imagen85",
+      "imagen86"
+    ],
+    "imagenes_FN": [
+      "imagen16",
+      "imagen27",
+      "imagen33",
+      "imagen34",
+      "imagen48",
+      "imagen61",
+      "imagen66",
+      "imagen72",
+      "imagen75",
+      "imagen76",
+      "imagen79",
+      "imagen80",
+      "imagen82",
+      "imagen87",
+      "imagen88",
+      "imagen96"
+    ],
+    "imagenes_dudosas": [
+      "imagen15"
+    ]
+  },
+  "nitidez/amplia": {
+    "imagenes_FP": [
+      "imagen6",
+      "imagen8",
+      "imagen14",
+      "imagen37",
+      "imagen40",
+      "imagen42",
+      "imagen43",
+      "imagen45",
+      "imagen49",
+      "imagen50",
+      "imagen51",
+      "imagen56",
+      "imagen57",
+      "imagen58",
+      "imagen60",
+      "imagen62",
+      "imagen63",
+      "imagen65",
+      "imagen69",
+      "imagen71",
+      "imagen73",
+      "imagen77",
+      "imagen83",
+      "imagen84",
+      "imagen85",
+      "imagen86",
+      "imagen89",
+      "imagen93",
+      "imagen95",
+      "imagen98"
+    ],
+    "imagenes_FN": [
+      "imagen16",
+      "imagen27",
+      "imagen33",
+      "imagen34",
+      "imagen48",
+      "imagen61",
+      "imagen66",
+      "imagen72",
+      "imagen75",
+      "imagen76",
+      "imagen79",
+      "imagen80",
+      "imagen87",
+      "imagen88",
+      "imagen96"
+    ],
+    "imagenes_dudosas": [
+      "imagen15"
+    ]
+  },
+  "composicion/estricta": {
+    "imagenes_FP": [
+      "imagen6",
+      "imagen8",
+      "imagen77",
+      "imagen84",
+      "imagen85",
+      "imagen86",
+      "imagen93",
+      "imagen99"
+    ],
+    "imagenes_FN": [
+      "imagen16",
+      "imagen27",
+      "imagen33",
+      "imagen34",
+      "imagen61",
+      "imagen66",
+      "imagen72",
+      "imagen76",
+      "imagen87",
+      "imagen88",
+      "imagen96"
+    ],
+    "imagenes_dudosas": [
+      "imagen15"
+    ]
+  },
+  "composicion/amplia": {
+    "imagenes_FP": [
+      "imagen6",
+      "imagen8",
+      "imagen77",
+      "imagen84",
+      "imagen85",
+      "imagen86",
+      "imagen93",
+      "imagen99"
+    ],
+    "imagenes_FN": [
+      "imagen16",
+      "imagen27",
+      "imagen33",
+      "imagen34",
+      "imagen61",
+      "imagen66",
+      "imagen72",
+      "imagen76",
+      "imagen87",
+      "imagen88",
+      "imagen96"
+    ],
+    "imagenes_dudosas": [
+      "imagen15"
+    ]
+  }
+}

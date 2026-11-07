@@ -1,0 +1,264 @@
+{
+  "experimento": "E4",
+  "procedencia": {
+    "fecha": "2026-09-28T19:44:52",
+    "commit": "a32adbf660ce89d5fbbd54ef7ad8e3f0269b64b8",
+    "arbol_limpio": false,
+    "python": "3.12.10",
+    "plataforma": "Windows-11-10.0.26200-SP0",
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "cuda": "12.4",
+    "versiones": {
+      "crewai": "1.15.13",
+      "ultralytics": "8.4.102",
+      "torch": "2.6.0+cu124",
+      "torchvision": "0.21.0+cu124",
+      "opencv-contrib-python": "5.0.0.93",
+      "scikit-learn": "1.9.0",
+      "numpy": "2.4.4",
+      "pandas": "3.0.5",
+      "grad-cam": "1.5.5",
+      "pillow": "12.2.0",
+      "matplotlib": "3.11.0"
+    },
+    "md5": {}
+  },
+  "congelado": true,
+  "commit_ejecuciones": "a32adbf660ce89d5fbbd54ef7ad8e3f0269b64b8",
+  "precios": {
+    "fecha_consulta": "2026-09-28",
+    "fuente": "https://ai.google.dev/gemini-api/docs/pricing",
+    "usd_por_eur": 1.0,
+    "modelos": {
+      "gemini-2.5-flash": {
+        "entrada": 0.3,
+        "salida": 2.5
+      },
+      "gemini-2.5-pro": {
+        "entrada": 1.25,
+        "salida": 10.0
+      }
+    }
+  },
+  "latencia": [
+    {
+      "index": "total (s)",
+      "media": 100.70540816326532,
+      "mediana": 97.58500000000001,
+      "p95": 125.79199999999997,
+      "mín": 73.07,
+      "máx": 195.05
+    },
+    {
+      "index": "orquestador (s)",
+      "media": 13.445408163265304,
+      "mediana": 12.745000000000001,
+      "p95": 20.53349999999999,
+      "mín": 8.28,
+      "máx": 25.22
+    },
+    {
+      "index": "nivel 2 (s)",
+      "media": 34.43489795918367,
+      "mediana": 31.450000000000003,
+      "p95": 54.546999999999926,
+      "mín": 19.26,
+      "máx": 113.16
+    },
+    {
+      "index": "crítico (s)",
+      "media": 52.809387755102044,
+      "mediana": 52.585,
+      "p95": 67.015,
+      "mín": 30.679999999999993,
+      "máx": 72.38999999999999
+    }
+  ],
+  "tokens_coste": [
+    {
+      "index": "orquestador",
+      "entrada (media)": 5330.54,
+      "salida con razonamiento (media)": 1031.63,
+      "de ella, razonamiento": 653.47,
+      "USD por imagen (media)": 0.0041782370000000004,
+      "% del coste": 3.1128367360682727
+    },
+    {
+      "index": "composición",
+      "entrada (media)": 15568.14,
+      "salida con razonamiento (media)": 3901.99,
+      "de ella, razonamiento": 2835.3,
+      "USD por imagen (media)": 0.014425417000000001,
+      "% del coste": 10.747108881258715
+    },
+    {
+      "index": "líneas",
+      "entrada (media)": 15774.53,
+      "salida con razonamiento (media)": 2261.69,
+      "de ella, razonamiento": 1676.36,
+      "USD por imagen (media)": 0.010386583999999999,
+      "% del coste": 7.738129799113582
+    },
+    {
+      "index": "luz y tono",
+      "entrada (media)": 19163.69,
+      "salida con razonamiento (media)": 3073.76,
+      "de ella, razonamiento": 2314.56,
+      "USD por imagen (media)": 0.013433507,
+      "% del coste": 10.0081240206887
+    },
+    {
+      "index": "espacio",
+      "entrada (media)": 18489.18,
+      "salida con razonamiento (media)": 2638.47,
+      "de ella, razonamiento": 2028.8,
+      "USD por imagen (media)": 0.012142928999999998,
+      "% del coste": 9.046627913799233
+    },
+    {
+      "index": "crítico",
+      "entrada (media)": 22571.65,
+      "salida con razonamiento (media)": 4908.7,
+      "de ella, razonamiento": 3226.16,
+      "USD por imagen (media)": 0.0773015625,
+      "% del coste": 57.59059227743126
+    },
+    {
+      "index": "lectura",
+      "entrada (media)": 744.96,
+      "salida con razonamiento (media)": 853.72,
+      "de ella, razonamiento": 0.0,
+      "USD por imagen (media)": 0.002357788,
+      "% del coste": 1.7565803716402253
+    },
+    {
+      "index": "total",
+      "entrada (media)": 97642.68999999999,
+      "salida con razonamiento (media)": 18669.96,
+      "de ella, razonamiento": 12734.65,
+      "USD por imagen (media)": 0.1342260245,
+      "% del coste": 99.99999999999999
+    }
+  ],
+  "coste": {
+    "usd_por_imagen_media": 0.13422602449999999,
+    "usd_por_imagen_mediana": 0.13524225,
+    "usd_por_imagen_p95": 0.15235775750000002,
+    "eur_por_imagen_media": 0.13422602449999999,
+    "gasto_T100_usd_incluidos_fallidos": 13.807533750000003,
+    "gasto_fallidos_usd": 0.38493130000000003,
+    "vram_pico_mb_max": 375.1,
+    "vram_pico_mb_mediana": 341.55,
+    "fallos_primer_intento": 3,
+    "n_imagenes": 100
+  },
+  "reproducibilidad": {
+    "lista_R": [
+      "imagen62",
+      "imagen9",
+      "imagen35",
+      "imagen86",
+      "imagen50"
+    ],
+    "pct_informes_identicos": 98.33333333333333,
+    "pct_arbitraje_identico": 80.0,
+    "jaccard_medio": {
+      "Jaccard composicion_espacial": 0.6448,
+      "Jaccard lineas_direccion": 0.8428000000000001,
+      "Jaccard espacio_aislamiento_sujeto": 0.9112,
+      "Jaccard luz_tono": 0.8846,
+      "Jaccard critico": 0.2882
+    },
+    "por_imagen": [
+      {
+        "imagen": "imagen62",
+        "contexto": "animal",
+        "informes idénticos a la herramienta": "11/12",
+        "arbitraje idéntico en las 3": true,
+        "etiqueta idéntica en las 3": true,
+        "citas por ejecución": 37.7,
+        "% exactas": 100.0,
+        "Jaccard composicion_espacial": 0.324,
+        "Jaccard lineas_direccion": 1.0,
+        "Jaccard espacio_aislamiento_sujeto": 0.556,
+        "Jaccard luz_tono": 0.926,
+        "Jaccard critico": 0.295
+      },
+      {
+        "imagen": "imagen9",
+        "contexto": "arquitectura",
+        "informes idénticos a la herramienta": "12/12",
+        "arbitraje idéntico en las 3": true,
+        "etiqueta idéntica en las 3": true,
+        "citas por ejecución": 30.0,
+        "% exactas": 98.9,
+        "Jaccard composicion_espacial": 1.0,
+        "Jaccard lineas_direccion": 1.0,
+        "Jaccard espacio_aislamiento_sujeto": 1.0,
+        "Jaccard luz_tono": 0.558,
+        "Jaccard critico": 0.159
+      },
+      {
+        "imagen": "imagen35",
+        "contexto": "paisaje",
+        "informes idénticos a la herramienta": "12/12",
+        "arbitraje idéntico en las 3": true,
+        "etiqueta idéntica en las 3": true,
+        "citas por ejecución": 46.3,
+        "% exactas": 100.0,
+        "Jaccard composicion_espacial": 0.704,
+        "Jaccard lineas_direccion": 0.508,
+        "Jaccard espacio_aislamiento_sujeto": 1.0,
+        "Jaccard luz_tono": 1.0,
+        "Jaccard critico": 0.537
+      },
+      {
+        "imagen": "imagen86",
+        "contexto": "producto-still_life",
+        "informes idénticos a la herramienta": "12/12",
+        "arbitraje idéntico en las 3": true,
+        "etiqueta idéntica en las 3": true,
+        "citas por ejecución": 48.0,
+        "% exactas": 100.0,
+        "Jaccard composicion_espacial": 0.704,
+        "Jaccard lineas_direccion": 0.706,
+        "Jaccard espacio_aislamiento_sujeto": 1.0,
+        "Jaccard luz_tono": 0.939,
+        "Jaccard critico": 0.274
+      },
+      {
+        "imagen": "imagen50",
+        "contexto": "retrato-humano",
+        "informes idénticos a la herramienta": "12/12",
+        "arbitraje idéntico en las 3": false,
+        "etiqueta idéntica en las 3": true,
+        "citas por ejecución": 37.3,
+        "% exactas": 100.0,
+        "Jaccard composicion_espacial": 0.492,
+        "Jaccard lineas_direccion": 1.0,
+        "Jaccard espacio_aislamiento_sujeto": 1.0,
+        "Jaccard luz_tono": 1.0,
+        "Jaccard critico": 0.176
+      }
+    ]
+  },
+  "criterio": {
+    "por_criterio": [
+      {
+        "criterio": "% de informes transcritos idénticos a la herramienta (R)",
+        "sentido": ">=",
+        "umbral": 100,
+        "valor": 98.33,
+        "resultado": "no"
+      },
+      {
+        "criterio": "% de imágenes de R con arbitraje idéntico en las 3 repeticiones",
+        "sentido": ">=",
+        "umbral": 100,
+        "valor": 80.0,
+        "resultado": "no"
+      }
+    ],
+    "global": "no"
+  }
+}

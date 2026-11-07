@@ -1,0 +1,6 @@
+imagen,autor,bloque,ruta,escrito,real,clase,a_cerrada
+imagen12,composicion_espacial,diagnostico,coord_centroide,"(0.3464, 0.7167)","[0.3463541666666667, 0.7166666666666667]",exacta,True
+imagen15,espacio_aislamiento_sujeto,diagnostico,ratio_nitidez.valor,-0.6248,-0.0,alterada,False
+imagen61,lineas_direccion,diagnostico,apertura_haz,21.57,21.57130719125459,exacta,True
+imagen7,lineas_direccion,diagnostico,score_convergencia.valor,0.3809,0.38095238095238093,truncada,False
+imagen70,composicion_espacial,diagnostico,coord_centro_masa,"(0.5816, 0.6219)","[0.5816182290922269, 0.6219537988413446]",truncada,False

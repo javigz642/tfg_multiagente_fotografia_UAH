@@ -1,0 +1,18 @@
+,n,%
+imágenes,100,100.0
+megapíxeles (mín / mediana / máx),2.07 / 4.79 / 25.96,
+orientación: vertical,53,53.0
+orientación: horizontal,43,43.0
+orientación: cuadrada,4,4.0
+fuente de la percepción: yolo,60,60.0
+fuente de la percepción: saliencia,40,40.0
+contexto A1 (100/100 anotadas): animal,19,19.0
+contexto A1 (100/100 anotadas): arquitectura,18,18.0
+contexto A1 (100/100 anotadas): paisaje,18,18.0
+contexto A1 (100/100 anotadas): retrato-humano,18,18.0
+contexto A1 (100/100 anotadas): producto-still_life,18,18.0
+contexto A1 (100/100 anotadas): otro,9,9.0
+caso límite: B/N o sin color (color_analizable = no) (100/100 anotadas),21,21.0
+caso límite: sin sujeto (sin_sujeto = si) (100/100 anotadas),33,33.0
+caso límite: horizonte natural (100/100 anotadas),19,19.0
+caso límite: perspectiva (100/100 anotadas),16,16.0

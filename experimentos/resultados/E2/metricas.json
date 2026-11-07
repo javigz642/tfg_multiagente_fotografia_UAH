@@ -1,0 +1,820 @@
+{
+  "experimento": "E2",
+  "procedencia": {
+    "fecha": "2026-09-28T11:54:39",
+    "commit": "a32adbf660ce89d5fbbd54ef7ad8e3f0269b64b8",
+    "arbol_limpio": true,
+    "python": "3.12.10",
+    "plataforma": "Windows-11-10.0.26200-SP0",
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "cuda": "12.4",
+    "versiones": {
+      "crewai": "1.15.13",
+      "ultralytics": "8.4.102",
+      "torch": "2.6.0+cu124",
+      "torchvision": "0.21.0+cu124",
+      "opencv-contrib-python": "5.0.0.93",
+      "scikit-learn": "1.9.0",
+      "numpy": "2.4.4",
+      "pandas": "3.0.5",
+      "grad-cam": "1.5.5",
+      "pillow": "12.2.0",
+      "matplotlib": "3.11.0"
+    },
+    "md5": {}
+  },
+  "congelado": true,
+  "cache_gates": {
+    "fecha": "2026-09-27T13:07:55",
+    "commit": "27c1289bca1bdd2f2861b1a87a9a55371ccbfe25",
+    "segundos": 413.3
+  },
+  "cache_percepcion": {
+    "fecha": "2026-09-27T12:52:06",
+    "commit": "27c1289bca1bdd2f2861b1a87a9a55371ccbfe25"
+  },
+  "umbrales": {
+    "RATIO_CROMATICO_MIN": 0.09,
+    "LONGITUD_MIN_HORIZONTE": 0.13,
+    "ANGULO_MAX_HORIZONTE": 10.0,
+    "MIN_LINEAS_FUGA": 2,
+    "APERTURA_MIN_GRADOS": 35.0,
+    "VAR_LAPLACIANO_MIN": 50.0,
+    "FUENTE_CON_IDENTIDAD": "yolo"
+  },
+  "tabla1": {
+    "abiertas": [
+      {
+        "metrica": "esquema_cromatico",
+        "gate": "esquema_cromatico",
+        "abiertas": 80,
+        "n": 100,
+        "%": 80.0,
+        "IC95 inf": 71.11690380734977,
+        "IC95 sup": 86.66340774409012
+      },
+      {
+        "metrica": "angulo_horizonte",
+        "gate": "angulo_horizonte",
+        "abiertas": 26,
+        "n": 100,
+        "%": 26.0,
+        "IC95 inf": 18.40457812698646,
+        "IC95 sup": 35.37117263186163
+      },
+      {
+        "metrica": "score_convergencia",
+        "gate": "score_convergencia",
+        "abiertas": 25,
+        "n": 100,
+        "%": 25.0,
+        "IC95 inf": 17.54509400372426,
+        "IC95 sup": 34.30464637007583
+      },
+      {
+        "metrica": "ratio_espacio_negativo",
+        "gate": "espacio",
+        "abiertas": 60,
+        "n": 100,
+        "%": 60.0,
+        "IC95 inf": 50.20007846184025,
+        "IC95 sup": 69.06002538863972
+      },
+      {
+        "metrica": "ratio_nitidez",
+        "gate": "nitidez",
+        "abiertas": 55,
+        "n": 100,
+        "%": 55.0,
+        "IC95 inf": 45.24442703164345,
+        "IC95 sup": 64.38562489359654
+      },
+      {
+        "metrica": "d_tercios",
+        "gate": "composicion",
+        "abiertas": 60,
+        "n": 100,
+        "%": 60.0,
+        "IC95 inf": 50.20007846184025,
+        "IC95 sup": 69.06002538863972
+      },
+      {
+        "metrica": "d_centro",
+        "gate": "composicion",
+        "abiertas": 60,
+        "n": 100,
+        "%": 60.0,
+        "IC95 inf": 50.20007846184025,
+        "IC95 sup": 69.06002538863972
+      },
+      {
+        "metrica": "patron_dominante",
+        "gate": "composicion",
+        "abiertas": 60,
+        "n": 100,
+        "%": 60.0,
+        "IC95 inf": 50.20007846184025,
+        "IC95 sup": 69.06002538863972
+      },
+      {
+        "metrica": "media_L",
+        "gate": "(sin gate)",
+        "abiertas": 100,
+        "n": 100,
+        "%": 100.0,
+        "IC95 inf": 96.30051925239981,
+        "IC95 sup": 99.99999999999999
+      },
+      {
+        "metrica": "d_equilibrio",
+        "gate": "(sin gate)",
+        "abiertas": 100,
+        "n": 100,
+        "%": 100.0,
+        "IC95 inf": 96.30051925239981,
+        "IC95 sup": 99.99999999999999
+      }
+    ],
+    "fuente": {
+      "yolo": 60,
+      "saliencia": 40,
+      "sin_sujeto_claro": 0
+    },
+    "cobertura_media": {
+      "composicion_espacial": 0.7,
+      "lineas_direccion": 0.255,
+      "espacio_aislamiento_sujeto": 0.575,
+      "luz_tono": 0.9
+    },
+    "motivos": {
+      "esquema_cromatico": {
+        "abierta": 80,
+        "demasiado inclinado": 0,
+        "fragmento corto": 0,
+        "haz casi paralelo": 0,
+        "no supera el azar": 0,
+        "pocas líneas": 0,
+        "sin candidatos": 0,
+        "sin color analizable": 20,
+        "sin identidad (saliencia)": 0,
+        "sin textura": 0
+      },
+      "angulo_horizonte": {
+        "abierta": 26,
+        "demasiado inclinado": 4,
+        "fragmento corto": 58,
+        "haz casi paralelo": 0,
+        "no supera el azar": 0,
+        "pocas líneas": 0,
+        "sin candidatos": 12,
+        "sin color analizable": 0,
+        "sin identidad (saliencia)": 0,
+        "sin textura": 0
+      },
+      "score_convergencia": {
+        "abierta": 25,
+        "demasiado inclinado": 0,
+        "fragmento corto": 0,
+        "haz casi paralelo": 26,
+        "no supera el azar": 31,
+        "pocas líneas": 18,
+        "sin candidatos": 0,
+        "sin color analizable": 0,
+        "sin identidad (saliencia)": 0,
+        "sin textura": 0
+      },
+      "espacio": {
+        "abierta": 60,
+        "demasiado inclinado": 0,
+        "fragmento corto": 0,
+        "haz casi paralelo": 0,
+        "no supera el azar": 0,
+        "pocas líneas": 0,
+        "sin candidatos": 0,
+        "sin color analizable": 0,
+        "sin identidad (saliencia)": 40,
+        "sin textura": 0
+      },
+      "nitidez": {
+        "abierta": 55,
+        "demasiado inclinado": 0,
+        "fragmento corto": 0,
+        "haz casi paralelo": 0,
+        "no supera el azar": 0,
+        "pocas líneas": 0,
+        "sin candidatos": 0,
+        "sin color analizable": 0,
+        "sin identidad (saliencia)": 40,
+        "sin textura": 5
+      },
+      "composicion": {
+        "abierta": 60,
+        "demasiado inclinado": 0,
+        "fragmento corto": 0,
+        "haz casi paralelo": 0,
+        "no supera el azar": 0,
+        "pocas líneas": 0,
+        "sin candidatos": 0,
+        "sin color analizable": 0,
+        "sin identidad (saliencia)": 40,
+        "sin textura": 0
+      }
+    }
+  },
+  "tabla2": [
+    {
+      "gate": "esquema_cromatico",
+      "definicion": "estricta",
+      "n_evaluables": 98,
+      "n_dudosas": 2,
+      "VP": 77,
+      "FP": 1,
+      "FN": 0,
+      "VN": 20,
+      "tasa_FP": 0.047619047619047616,
+      "tasa_FP_IC95": [
+        0.008455769471923294,
+        0.22669816586235464
+      ],
+      "FP_entre_abiertas": 0.01282051282051282,
+      "tasa_FN": 0.0,
+      "imagenes_FP": [
+        "imagen3"
+      ],
+      "imagenes_FN": [],
+      "imagenes_dudosas": [
+        "imagen28",
+        "imagen99"
+      ]
+    },
+    {
+      "gate": "esquema_cromatico",
+      "definicion": "amplia",
+      "n_evaluables": 98,
+      "n_dudosas": 2,
+      "VP": 77,
+      "FP": 1,
+      "FN": 0,
+      "VN": 20,
+      "tasa_FP": 0.047619047619047616,
+      "tasa_FP_IC95": [
+        0.008455769471923294,
+        0.22669816586235464
+      ],
+      "FP_entre_abiertas": 0.01282051282051282,
+      "tasa_FN": 0.0,
+      "imagenes_FP": [
+        "imagen3"
+      ],
+      "imagenes_FN": [],
+      "imagenes_dudosas": [
+        "imagen28",
+        "imagen99"
+      ]
+    },
+    {
+      "gate": "angulo_horizonte",
+      "definicion": "estricta",
+      "n_evaluables": 99,
+      "n_dudosas": 1,
+      "VP": 9,
+      "FP": 17,
+      "FN": 10,
+      "VN": 63,
+      "tasa_FP": 0.2125,
+      "tasa_FP_IC95": [
+        0.13712274217035494,
+        0.3142236061817758
+      ],
+      "FP_entre_abiertas": 0.6538461538461539,
+      "tasa_FN": 0.5263157894736842,
+      "imagenes_FP": [
+        "imagen5",
+        "imagen6",
+        "imagen7",
+        "imagen8",
+        "imagen9",
+        "imagen15",
+        "imagen29",
+        "imagen33",
+        "imagen40",
+        "imagen42",
+        "imagen45",
+        "imagen60",
+        "imagen63",
+        "imagen70",
+        "imagen71",
+        "imagen77",
+        "imagen95"
+      ],
+      "imagenes_FN": [
+        "imagen23",
+        "imagen27",
+        "imagen28",
+        "imagen36",
+        "imagen44",
+        "imagen50",
+        "imagen58",
+        "imagen62",
+        "imagen64",
+        "imagen97"
+      ],
+      "imagenes_dudosas": [
+        "imagen54"
+      ]
+    },
+    {
+      "gate": "angulo_horizonte",
+      "definicion": "amplia",
+      "n_evaluables": 99,
+      "n_dudosas": 1,
+      "VP": 9,
+      "FP": 17,
+      "FN": 10,
+      "VN": 63,
+      "tasa_FP": 0.2125,
+      "tasa_FP_IC95": [
+        0.13712274217035494,
+        0.3142236061817758
+      ],
+      "FP_entre_abiertas": 0.6538461538461539,
+      "tasa_FN": 0.5263157894736842,
+      "imagenes_FP": [
+        "imagen5",
+        "imagen6",
+        "imagen7",
+        "imagen8",
+        "imagen9",
+        "imagen15",
+        "imagen29",
+        "imagen33",
+        "imagen40",
+        "imagen42",
+        "imagen45",
+        "imagen60",
+        "imagen63",
+        "imagen70",
+        "imagen71",
+        "imagen77",
+        "imagen95"
+      ],
+      "imagenes_FN": [
+        "imagen23",
+        "imagen27",
+        "imagen28",
+        "imagen36",
+        "imagen44",
+        "imagen50",
+        "imagen58",
+        "imagen62",
+        "imagen64",
+        "imagen97"
+      ],
+      "imagenes_dudosas": [
+        "imagen54"
+      ]
+    },
+    {
+      "gate": "score_convergencia",
+      "definicion": "estricta",
+      "n_evaluables": 99,
+      "n_dudosas": 1,
+      "VP": 12,
+      "FP": 13,
+      "FN": 4,
+      "VN": 70,
+      "tasa_FP": 0.1566265060240964,
+      "tasa_FP_IC95": [
+        0.09387923553162918,
+        0.24975330923954042
+      ],
+      "FP_entre_abiertas": 0.52,
+      "tasa_FN": 0.25,
+      "imagenes_FP": [
+        "imagen6",
+        "imagen7",
+        "imagen8",
+        "imagen14",
+        "imagen35",
+        "imagen37",
+        "imagen42",
+        "imagen51",
+        "imagen59",
+        "imagen67",
+        "imagen85",
+        "imagen86",
+        "imagen94"
+      ],
+      "imagenes_FN": [
+        "imagen2",
+        "imagen10",
+        "imagen11",
+        "imagen18"
+      ],
+      "imagenes_dudosas": [
+        "imagen12"
+      ]
+    },
+    {
+      "gate": "score_convergencia",
+      "definicion": "amplia",
+      "n_evaluables": 99,
+      "n_dudosas": 1,
+      "VP": 12,
+      "FP": 13,
+      "FN": 4,
+      "VN": 70,
+      "tasa_FP": 0.1566265060240964,
+      "tasa_FP_IC95": [
+        0.09387923553162918,
+        0.24975330923954042
+      ],
+      "FP_entre_abiertas": 0.52,
+      "tasa_FN": 0.25,
+      "imagenes_FP": [
+        "imagen6",
+        "imagen7",
+        "imagen8",
+        "imagen14",
+        "imagen35",
+        "imagen37",
+        "imagen42",
+        "imagen51",
+        "imagen59",
+        "imagen67",
+        "imagen85",
+        "imagen86",
+        "imagen94"
+      ],
+      "imagenes_FN": [
+        "imagen2",
+        "imagen10",
+        "imagen11",
+        "imagen18"
+      ],
+      "imagenes_dudosas": [
+        "imagen12"
+      ]
+    },
+    {
+      "gate": "espacio",
+      "definicion": "estricta",
+      "n_evaluables": 99,
+      "n_dudosas": 1,
+      "VP": 54,
+      "FP": 5,
+      "FN": 11,
+      "VN": 29,
+      "tasa_FP": 0.14705882352941177,
+      "tasa_FP_IC95": [
+        0.06449346382626417,
+        0.30128388174051957
+      ],
+      "FP_entre_abiertas": 0.0847457627118644,
+      "tasa_FN": 0.16923076923076924,
+      "imagenes_FP": [
+        "imagen6",
+        "imagen8",
+        "imagen51",
+        "imagen85",
+        "imagen86"
+      ],
+      "imagenes_FN": [
+        "imagen16",
+        "imagen27",
+        "imagen33",
+        "imagen34",
+        "imagen61",
+        "imagen66",
+        "imagen72",
+        "imagen76",
+        "imagen87",
+        "imagen88",
+        "imagen96"
+      ],
+      "imagenes_dudosas": [
+        "imagen15"
+      ]
+    },
+    {
+      "gate": "espacio",
+      "definicion": "amplia",
+      "n_evaluables": 99,
+      "n_dudosas": 1,
+      "VP": 28,
+      "FP": 31,
+      "FN": 11,
+      "VN": 29,
+      "tasa_FP": 0.5166666666666667,
+      "tasa_FP_IC95": [
+        0.39307594850843575,
+        0.6382515871422999
+      ],
+      "FP_entre_abiertas": 0.5254237288135594,
+      "tasa_FN": 0.28205128205128205,
+      "imagenes_FP": [
+        "imagen6",
+        "imagen8",
+        "imagen14",
+        "imagen37",
+        "imagen40",
+        "imagen42",
+        "imagen43",
+        "imagen45",
+        "imagen49",
+        "imagen50",
+        "imagen51",
+        "imagen56",
+        "imagen57",
+        "imagen58",
+        "imagen60",
+        "imagen62",
+        "imagen63",
+        "imagen65",
+        "imagen69",
+        "imagen71",
+        "imagen73",
+        "imagen77",
+        "imagen82",
+        "imagen83",
+        "imagen84",
+        "imagen85",
+        "imagen86",
+        "imagen89",
+        "imagen93",
+        "imagen95",
+        "imagen98"
+      ],
+      "imagenes_FN": [
+        "imagen16",
+        "imagen27",
+        "imagen33",
+        "imagen34",
+        "imagen61",
+        "imagen66",
+        "imagen72",
+        "imagen76",
+        "imagen87",
+        "imagen88",
+        "imagen96"
+      ],
+      "imagenes_dudosas": [
+        "imagen15"
+      ]
+    },
+    {
+      "gate": "nitidez",
+      "definicion": "estricta",
+      "n_evaluables": 99,
+      "n_dudosas": 1,
+      "VP": 49,
+      "FP": 5,
+      "FN": 16,
+      "VN": 29,
+      "tasa_FP": 0.14705882352941177,
+      "tasa_FP_IC95": [
+        0.06449346382626417,
+        0.30128388174051957
+      ],
+      "FP_entre_abiertas": 0.09259259259259259,
+      "tasa_FN": 0.24615384615384617,
+      "imagenes_FP": [
+        "imagen6",
+        "imagen8",
+        "imagen51",
+        "imagen85",
+        "imagen86"
+      ],
+      "imagenes_FN": [
+        "imagen16",
+        "imagen27",
+        "imagen33",
+        "imagen34",
+        "imagen48",
+        "imagen61",
+        "imagen66",
+        "imagen72",
+        "imagen75",
+        "imagen76",
+        "imagen79",
+        "imagen80",
+        "imagen82",
+        "imagen87",
+        "imagen88",
+        "imagen96"
+      ],
+      "imagenes_dudosas": [
+        "imagen15"
+      ]
+    },
+    {
+      "gate": "nitidez",
+      "definicion": "amplia",
+      "n_evaluables": 99,
+      "n_dudosas": 1,
+      "VP": 24,
+      "FP": 30,
+      "FN": 15,
+      "VN": 30,
+      "tasa_FP": 0.5,
+      "tasa_FP_IC95": [
+        0.37734812427246284,
+        0.6226518757275372
+      ],
+      "FP_entre_abiertas": 0.5555555555555556,
+      "tasa_FN": 0.38461538461538464,
+      "imagenes_FP": [
+        "imagen6",
+        "imagen8",
+        "imagen14",
+        "imagen37",
+        "imagen40",
+        "imagen42",
+        "imagen43",
+        "imagen45",
+        "imagen49",
+        "imagen50",
+        "imagen51",
+        "imagen56",
+        "imagen57",
+        "imagen58",
+        "imagen60",
+        "imagen62",
+        "imagen63",
+        "imagen65",
+        "imagen69",
+        "imagen71",
+        "imagen73",
+        "imagen77",
+        "imagen83",
+        "imagen84",
+        "imagen85",
+        "imagen86",
+        "imagen89",
+        "imagen93",
+        "imagen95",
+        "imagen98"
+      ],
+      "imagenes_FN": [
+        "imagen16",
+        "imagen27",
+        "imagen33",
+        "imagen34",
+        "imagen48",
+        "imagen61",
+        "imagen66",
+        "imagen72",
+        "imagen75",
+        "imagen76",
+        "imagen79",
+        "imagen80",
+        "imagen87",
+        "imagen88",
+        "imagen96"
+      ],
+      "imagenes_dudosas": [
+        "imagen15"
+      ]
+    },
+    {
+      "gate": "composicion",
+      "definicion": "estricta",
+      "n_evaluables": 99,
+      "n_dudosas": 1,
+      "VP": 51,
+      "FP": 8,
+      "FN": 11,
+      "VN": 29,
+      "tasa_FP": 0.21621621621621623,
+      "tasa_FP_IC95": [
+        0.11386376851955585,
+        0.37195461273876906
+      ],
+      "FP_entre_abiertas": 0.13559322033898305,
+      "tasa_FN": 0.1774193548387097,
+      "imagenes_FP": [
+        "imagen6",
+        "imagen8",
+        "imagen77",
+        "imagen84",
+        "imagen85",
+        "imagen86",
+        "imagen93",
+        "imagen99"
+      ],
+      "imagenes_FN": [
+        "imagen16",
+        "imagen27",
+        "imagen33",
+        "imagen34",
+        "imagen61",
+        "imagen66",
+        "imagen72",
+        "imagen76",
+        "imagen87",
+        "imagen88",
+        "imagen96"
+      ],
+      "imagenes_dudosas": [
+        "imagen15"
+      ]
+    },
+    {
+      "gate": "composicion",
+      "definicion": "amplia",
+      "n_evaluables": 99,
+      "n_dudosas": 1,
+      "VP": 51,
+      "FP": 8,
+      "FN": 11,
+      "VN": 29,
+      "tasa_FP": 0.21621621621621623,
+      "tasa_FP_IC95": [
+        0.11386376851955585,
+        0.37195461273876906
+      ],
+      "FP_entre_abiertas": 0.13559322033898305,
+      "tasa_FN": 0.1774193548387097,
+      "imagenes_FP": [
+        "imagen6",
+        "imagen8",
+        "imagen77",
+        "imagen84",
+        "imagen85",
+        "imagen86",
+        "imagen93",
+        "imagen99"
+      ],
+      "imagenes_FN": [
+        "imagen16",
+        "imagen27",
+        "imagen33",
+        "imagen34",
+        "imagen61",
+        "imagen66",
+        "imagen72",
+        "imagen76",
+        "imagen87",
+        "imagen88",
+        "imagen96"
+      ],
+      "imagenes_dudosas": [
+        "imagen15"
+      ]
+    }
+  ],
+  "anotacion": {
+    "pendiente_por_gate": {
+      "esquema_cromatico": null,
+      "angulo_horizonte": null,
+      "score_convergencia": null,
+      "espacio": null,
+      "nitidez": null,
+      "composicion": null
+    },
+    "revisiones_obsoletas": []
+  },
+  "criterio": {
+    "fp_max_por_gate": 0,
+    "definicion": "estricta",
+    "por_gate": [
+      {
+        "gate": "esquema_cromatico",
+        "FP": 1,
+        "resultado": "no",
+        "nota": "imagen3"
+      },
+      {
+        "gate": "angulo_horizonte",
+        "FP": 17,
+        "resultado": "no",
+        "nota": "imagen5, imagen6, imagen7, imagen8, imagen9, imagen15, imagen29, imagen33, imagen40, imagen42, imagen45, imagen60, imagen63, imagen70, imagen71, imagen77, imagen95"
+      },
+      {
+        "gate": "score_convergencia",
+        "FP": 13,
+        "resultado": "no",
+        "nota": "imagen6, imagen7, imagen8, imagen14, imagen35, imagen37, imagen42, imagen51, imagen59, imagen67, imagen85, imagen86, imagen94"
+      },
+      {
+        "gate": "espacio",
+        "FP": 5,
+        "resultado": "no",
+        "nota": "imagen6, imagen8, imagen51, imagen85, imagen86"
+      },
+      {
+        "gate": "nitidez",
+        "FP": 5,
+        "resultado": "no",
+        "nota": "imagen6, imagen8, imagen51, imagen85, imagen86"
+      },
+      {
+        "gate": "composicion",
+        "FP": 8,
+        "resultado": "no",
+        "nota": "imagen6, imagen8, imagen77, imagen84, imagen85, imagen86, imagen93, imagen99"
+      }
+    ],
+    "global": "no"
+  }
+}

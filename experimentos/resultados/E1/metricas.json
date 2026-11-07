@@ -1,0 +1,418 @@
+{
+  "experimento": "E1",
+  "procedencia": {
+    "fecha": "2026-09-28T19:28:44",
+    "commit": "a32adbf660ce89d5fbbd54ef7ad8e3f0269b64b8",
+    "arbol_limpio": false,
+    "python": "3.12.10",
+    "plataforma": "Windows-11-10.0.26200-SP0",
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "cuda": "12.4",
+    "versiones": {
+      "crewai": "1.15.13",
+      "ultralytics": "8.4.102",
+      "torch": "2.6.0+cu124",
+      "torchvision": "0.21.0+cu124",
+      "opencv-contrib-python": "5.0.0.93",
+      "scikit-learn": "1.9.0",
+      "numpy": "2.4.4",
+      "pandas": "3.0.5",
+      "grad-cam": "1.5.5",
+      "pillow": "12.2.0",
+      "matplotlib": "3.11.0"
+    },
+    "md5": {
+      "models/clasificador_contexto/class_to_idx.json": "90fb1aba7d88ace9ad401b25081c4339",
+      "models/clasificador_contexto/pesos_fine_tuning_ligero.pt": "20ce2c480390ccf0a06f3e67bb1225ca",
+      "models/clasificador_contexto/umbral.json": "d87d18b2fbdd2f5c800b816b90893fc1"
+    }
+  },
+  "congelado": true,
+  "umbral_otro": 0.85,
+  "replica_predict": {
+    "n": 125,
+    "dif_max_confianza": 0.00044298350891114335,
+    "tolerancia_tf32": 0.001,
+    "cerca_del_umbral": {
+      "C1": [
+        {
+          "id": 333949,
+          "confianza": 0.84957874
+        },
+        {
+          "id": 168621,
+          "confianza": 0.8496195
+        }
+      ],
+      "O": [
+        {
+          "id": 10188,
+          "confianza": 0.8508944
+        },
+        {
+          "id": 864074,
+          "confianza": 0.8505303
+        }
+      ],
+      "val": [
+        {
+          "id": 957556,
+          "confianza": 0.8508493
+        }
+      ],
+      "C2": []
+    }
+  },
+  "E1a_C1": {
+    "n": 725,
+    "exactitud": 0.8510344827586207,
+    "ic95_exactitud": [
+      0.823268380791604,
+      0.8751000987243841
+    ],
+    "f1_por_clase": {
+      "animal": 0.9191176470588235,
+      "arquitectura": 0.8215488215488216,
+      "paisaje": 0.8354430379746836,
+      "producto-still_life": 0.7686567164179104,
+      "retrato-humano": 0.9090909090909091
+    },
+    "f1_macro": 0.8507714264182296,
+    "precision_por_clase": {
+      "animal": 0.9191176470588235,
+      "arquitectura": 0.7922077922077922,
+      "paisaje": 0.8048780487804879,
+      "producto-still_life": 0.7984496124031008,
+      "retrato-humano": 0.9507042253521126
+    },
+    "recall_por_clase": {
+      "animal": 0.9191176470588235,
+      "arquitectura": 0.8531468531468531,
+      "paisaje": 0.868421052631579,
+      "producto-still_life": 0.7410071942446043,
+      "retrato-humano": 0.8709677419354839
+    },
+    "matriz": [
+      [
+        125,
+        0,
+        5,
+        5,
+        1
+      ],
+      [
+        0,
+        122,
+        15,
+        6,
+        0
+      ],
+      [
+        1,
+        11,
+        132,
+        5,
+        3
+      ],
+      [
+        7,
+        18,
+        8,
+        103,
+        3
+      ],
+      [
+        3,
+        3,
+        4,
+        10,
+        135
+      ]
+    ],
+    "etiquetas_matriz": [
+      "animal",
+      "arquitectura",
+      "paisaje",
+      "producto-still_life",
+      "retrato-humano"
+    ],
+    "confusiones_principales": [
+      {
+        "verdadera": "producto-still_life",
+        "predicha": "arquitectura",
+        "n": 18
+      },
+      {
+        "verdadera": "arquitectura",
+        "predicha": "paisaje",
+        "n": 15
+      },
+      {
+        "verdadera": "paisaje",
+        "predicha": "arquitectura",
+        "n": 11
+      }
+    ],
+    "integridad_fase5": true
+  },
+  "E1b_C1_O": {
+    "auroc": 0.7538461538461538,
+    "en_umbral": {
+      "umbral": 0.85,
+      "cobertura": 0.7255172413793104,
+      "rechazadas_pct": 27.448275862068964,
+      "exactitud_aceptadas": 0.9429657794676806,
+      "riesgo_selectivo": 0.057034220532319435,
+      "errores_capturados": 0.7222222222222222,
+      "aciertos_perdidos": 0.19611021069692058,
+      "O_rechazado_pct": 64.83516483516483
+    },
+    "n_errores_C1": 108
+  },
+  "E1c_val_O": {
+    "exactitud_sin_umbral": 0.8537931034482759,
+    "auroc": 0.7346014904635594,
+    "en_umbral": {
+      "umbral": 0.85,
+      "cobertura": 0.7034482758620689,
+      "rechazadas_pct": 29.655172413793103,
+      "exactitud_aceptadas": 0.9509803921568627,
+      "riesgo_selectivo": 0.0490196078431373,
+      "errores_capturados": 0.7641509433962265,
+      "aciertos_perdidos": 0.21647819063004847,
+      "O_rechazado_pct": 64.83516483516483
+    },
+    "ganancia_marginal_C1": [
+      {
+        "tramo": "0.70→0.75",
+        "hasta": 0.75,
+        "delta_O_pct": 5.128205128205131,
+        "delta_validas_pct": 3.5862068965517224,
+        "ratio": 1.4299802761341238
+      },
+      {
+        "tramo": "0.75→0.80",
+        "hasta": 0.8,
+        "delta_O_pct": 7.692307692307693,
+        "delta_validas_pct": 2.6206896551724164,
+        "ratio": 2.935222672064775
+      },
+      {
+        "tramo": "0.80→0.85",
+        "hasta": 0.85,
+        "delta_O_pct": 9.157509157509153,
+        "delta_validas_pct": 5.379310344827584,
+        "ratio": 1.7023574715882408
+      },
+      {
+        "tramo": "0.85→0.90",
+        "hasta": 0.9,
+        "delta_O_pct": 9.157509157509168,
+        "delta_validas_pct": 6.758620689655171,
+        "ratio": 1.3549375794273772
+      },
+      {
+        "tramo": "0.90→0.95",
+        "hasta": 0.95,
+        "delta_O_pct": 9.157509157509153,
+        "delta_validas_pct": 11.310344827586214,
+        "ratio": 0.809657821852943
+      }
+    ],
+    "ganancia_marginal_val": [
+      {
+        "tramo": "0.70→0.75",
+        "hasta": 0.75,
+        "delta_O_pct": 5.128205128205131,
+        "delta_validas_pct": 3.4482758620689644,
+        "ratio": 1.4871794871794886
+      },
+      {
+        "tramo": "0.75→0.80",
+        "hasta": 0.8,
+        "delta_O_pct": 7.692307692307693,
+        "delta_validas_pct": 4.137931034482758,
+        "ratio": 1.8589743589743595
+      },
+      {
+        "tramo": "0.80→0.85",
+        "hasta": 0.85,
+        "delta_O_pct": 9.157509157509153,
+        "delta_validas_pct": 4.689655172413794,
+        "ratio": 1.9527041585865104
+      },
+      {
+        "tramo": "0.85→0.90",
+        "hasta": 0.9,
+        "delta_O_pct": 9.157509157509168,
+        "delta_validas_pct": 5.241379310344826,
+        "ratio": 1.7471563524195128
+      },
+      {
+        "tramo": "0.90→0.95",
+        "hasta": 0.95,
+        "delta_O_pct": 9.157509157509153,
+        "delta_validas_pct": 11.448275862068968,
+        "ratio": 0.7999029083366428
+      }
+    ],
+    "regla_C1": {
+      "optimo_estricto": 0.8,
+      "ultimo_ratio_mayor_1": 0.9
+    },
+    "regla_val": {
+      "optimo_estricto": 0.85,
+      "ultimo_ratio_mayor_1": 0.9
+    }
+  },
+  "E1d_C2": {
+    "n": 100,
+    "n_otro": 10,
+    "pct_otro": 10.0,
+    "ic95_otro": [
+      0.05522854161313613,
+      0.1743673043676654
+    ],
+    "reparto_etiqueta_sistema": {
+      "arquitectura": 18,
+      "paisaje": 18,
+      "retrato-humano": 18,
+      "animal": 18,
+      "producto-still_life": 18,
+      "otro": 10
+    },
+    "confianza_mediana": {
+      "C1": 0.9649522,
+      "O": 0.76479375,
+      "C2": 0.983914815
+    },
+    "con_A1": {
+      "estado": "calculado",
+      "reparto_A1": {
+        "animal": 19,
+        "arquitectura": 18,
+        "paisaje": 18,
+        "retrato-humano": 18,
+        "producto-still_life": 18,
+        "otro": 9
+      },
+      "exactitud_6_etiquetas": 0.99,
+      "ic_exactitud_6_etiquetas": [
+        0.9455124752390653,
+        0.9982326134344526
+      ],
+      "n_aceptadas": 90,
+      "exactitud_aceptadas": 1.0,
+      "ic_exactitud_aceptadas": [
+        0.9590629315783191,
+        0.9999999999999999
+      ],
+      "exactitud_sin_umbral_5_clases": 1.0,
+      "recall_otro": 1.0,
+      "matriz_6x6": [
+        [
+          18,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          18,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          18,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          18,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          18,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          9
+        ]
+      ],
+      "etiquetas_matriz": [
+        "animal",
+        "arquitectura",
+        "paisaje",
+        "producto-still_life",
+        "retrato-humano",
+        "otro"
+      ]
+    }
+  },
+  "E1e_orquestador": {
+    "estado": "calculado",
+    "n": 100,
+    "coinciden": 100,
+    "discrepancias": []
+  },
+  "gradcam": {
+    "acierto": {
+      "id": 527582,
+      "verdadera": "producto-still_life",
+      "predicha": "producto-still_life",
+      "confianza": 0.99839646
+    },
+    "error": {
+      "id": 14852,
+      "verdadera": "producto-still_life",
+      "predicha": "arquitectura",
+      "confianza": 0.9932134
+    }
+  },
+  "criterios": [
+    {
+      "criterio": "F1 mínima por clase en C1",
+      "sentido": ">=",
+      "umbral": 0.75,
+      "valor": 0.7686567164179104,
+      "resultado": "sí",
+      "nota": "descriptivo (conocido de antemano); mínima: producto-still_life"
+    },
+    {
+      "criterio": "Exactitud sobre aceptadas en C2",
+      "sentido": ">=",
+      "umbral": 0.85,
+      "valor": 1.0,
+      "resultado": "sí",
+      "nota": ""
+    },
+    {
+      "criterio": "% de C2 enviado a «otro»",
+      "sentido": "<=",
+      "umbral": 20.0,
+      "valor": 10.0,
+      "resultado": "sí",
+      "nota": ""
+    }
+  ]
+}
