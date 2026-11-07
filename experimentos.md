@@ -140,7 +140,46 @@ que justifica cada umbral.
 | Nivel 3 | W (versión 1.1) | Hipótesis de diseño: no se calibra |
 
 Para calibrar el Agente 3 hace falta revisar la segmentación (`bien` / `parcial` / `mal`) de las fotos
-`yolo` del conjunto de calibración sobre las imágenes de verificación del sistema actual.
+`yolo` del conjunto de calibración. Se revisa sobre imágenes propias, sin cifras (`calibracion.py`).
+
+### 4.1 Regla para elegir cada umbral
+
+Fijada el 2026-11-07, **antes de medir**, para que ningún corte se elija después de ver los datos.
+
+**Qué fotos son positivas y cuáles negativas.** Para cada umbral se ordenan las fotos del conjunto de
+calibración por su variable de decisión. Cada foto se marca según la anotación: **positiva** si la regla
+aplica y **negativa** si no aplica. Las `dudoso` se excluyen.
+
+| Umbral | Variable | Fotos | Positiva si… (anotación) |
+|---|---|---|---|
+| `RATIO_CROMATICO_MIN` | `ratio_cromatico` | Las 100 | `color = si` |
+| `LONGITUD_MIN_HORIZONTE`, `ANGULO_MAX_HORIZONTE` | `longitud_horizonte`, `angulo_horizonte` | Las 100 | Horizonte amplio = `si` (natural **o** estructural) |
+| `APERTURA_MIN_GRADOS` | `apertura_haz` | Las que superan el modelo nulo | `perspectiva = si` |
+| `SAM_SCORE_MIN`, `RELLENO_MIN`, `RELLENO_MAX` | `score_sam`, `relleno_bbox` | Las `yolo` | Segmentación `bien` o `parcial` (negativa: `mal`) |
+| `VAR_LAPLACIANO_MIN` | `var_max` (escala log) | Las `yolo` con segmentación fiable | `nitidez = si` |
+
+**Cómo se elige el corte:**
+
+1. **Si hay banda vacía** (todas las negativas a un lado y todas las positivas al otro), el umbral se
+   pone dentro de la banda, en un valor redondeado lo más cerca posible de su extremo **más exigente
+   para abrir**. Así ninguna foto se equivoca en la calibración y queda el mayor margen frente a los
+   falsos positivos. Si hay dos bandas igual de limpias, se toma la más estricta.
+2. **Si no hay banda vacía** (las clases se cruzan), entre todos los cortes posibles se descartan los
+   que dejan abrir más de 1 de cada 10 negativas (tasa de falsos positivos > 10 %, la misma tolerancia
+   que el criterio de E2). De los que quedan, se toma el de **mayor sensibilidad**; si empatan, el más
+   estricto. Si la sensibilidad resultante baja del 60 %, se declara como punto débil, pero el corte no
+   se cambia.
+3. **Si hay menos de 3 fotos positivas o menos de 3 negativas**, el umbral no se puede calibrar. Se
+   mantiene el valor actual si no deja abrir ninguna negativa; si deja abrir alguna, se endurece lo
+   justo para cerrarla. En los dos casos se declara como «comprobado, no calibrado».
+4. **Umbrales que actúan juntos** (longitud y ángulo del horizonte; score y relleno de SAM): el candidato
+   es la pareja de valores. Una negativa que cae dentro de la zona de apertura cuenta como falso
+   positivo, y se aplican las mismas reglas 1 a 3.
+
+Los umbrales que no son de huecos siguen su propio método de la tabla anterior: el barrido de YOLO se
+documenta y las escalas de composición son percentiles. **El conjunto de prueba nunca interviene en la
+calibración:** si allí una foto cae en el lado equivocado, es un error que mide E2, no un motivo para
+mover el corte.
 
 Después de calibrar:
 

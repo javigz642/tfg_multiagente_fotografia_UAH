@@ -4,7 +4,7 @@ Resumen para retomar el trabajo en una conversación nueva: qué está hecho, qu
 tomaron y qué toca después. El plan completo y las justificaciones están en
 [`../experimentos.md`](../experimentos.md); este fichero solo dice **dónde estamos**.
 
-**Última actualización:** 2026-11-06 · **Rama:** `agente3-sam`
+**Última actualización:** 2026-11-07 · **Rama:** `agente3-sam`
 
 ---
 
@@ -63,6 +63,10 @@ Fase 4  Ejecutar E1–E4 y escribir resultados ... pendiente
 4. **E1 (c):** el % enviado a «otro» se calcula sobre las 35 fotos de las cinco clases, no sobre 40.
 5. **La revisión de la segmentación es ciega a las cifras:** sus imágenes muestran la caja y la
    máscara, pero no el score de SAM, el relleno ni si el sistema la consideró fiable.
+6. **Regla para elegir cada umbral fijada antes de medir** (§4.1 del plan, 2026-11-07). Con banda
+   vacía, el corte va en su extremo más exigente. Sin banda vacía, el corte de mayor sensibilidad entre
+   los que dejan abrir como mucho el 10 % de las negativas. Con menos de 3 positivas o negativas,
+   «comprobado, no calibrado».
 
 ### Estado de la anotación del conjunto de prueba
 
@@ -100,9 +104,9 @@ composición. (c) Solo se documentan: modelo nulo, fusión de matices, margen de
 (no ejercitados), `umbral_otro` y W. La EVALUACIÓN (E1–E4) cubre el sistema entero sobre el
 conjunto de prueba; los resultados de la primera campaña no cuentan como finales.
 
-Regla de calibración: método de huecos; ante dos huecos igual de limpios se toma **el más
-estricto** (un falso positivo rompe la verificabilidad; un falso negativo solo hace callar).
-**El conjunto de prueba no se usa para calibrar.**
+Regla de calibración: método de huecos con la regla del §4.1 del plan (qué hacer con banda vacía,
+sin ella y con pocos casos), fijada antes de medir. Un falso positivo rompe la verificabilidad; un
+falso negativo solo hace callar. **El conjunto de prueba no se usa para calibrar.**
 
 ### Fase 3 · Instrumentos y congelación (el sistema final)
 
