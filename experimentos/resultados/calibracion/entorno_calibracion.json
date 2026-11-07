@@ -1,6 +1,6 @@
 {
- "fecha": "2026-11-07T17:51:56+00:00",
- "commit": "6febec1c12c240c37aaa75ea15f5a70aa235e040",
+ "fecha": "2026-11-07T18:33:11+00:00",
+ "commit": "328992455e95ca3f973765d5e0c1d5a602b7e2c3",
  "maquina": "ASUS-JAVIER",
  "sistema": "Windows-11-10.0.26300-SP0",
  "procesador": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD",
@@ -24,7 +24,7 @@
   },
   "lineas": {
    "LONGITUD_MIN_HORIZONTE": 0.1517,
-   "ANGULO_MAX_HORIZONTE": 10.0,
+   "ANGULO_MAX_HORIZONTE": 14.0,
    "APERTURA_MIN_GRADOS": 89.0,
    "MIN_LINEAS_FUGA": 2
   },
